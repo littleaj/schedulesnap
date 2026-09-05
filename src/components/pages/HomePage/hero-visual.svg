@@ -1,0 +1,31 @@
+<svg width="420" height="360" viewBox="0 0 420 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="screenGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F8FBFF"/>
+      <stop offset="100%" stop-color="#EAF2FF"/>
+    </linearGradient>
+  </defs>
+
+  <rect id="device-shell" x="40" y="18" width="340" height="324" rx="30" fill="#101827"/>
+  <rect id="screen" x="60" y="38" width="300" height="284" rx="22" fill="url(#screenGlow)"/>
+
+  <circle id="window-close" cx="88" cy="62" r="7" fill="#FF5F57"/>
+  <circle id="window-minimize" cx="110" cy="62" r="7" fill="#FEBC2E"/>
+  <circle id="window-maximize" cx="132" cy="62" r="7" fill="#28C840"/>
+
+  <text id="week-label" x="88" y="106" fill="#475569" font-size="16" font-weight="700" letter-spacing="2" font-family="Arial, sans-serif">THIS WEEK</text>
+
+  <line id="header-divider" x1="88" y1="122" x2="308" y2="122" stroke="#D7E4FF" stroke-width="2"/>
+
+  <text id="mon-label" x="88" y="168" fill="#0F172A" font-size="20" font-weight="600" font-family="Arial, sans-serif">Mon</text>
+  <text id="mon-time" x="212" y="168" fill="#0F172A" font-size="20" font-weight="600" font-family="Arial, sans-serif">9:00–17:00</text>
+
+  <text id="tue-label" x="88" y="214" fill="#0F172A" font-size="20" font-weight="600" font-family="Arial, sans-serif">Tue</text>
+  <text id="tue-time" x="212" y="214" fill="#0F172A" font-size="20" font-weight="600" font-family="Arial, sans-serif">8:30–16:30</text>
+
+  <text id="wed-label" x="88" y="260" fill="#0F172A" font-size="20" font-weight="600" font-family="Arial, sans-serif">Wed</text>
+  <text id="wed-time" x="212" y="260" fill="#0F172A" font-size="20" font-weight="600" font-family="Arial, sans-serif">10:00–18:00</text>
+
+  <line id="mon-divider" x1="88" y1="180" x2="308" y2="180" stroke="#E7EEFF" stroke-width="2"/>
+  <line id="tue-divider" x1="88" y1="226" x2="308" y2="226" stroke="#E7EEFF" stroke-width="2"/>
+</svg>

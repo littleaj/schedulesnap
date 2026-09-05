@@ -23,29 +23,11 @@ const HomePage = () => {
         </div>
 
         <div className="hero__visual" aria-label="ScheduleSnap preview">
-          <div className="phone-card">
-            <div className="phone-card__header">
-              <span className="dot dot--red" />
-              <span className="dot dot--amber" />
-              <span className="dot dot--green" />
-            </div>
-
-            <div className="schedule-preview">
-              <div className="schedule-preview__title">This week</div>
-              <div className="schedule-preview__row">
-                <span>Mon</span>
-                <strong>9:00–17:00</strong>
-              </div>
-              <div className="schedule-preview__row">
-                <span>Tue</span>
-                <strong>8:30–16:30</strong>
-              </div>
-              <div className="schedule-preview__row">
-                <span>Wed</span>
-                <strong>10:00–18:00</strong>
-              </div>
-            </div>
-          </div>
+          <img
+            src="/src/components/pages/HomePage/hero-visual.svg"
+            alt="ScheduleSnap preview"
+            className="hero-illustration"
+          />
         </div>
       </section>
 

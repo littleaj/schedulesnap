@@ -83,77 +83,14 @@
 .hero__visual {
   display: flex;
   justify-content: center;
+  width: min(100%, 420px);
 }
 
-.phone-card {
-  width: min(100%, 400px);
-  background: #101827;
-  border-radius: 28px;
-  padding: 18px 18px 22px;
-  box-shadow: 0 30px 60px rgba(15, 23, 42, 0.2);
-}
-
-.phone-card__header {
-  display: flex;
-  gap: 8px;
-  padding-bottom: 14px;
-}
-
-.dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.dot--red {
-  background: #ff5f57;
-}
-
-.dot--amber {
-  background: #febc2e;
-}
-
-.dot--green {
-  background: #28c840;
-}
-
-.schedule-preview {
-  background: linear-gradient(180deg, #f8fafc 0%, #edf5ff 100%);
-  border-radius: 20px;
-  padding: 20px 18px;
-}
-
-.schedule-preview__title {
-  margin-bottom: 18px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #475569;
-}
-
-.schedule-preview__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.28);
-  color: #0f172a;
-}
-
-.schedule-preview__row:last-child {
-  border-bottom: none;
-}
-
-.schedule-preview__row span {
-  font-weight: 600;
-  color: #475569;
-}
-
-.schedule-preview__row strong {
-  font-size: 0.96rem;
+.hero-illustration {
+  display: block;
+  width: min(100%, 420px);
+  height: auto;
+  filter: drop-shadow(0 30px 60px rgba(15, 23, 42, 0.18));
 }
 
 .feature-grid {
