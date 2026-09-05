@@ -100,28 +100,6 @@
   margin-top: 28px;
 }
 
-.feature-card__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: #e0ecff;
-  font-size: 1.6rem;
-}
-
-.feature-card h2 {
-  margin: 18px 0 10px;
-  font-size: 1.35rem;
-  color: #0f172a;
-}
-
-.feature-card p {
-  margin: 0;
-  color: #526072;
-}
-
 @media (max-width: 820px) {
   .hero {
     grid-template-columns: 1fr;

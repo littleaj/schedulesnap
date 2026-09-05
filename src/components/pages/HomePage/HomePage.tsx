@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '../../atoms/Card';
+import FeatureCard from '../../molecules/FeatureCard';
 import './HomePage.css';
 
 const HomePage = () => {
@@ -32,23 +32,17 @@ const HomePage = () => {
       </section>
 
       <section className="feature-grid" aria-label="Key features">
-        <Card>
-          <span className="feature-card__icon">📸</span>
-          <h2>Photo to schedule</h2>
+        <FeatureCard icon="📸" heading="Photo to schedule">
           <p>Upload a shift image and let the app read the details from the photo.</p>
-        </Card>
+        </FeatureCard>
 
-        <Card>
-          <span className="feature-card__icon">✅</span>
-          <h2>Review before syncing</h2>
+        <FeatureCard icon="✅" heading="Review before syncing">
           <p>Check the extracted shifts and fix anything uncertain before saving.</p>
-        </Card>
+        </FeatureCard>
 
-        <Card>
-          <span className="feature-card__icon">🗓️</span>
-          <h2>Google Calendar ready</h2>
+        <FeatureCard icon="🗓️" heading="Google Calendar ready">
           <p>Write the approved entries directly to your chosen calendar in seconds.</p>
-        </Card>
+        </FeatureCard>
       </section>
     </main>
   );
