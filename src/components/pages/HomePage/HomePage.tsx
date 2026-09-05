@@ -1,6 +1,7 @@
 import React from 'react';
 import FeatureCard from '../../molecules/FeatureCard';
 import './HomePage.css';
+import ActionButton from '../../atoms/ActionButton/ActionButton';
 
 const HomePage = () => {
   return (
@@ -15,10 +16,8 @@ const HomePage = () => {
           </p>
 
           <div className="hero__actions">
-            <button type="button">Get started</button>
-            <button type="button" className="secondary">
-              Learn more
-            </button>
+            <ActionButton variant="primary">Get started</ActionButton>
+            <ActionButton variant="secondary">Learn more</ActionButton>
           </div>
         </div>
 
