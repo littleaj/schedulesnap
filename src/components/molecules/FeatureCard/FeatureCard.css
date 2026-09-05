@@ -1,0 +1,30 @@
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.feature-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: #e0ecff;
+  font-size: 1.6rem;
+}
+
+.feature-card h2 {
+  margin: 0.5rem 0 0;
+  font-size: 1.35rem;
+  color: #0f172a;
+}
+
+.feature-card__body {
+  color: #526072;
+}
+
+.feature-card__body > * {
+  margin: 0;
+}
