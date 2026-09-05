@@ -18,6 +18,9 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 - Work in small increments: one component or at most two related components per step. Keep scope narrow, avoid unrelated refactors, and stop for review before continuing.
 - Follow Atomic Design principles, keeping components under `/components/atoms`, `/components/molecules`, `/components/organisms`, `/components/templates`, `/components/pages`.
 
+### CSS
+- For most things, use relative units. Use absolute units for borders.
+
 ## Validation workflow
 
 - Install dependencies with `npm install` when needed.
