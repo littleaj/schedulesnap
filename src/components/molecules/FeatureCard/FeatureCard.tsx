@@ -12,10 +12,12 @@ const FeatureCard = ({ icon, heading, children }: FeatureCardProps) => {
   return (
     <Card>
       <div className="feature-card">
-        <span className="feature-card__icon" aria-hidden="true">
-          {icon}
-        </span>
-        <h2>{heading}</h2>
+        <hgroup className="feature-card__header">
+          <span className="feature-card__icon" aria-hidden="true">
+            {icon}
+          </span>
+          <h2>{heading}</h2>
+        </hgroup>
         <div className="feature-card__body">{children}</div>
       </div>
     </Card>
