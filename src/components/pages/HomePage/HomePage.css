@@ -1,7 +1,7 @@
 .home-page {
   max-width: 75dvw;
   margin: 0 auto;
-  padding: 64px 24px 80px;
+  padding: 4rem 1.5rem 6rem;
 }
 
 .hero {
@@ -71,7 +71,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
-  margin-top: 28px;
+  margin-top: 3rem;
 }
 
 @media (max-width: 820px) {
@@ -86,7 +86,7 @@
   }
 
   .hero__visual {
-    margin: 0 auto;
+    display: none;
   }
 
   .feature-grid {
