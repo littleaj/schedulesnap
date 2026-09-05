@@ -8,7 +8,7 @@ export default defineConfig({
     open: true,
   },
   build: {
-    outDir: 'public',
+    outDir: 'build',
   },
   resolve: {
     alias: {
