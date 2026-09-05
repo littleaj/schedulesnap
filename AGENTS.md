@@ -15,6 +15,7 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 - Keep logic close to the component or feature that owns it.
 - Preserve TypeScript correctness and avoid unnecessary dependencies.
 - When adding UI behavior, keep the UX simple and testable.
+- Follow Atomic Design principles, keeping components under `/components/atoms`, `/components/molecules`, `/components/organisms`, `/components/templates`, `/components/pages`.
 
 ## Validation workflow
 
