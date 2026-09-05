@@ -11,10 +11,11 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 
 ## Working conventions
 
-- Prefer small, clear React components over large, deeply nested UI trees.
+- Prefer small, clear React components over large, deeply nested UI trees. One component per file.
 - Keep logic close to the component or feature that owns it.
 - Preserve TypeScript correctness and avoid unnecessary dependencies.
 - When adding UI behavior, keep the UX simple and testable.
+- Work in small increments: one component or at most two related components per step. Keep scope narrow, avoid unrelated refactors, and stop for review before continuing.
 - Follow Atomic Design principles, keeping components under `/components/atoms`, `/components/molecules`, `/components/organisms`, `/components/templates`, `/components/pages`.
 
 ## Validation workflow
