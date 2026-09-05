@@ -24,7 +24,7 @@ const HomePage = () => {
 
         <div className="hero__visual" aria-label="ScheduleSnap preview">
           <img
-            src="/src/components/pages/HomePage/hero-visual.svg"
+            src="/assets/hero-visual.svg"
             alt="ScheduleSnap preview"
             className="hero-illustration"
           />
