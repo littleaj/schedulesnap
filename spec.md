@@ -43,6 +43,9 @@ tests/
 ```
 
 ## Routes (React Router)
+- `/` — Home page. Includes logo and description of application.
+- `/about` — About page describing the project in more detail.
+- `/docs` — Documentation.
 - `/login` — Google sign-in, requests `calendar.events` scope. Declining blocks all other routes (redirect back here).
 - `/onboarding` — first-run profile setup (name; timezone auto-detected via `Intl.DateTimeFormat().resolvedOptions().timeZone`, editable; reminder preference; default calendar).
 - `/capture` — native file input (`capture="environment"`), no custom camera stream.
