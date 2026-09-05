@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
 
-const ScheduleSnap: React.FC = () => {
+const ScheduleSnap = () => {
     return (
         <div className="ScheduleSnap">
-            <h1>Welcome to ScheduleSnap</h1>
-            <p>Your scheduling application is ready!</p>
+            <h1>ScheduleSnap</h1>
+            <p>Snap. Scan. Sync.</p>
         </div>
     );
 }
