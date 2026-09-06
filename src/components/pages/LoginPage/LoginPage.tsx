@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import ActionButton from '@/components/atoms/ActionButton';
 import { useAuth } from '@/hooks/firebase';
@@ -8,6 +9,7 @@ const LoginPage = () => {
   const auth = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleGoogleLogin = async () => {
     setErrorMessage(null);
@@ -17,9 +19,14 @@ const LoginPage = () => {
       const provider = new GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/calendar.events');
       const credential = await signInWithPopup(auth, provider);
-      console.log("Logged in as " + credential.user.displayName);
+      console.log('Logged in as ' + credential.user.displayName);
+
+      // TODO: query the backend to check if the user has completed onboarding before navigating
+      const onboardingComplete = localStorage.getItem('schedule-snap-onboarding-complete') === 'true';
+      const nextRoute = onboardingComplete ? '/capture' : '/onboarding';
+      navigate(nextRoute, { replace: true });
     } catch (error) {
-      console.error("Unable to sign in with Google: ", error);
+      console.error('Unable to sign in with Google: ', error);
       const message = error instanceof Error ? error.message : 'Unable to sign in with Google right now.';
       setErrorMessage(message);
     } finally {
