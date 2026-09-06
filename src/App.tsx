@@ -3,6 +3,7 @@ import './App.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import HomePage from '@/components/pages/HomePage';
 import LoginPage from '@/components/pages/LoginPage';
+import LogoutPage from '@/components/pages/LogoutPage';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 const ScheduleSnap = () => {
@@ -14,6 +15,7 @@ const ScheduleSnap = () => {
           <Route path="/login" element={<LoginPage />} />
 
           <Route element={<ProtectedRoute />}>
+            <Route path="/logout" element={<LogoutPage />} />
             {/* placeholders for protected routes */}
             <Route path="/capture" element={<div>Capture page</div>} />
             <Route path="/confirm" element={<div>Confirm page</div>} />
