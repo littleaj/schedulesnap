@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import ActionButton from '../../atoms/ActionButton/ActionButton';
-import { useAuth } from '../../../hooks/firebase';
+import ActionButton from '@/components/atoms/ActionButton';
+import { useAuth } from '@/hooks/firebase';
 import './LoginPage.css';
 
 const LoginPage = () => {
