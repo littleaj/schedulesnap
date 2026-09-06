@@ -16,7 +16,8 @@ const LoginPage = () => {
     try {
       const provider = new GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/calendar.events');
-      await signInWithPopup(auth, provider);
+      const credential = await signInWithPopup(auth, provider);
+      console.log("Logged in as " + credential.user.displayName);
     } catch (error) {
       console.error(error);
       const message = error instanceof Error ? error.message : 'Unable to sign in with Google right now.';
