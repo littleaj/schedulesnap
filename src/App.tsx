@@ -1,7 +1,8 @@
 import React from 'react';
 import './App.css';
-import HomePage from './components/pages/HomePage/HomePage';
-import LoginPage from './components/pages/LoginPage';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import HomePage from '@/components/pages/HomePage';
+import LoginPage from '@/components/pages/LoginPage';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 const ScheduleSnap = () => {
@@ -11,6 +12,13 @@ const ScheduleSnap = () => {
         <Routes>
           <Route index element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+
+          <Route element={<ProtectedRoute />}>
+            {/* placeholders for protected routes */}
+            <Route path="/capture" element={<div>Capture page</div>} />
+            <Route path="/confirm" element={<div>Confirm page</div>} />
+            <Route path="/settings" element={<div>Settings page</div>} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
