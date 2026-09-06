@@ -1,0 +1,96 @@
+.login-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem 4rem;
+  background: linear-gradient(160deg, #f6f9ff 0%, #eef6ff 100%);
+}
+
+.login-card {
+  width: min(100%, 480px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+  text-align: center;
+}
+
+.login-card__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: #e0ebff;
+  color: #2457d5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-card h1 {
+  margin: 1rem 0 0;
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: #0f172a;
+}
+
+.login-card__intro {
+  margin: 1rem 0 0;
+  color: #4b5563;
+  font-size: 1.02rem;
+  line-height: 1.6;
+}
+
+.login-card__benefits {
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.8rem;
+  text-align: left;
+}
+
+.login-card__benefits li {
+  position: relative;
+  padding-left: 1.8rem;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.login-card__benefits li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #2563eb;
+  font-weight: 700;
+}
+
+.login-card__button {
+  width: 100%;
+  margin-top: 1.6rem;
+}
+
+.login-card__error {
+  margin: 0.9rem 0 0;
+  color: #b91c1c;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.login-card__footnote {
+  margin: 1rem 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .login-card {
+    padding: 1.5rem 1.1rem;
+  }
+}
