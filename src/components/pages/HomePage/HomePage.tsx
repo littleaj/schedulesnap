@@ -1,7 +1,7 @@
 import React from 'react';
-import FeatureCard from '../../molecules/FeatureCard';
+import FeatureCard from '@/components/molecules/FeatureCard';
+import ActionButton from '@/components/atoms/ActionButton';
 import './HomePage.css';
-import ActionButton from '../../atoms/ActionButton/ActionButton';
 
 const HomePage = () => {
   return (
