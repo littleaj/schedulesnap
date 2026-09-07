@@ -20,6 +20,7 @@ const ScheduleSnap = () => {
             <Route path="/capture" element={<div>Capture page</div>} />
             <Route path="/confirm" element={<div>Confirm page</div>} />
             <Route path="/settings" element={<div>Settings page</div>} />
+            <Route path="/onboarding" element={<div>Onboarding page</div>} />
           </Route>
         </Routes>
       </BrowserRouter>
