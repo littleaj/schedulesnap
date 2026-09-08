@@ -3,9 +3,10 @@ import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import UserMenu from './UserMenu';
 
-const { signInWithPopupMock, navigateMock } = vi.hoisted(() => ({
+const { signInWithPopupMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
   signInWithPopupMock: vi.fn(),
   navigateMock: vi.fn(),
+  getUserProfileMock: vi.fn(),
 }));
 
 vi.mock('firebase/auth', async () => {
@@ -35,13 +36,19 @@ vi.mock('react-router', async () => {
 
 vi.mock('../../../hooks/firebase', () => ({
   useAuth: () => ({ uid: 'test-user' }),
+  useFirestore: () => ({ mocked: true }),
+}));
+
+vi.mock('@/services/userProfileService', () => ({
+  getUserProfile: getUserProfileMock,
+  isUserProfileComplete: (profile: unknown) => Boolean(profile),
 }));
 
 describe('UserMenu', () => {
   beforeEach(() => {
-    localStorage.clear();
     signInWithPopupMock.mockReset();
     navigateMock.mockReset();
+    getUserProfileMock.mockReset();
   });
 
   it('closes when a menu item is clicked or when the user clicks outside the menu', async () => {
@@ -69,7 +76,8 @@ describe('UserMenu', () => {
   });
 
   it('runs Google login directly when logged-out LOGIN is clicked', async () => {
-    signInWithPopupMock.mockResolvedValue({ user: { displayName: 'Test User' } });
+    signInWithPopupMock.mockResolvedValue({ user: { displayName: 'Test User', uid: 'user-123' } });
+    getUserProfileMock.mockResolvedValue(null);
 
     render(
       <MemoryRouter>

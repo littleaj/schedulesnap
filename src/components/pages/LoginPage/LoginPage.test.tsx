@@ -2,9 +2,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import LoginPage from './LoginPage';
 
-const { signInWithPopupMock, navigateMock } = vi.hoisted(() => ({
+const { signInWithPopupMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
   signInWithPopupMock: vi.fn(),
   navigateMock: vi.fn(),
+  getUserProfileMock: vi.fn(),
 }));
 
 vi.mock('firebase/auth', async () => {
@@ -34,13 +35,19 @@ vi.mock('react-router', async () => {
 
 vi.mock('../../../hooks/firebase', () => ({
   useAuth: () => ({ uid: 'test-user' }),
+  useFirestore: () => ({ mocked: true }),
+}));
+
+vi.mock('@/services/userProfileService', () => ({
+  getUserProfile: getUserProfileMock,
+  isUserProfileComplete: (profile: unknown) => Boolean(profile),
 }));
 
 describe('LoginPage', () => {
   beforeEach(() => {
-    localStorage.clear();
     signInWithPopupMock.mockReset();
     navigateMock.mockReset();
+    getUserProfileMock.mockReset();
   });
 
   it('shows the Google sign in prompt and permission explanation', () => {
@@ -65,7 +72,8 @@ describe('LoginPage', () => {
   });
 
   it('redirects first-time users to onboarding and returning users to capture', async () => {
-    signInWithPopupMock.mockResolvedValue({ user: { displayName: 'Test User' } });
+    signInWithPopupMock.mockResolvedValue({ user: { displayName: 'Test User', uid: 'user-123' } });
+    getUserProfileMock.mockResolvedValueOnce(null);
 
     const { rerender } = render(<LoginPage />);
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
@@ -74,7 +82,16 @@ describe('LoginPage', () => {
       expect(navigateMock).toHaveBeenCalledWith('/onboarding', { replace: true });
     });
 
-    localStorage.setItem('schedule-snap-onboarding-complete', 'true');
+    getUserProfileMock.mockResolvedValueOnce({
+      targetName: 'Alex',
+      timezone: 'UTC',
+      defaultCalendarId: 'primary',
+      reminder: {
+        enabled: true,
+        minutesBefore: 60,
+      },
+    });
+
     rerender(<LoginPage />);
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
 
