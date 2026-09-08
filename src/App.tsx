@@ -5,6 +5,8 @@ import HeaderBar from '@/components/organisms/HeaderBar';
 import HomePage from '@/components/pages/HomePage';
 import LoginPage from '@/components/pages/LoginPage';
 import LogoutPage from '@/components/pages/LogoutPage';
+import OnboardingPage from '@/components/pages/OnboardingPage';
+import SettingsPage from '@/components/pages/SettingsPage';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 const ScheduleSnap = () => {
@@ -22,8 +24,8 @@ const ScheduleSnap = () => {
             {/* placeholders for protected routes */}
             <Route path="/capture" element={<div>Capture page</div>} />
             <Route path="/confirm" element={<div>Confirm page</div>} />
-            <Route path="/settings" element={<div>Settings page</div>} />
-            <Route path="/onboarding" element={<div>Onboarding page</div>} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/onboarding" element={<OnboardingPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
