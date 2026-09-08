@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import type { User } from 'firebase/auth';
 import UserIcon from '@/components/atoms/UserIcon';
+import useGoogleLogin from '@/hooks/useGoogleLogin';
 import './UserMenu.css';
 
 interface UserMenuProps {
@@ -10,7 +11,9 @@ interface UserMenuProps {
 
 const UserMenu = ({ user }: UserMenuProps) => {
   const isLoggedIn = Boolean(user);
+  const loginWithGoogle = useGoogleLogin();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -33,6 +36,19 @@ const UserMenu = ({ user }: UserMenuProps) => {
   }, [isOpen]);
 
   const closeMenu = () => setIsOpen(false);
+
+  const handleMenuLogin = async () => {
+    closeMenu();
+    setIsSubmittingLogin(true);
+
+    try {
+      await loginWithGoogle();
+    } catch (error) {
+      console.error('Unable to sign in with Google: ', error);
+    } finally {
+      setIsSubmittingLogin(false);
+    }
+  };
 
   return (
     <div className="user-menu" ref={menuRef}>
@@ -62,15 +78,26 @@ const UserMenu = ({ user }: UserMenuProps) => {
               className="user-menu__item user-menu__item--disabled"
               type="button"
               disabled
-              onClick={closeMenu}
             >
               SETTINGS
             </button>
           )}
 
-          <Link className="user-menu__item" to={isLoggedIn ? '/logout' : '/login'} role="menuitem" onClick={closeMenu}>
-            {isLoggedIn ? 'LOGOUT' : 'LOGIN'}
-          </Link>
+          {isLoggedIn ? (
+            <Link className="user-menu__item" to="/logout" role="menuitem" onClick={closeMenu}>
+              LOGOUT
+            </Link>
+          ) : (
+            <button
+              className="user-menu__item"
+              type="button"
+              role="menuitem"
+              onClick={handleMenuLogin}
+              disabled={isSubmittingLogin}
+            >
+              {isSubmittingLogin ? 'LOGGING IN...' : 'LOGIN'}
+            </button>
+          )}
         </div>
       ) : null}
     </div>
