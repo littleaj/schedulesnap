@@ -3,7 +3,7 @@ import ActionButton from '@/components/atoms/ActionButton';
 import LabeledInput from '@/components/atoms/LabeledInput';
 import LabeledSelect from '@/components/atoms/LabeledSelect';
 import ReminderSettings from '@/components/molecules/ReminderSettings';
-import type { UserProfile, UserProfileValidationErrors } from '@/types/userProfile';
+import type { UserProfile, UserProfileValidationErrors } from '@/types/user-profile';
 import './ProfileForm.css';
 
 const TIMEZONE_OPTIONS = [
