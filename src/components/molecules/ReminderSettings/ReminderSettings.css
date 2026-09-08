@@ -1,0 +1,21 @@
+.reminder-settings {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.reminder-settings legend {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.02em;
+}
+
+.reminder-settings__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1e293b;
+}
