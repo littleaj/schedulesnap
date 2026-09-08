@@ -1,0 +1,22 @@
+.nav-button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 1.4rem;
+  border: 0;
+  border-radius: 999px;
+  text-decoration: none;
+  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  font-size: 0.86rem;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.2);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+}
+
+.nav-button-link:hover,
+.nav-button-link:focus-visible {
+  transform: translateY(-1px);
+}
