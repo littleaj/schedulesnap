@@ -1,0 +1,7 @@
+.settings-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem 4rem;
+  background: linear-gradient(160deg, #ffffff 0%, #f1f8ff 100%);
+}
