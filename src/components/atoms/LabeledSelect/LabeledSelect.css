@@ -1,0 +1,40 @@
+.labeled-select {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.labeled-select__label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: 0.02em;
+}
+
+.labeled-select__control {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.68rem 0.75rem;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background-color: #ffffff;
+}
+
+.labeled-select__control:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+
+.labeled-select__hint,
+.labeled-select__error {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.labeled-select__hint {
+  color: #475569;
+}
+
+.labeled-select__error {
+  color: #b91c1c;
+}
