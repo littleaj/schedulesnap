@@ -1,0 +1,89 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { DocumentData } from 'firebase/firestore';
+import {
+  buildDefaultUserProfile,
+  getUserProfile,
+  isUserProfileComplete,
+  saveUserProfile,
+} from './user-profile';
+
+const {
+  docMock,
+  getDocMock,
+  setDocMock,
+} = vi.hoisted(() => ({
+  docMock: vi.fn(),
+  getDocMock: vi.fn(),
+  setDocMock: vi.fn(),
+}));
+
+vi.mock('firebase/firestore', async () => {
+  const actual = await vi.importActual<typeof import('firebase/firestore')>('firebase/firestore');
+  return {
+    ...actual,
+    doc: docMock,
+    getDoc: getDocMock,
+    setDoc: setDocMock,
+  };
+});
+
+describe('userProfileService', () => {
+  const firestoreMock = {} as never;
+
+  beforeEach(() => {
+    docMock.mockReset();
+    getDocMock.mockReset();
+    setDocMock.mockReset();
+    docMock.mockReturnValue('doc-ref');
+  });
+
+  it('returns null when no profile document exists', async () => {
+    getDocMock.mockResolvedValue({ exists: () => false });
+
+    const profile = await getUserProfile(firestoreMock, 'uid-123');
+
+    expect(profile).toBeNull();
+    expect(docMock).toHaveBeenCalledWith(firestoreMock, 'users', 'uid-123');
+  });
+
+  it('normalizes and returns an existing profile document', async () => {
+    const data: DocumentData = {
+      targetName: 'Alex',
+      timezone: 'America/New_York',
+      defaultCalendarId: 'primary',
+      reminder: {
+        enabled: true,
+        minutesBefore: 30,
+      },
+    };
+
+    getDocMock.mockResolvedValue({ exists: () => true, data: () => data });
+
+    const profile = await getUserProfile(firestoreMock, 'uid-123');
+
+    expect(profile).toEqual(data);
+    expect(isUserProfileComplete(profile)).toBe(true);
+  });
+
+  it('saves the profile with merge semantics', async () => {
+    const profile = buildDefaultUserProfile('UTC');
+
+    await saveUserProfile(firestoreMock, 'uid-123', profile);
+
+    expect(setDocMock).toHaveBeenCalledWith('doc-ref', profile, { merge: true });
+  });
+
+  it('marks incomplete profile data as incomplete', () => {
+    const incompleteProfile = {
+      targetName: '',
+      timezone: 'UTC',
+      defaultCalendarId: 'primary',
+      reminder: {
+        enabled: true,
+        minutesBefore: 60,
+      },
+    };
+
+    expect(isUserProfileComplete(incompleteProfile)).toBe(false);
+  });
+});
