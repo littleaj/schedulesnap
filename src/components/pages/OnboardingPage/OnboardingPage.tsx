@@ -1,0 +1,46 @@
+import React from 'react';
+import { useNavigate } from 'react-router';
+import ProfileForm from '@/components/organisms/ProfileForm';
+import { useUserProfileForm } from '@/hooks/user-profile-form';
+import './OnboardingPage.css';
+
+const OnboardingPage = () => {
+  const navigate = useNavigate();
+  const form = useUserProfileForm({
+    successMessage: 'Profile saved. Redirecting to capture...'
+  });
+
+  const handleSubmit = async () => {
+    const isSaved = await form.submit();
+
+    if (isSaved) {
+      navigate('/capture', { replace: true });
+    }
+  };
+
+  return (
+    <main className="onboarding-page">
+      <ProfileForm
+        heading="Complete your profile"
+        subheading="Set your name, timezone, and reminder preferences before importing shifts."
+        submitLabel="Save and continue"
+        values={form.values}
+        errors={form.errors}
+        isLoading={form.isLoading}
+        isSubmitting={form.isSubmitting}
+        errorMessage={form.errorMessage}
+        successMessage={form.successMessage}
+        onTargetNameChange={form.setTargetName}
+        onTimezoneChange={form.setTimezone}
+        onDefaultCalendarIdChange={form.setDefaultCalendarId}
+        onReminderEnabledChange={form.setReminderEnabled}
+        onReminderMinutesChange={form.setReminderMinutesBefore}
+        onSubmit={() => {
+          void handleSubmit();
+        }}
+      />
+    </main>
+  );
+};
+
+export default OnboardingPage;
