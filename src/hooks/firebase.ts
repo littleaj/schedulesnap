@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { FirebaseContext, FirebaseServices } from "../contexts/firebase";
+import { FirebaseContext, FirebaseServices } from "@/contexts/firebase";
 
 const createHook = <T>(accessor: (services: FirebaseServices) => T) => {
   return () => {

@@ -7,6 +7,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "paths": {
+      "@/contexts/firebase": ["./src/contexts/firebase.prod.tsx"],
       "@/*": ["./src/*"]
     }
   },

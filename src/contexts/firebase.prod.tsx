@@ -24,10 +24,11 @@ interface FirebaseServices {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const firestore = getFirestore(app);
 const firebaseServices = {
   analytics: getAnalytics(app),
   auth: getAuth(app),
-  firestore: getFirestore(app),
+  firestore,
 };
 const FirebaseContext = React.createContext(firebaseServices);
 
@@ -39,5 +40,5 @@ const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export { FirebaseContext, FirebaseProvider };
+export { FirebaseContext, FirebaseProvider, firestore };
 export type { FirebaseServices };

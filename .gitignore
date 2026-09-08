@@ -3,3 +3,4 @@ dist
 build
 .vitest/
 firebase-debug.log
+firestore-debug.log
