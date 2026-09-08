@@ -1,0 +1,43 @@
+import React, { useEffect, useState } from 'react';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+import AppLogoLink from '@/components/atoms/AppLogoLink';
+import IconLink from '@/components/atoms/IconLink';
+import NavButtonLink from '@/components/atoms/NavButtonLink';
+import UserMenu from '@/components/molecules/UserMenu';
+import { useAuth } from '@/hooks/firebase';
+import './HeaderBar.css';
+const HelpIcon = '/assets/help-icon.svg';
+
+const HeaderBar = () => {
+  const auth = useAuth();
+  const [user, setUser] = useState<User | null>(auth.currentUser);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, nextUser => {
+      setUser(nextUser);
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
+
+  return (
+    <header className="header-bar">
+      <nav className="header-bar__nav" aria-label="Primary">
+        <div className="header-bar__left">
+          <AppLogoLink to="/" />
+        </div>
+
+        <div className="header-bar__center">
+          <NavButtonLink to="/capture">SNAP SCHEDULE</NavButtonLink>
+        </div>
+
+        <div className="header-bar__right">
+          <IconLink to="/help" label="Help" iconSrc={HelpIcon} />
+          <UserMenu user={user} />
+        </div>
+      </nav>
+    </header>
+  );
+};
+
+export default HeaderBar;
