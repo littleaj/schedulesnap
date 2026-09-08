@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import type { User } from 'firebase/auth';
 import UserIcon from '@/components/atoms/UserIcon';
-import useGoogleLogin from '@/hooks/useGoogleLogin';
+import useGoogleLogin from '@/hooks/google-login';
 import './UserMenu.css';
 
 interface UserMenuProps {
