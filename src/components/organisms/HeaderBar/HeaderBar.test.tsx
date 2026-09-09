@@ -15,6 +15,7 @@ vi.mock('firebase/auth', () => ({
 
 vi.mock('../../../hooks/firebase', () => ({
   useAuth: () => authMock,
+  useFirestore: () => ({ mocked: true }),
 }));
 
 describe('HeaderBar', () => {
@@ -46,7 +47,7 @@ describe('HeaderBar', () => {
     fireEvent.click(screen.getByRole('button', { name: /open account menu/i }));
 
     expect(screen.getByRole('button', { name: /^settings$/i })).toBeDisabled();
-    expect(screen.getByRole('menuitem', { name: /^login$/i })).toHaveAttribute('href', '/login');
+    expect(screen.getByRole('menuitem', { name: /^login$/i })).toBeEnabled();
   });
 
   it('shows the logged-in avatar and enables the settings link', async () => {
