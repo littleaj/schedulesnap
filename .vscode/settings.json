@@ -1,4 +1,5 @@
 {
+  "cSpell.enabled": false,
   "cSpell.ignorePaths": [
     "package-lock.json",
     "node_modules",
