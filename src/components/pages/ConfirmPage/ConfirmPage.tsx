@@ -57,8 +57,9 @@ interface WeekDay {
 
 const getWeekStartDate = (date: Date) => {
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
-  const weekInfo = typeof Intl.Locale === 'function' ? new Intl.Locale(locale).getWeekInfo() : undefined;
-  const firstDay = weekInfo?.firstDay ?? 7;
+  const localeInfo = typeof Intl.Locale === 'function' ? new Intl.Locale(locale) : null;
+  const weekInfo = typeof localeInfo?.getWeekInfo === 'function' ? localeInfo.getWeekInfo() : null;
+  const firstDay = weekInfo?.firstDay ?? (locale.toLowerCase().startsWith('en-us') ? 7 : 1);
   const currentDay = date.getDay() === 0 ? 7 : date.getDay();
   const offset = (currentDay - firstDay + 7) % 7;
 
