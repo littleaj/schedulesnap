@@ -2,7 +2,11 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import CapturePage from './CapturePage';
 
-const { resizeSchedulePhotoMock, saveCapturedSchedulePhotoMock, navigateMock } = vi.hoisted(() => ({
+const {
+  resizeSchedulePhotoMock,
+  saveCapturedSchedulePhotoMock,
+  navigateMock,
+} = vi.hoisted(() => ({
   resizeSchedulePhotoMock: vi.fn(),
   saveCapturedSchedulePhotoMock: vi.fn(),
   navigateMock: vi.fn(),
