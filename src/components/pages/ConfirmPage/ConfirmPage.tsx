@@ -20,6 +20,8 @@ const monthDayFormatter = new Intl.DateTimeFormat(undefined, {
 
 const timeFormatter = new Intl.DateTimeFormat(undefined, {
   hour: 'numeric',
+  hour12: true,
+  hourCycle: 'h12',
   minute: '2-digit',
 });
 
@@ -37,12 +39,7 @@ const formatWeekday = (date: Date) => weekdayFormatter.format(date);
 
 const formatMonthDay = (date: Date) => monthDayFormatter.format(date);
 
-const formatShiftTime = ({ date, startTime, endTime }: ScheduleAnalysisShift) => {
-  const start = timeFormatter.format(new Date(`${date}T${startTime}`));
-  const end = timeFormatter.format(new Date(`${date}T${endTime}`));
-
-  return `${start} - ${end}`;
-};
+const formatTime = (time: string) => timeFormatter.format(new Date(`1970-01-01T${time}`));
 
 const formatShiftKey = ({ date, startTime, endTime, role, location }: ScheduleAnalysisShift) => {
   return `${date}-${startTime}-${endTime}-${role ?? ''}-${location ?? ''}`;
@@ -96,19 +93,25 @@ const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
       isoDate,
       weekday: formatWeekday(dayDate),
       monthDay: formatMonthDay(dayDate),
-      shifts: groupedShifts.get(isoDate)?.map((shift) => ({ ...shift, id: formatShiftKey(shift), isPlaceholder: false })) ?? [
-        {
-          id: `${isoDate}-placeholder`,
-          date: isoDate,
-          startTime: '',
-          endTime: '',
-          role: '',
-          location: '',
-          confidence: 0,
-          rawText: '',
-          isPlaceholder: true,
-        },
-      ],
+      shifts: groupedShifts.get(isoDate)?.map((shift) => ({
+        ...shift,
+        startTime: formatTime(shift.startTime),
+        endTime: formatTime(shift.endTime),
+        id: formatShiftKey(shift),
+        isPlaceholder: false
+      })) ?? [
+          {
+            id: `${isoDate}-placeholder`,
+            date: isoDate,
+            startTime: '',
+            endTime: '',
+            role: '',
+            location: '',
+            confidence: 0,
+            rawText: '',
+            isPlaceholder: true,
+          },
+        ],
     };
 
     return weekday;
@@ -225,14 +228,14 @@ const ConfirmPage = () => {
           <ActionButton variant="primary" onClick={() => {
             // TODO create events with Google Calendar API
           }}
-          disabled={!hasEditableShift}>
+            disabled={!hasEditableShift}>
             Create Events
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
             // TODO clear local storage and reset state
             navigate("/");
           }}
-          disabled={!hasEditableShift}>
+            disabled={!hasEditableShift}>
             Cancel and Delete Progress
           </ActionButton>
         </div>
