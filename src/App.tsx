@@ -6,6 +6,7 @@ import HomePage from '@/components/pages/HomePage';
 import LoginPage from '@/components/pages/LoginPage';
 import LogoutPage from '@/components/pages/LogoutPage';
 import OnboardingPage from '@/components/pages/OnboardingPage';
+import CapturePage from '@/components/pages/CapturePage';
 import SettingsPage from '@/components/pages/SettingsPage';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
@@ -21,8 +22,7 @@ const ScheduleSnap = () => {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/logout" element={<LogoutPage />} />
-            {/* placeholders for protected routes */}
-            <Route path="/capture" element={<div>Capture page</div>} />
+            <Route path="/capture" element={<CapturePage />} />
             <Route path="/confirm" element={<div>Confirm page</div>} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
