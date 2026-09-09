@@ -19,10 +19,7 @@ const monthDayFormatter = new Intl.DateTimeFormat(undefined, {
 });
 
 const timeFormatter = new Intl.DateTimeFormat(undefined, {
-  hour: 'numeric',
-  hour12: true,
-  hourCycle: 'h12',
-  minute: '2-digit',
+  timeStyle: 'short',
 });
 
 const toLocalDate = (date: string) => new Date(`${date}T00:00:00`);
