@@ -59,6 +59,7 @@
 }
 
 .capture-card__actions {
+  flex-direction: column;
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
@@ -73,9 +74,5 @@
 @media (max-width: 640px) {
   .capture-card {
     padding: 1.5rem 1.1rem;
-  }
-
-  .capture-card__actions {
-    flex-direction: column;
   }
 }
