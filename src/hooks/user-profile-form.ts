@@ -52,7 +52,9 @@ const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseU
   const auth = useAuth();
   const firestore = useFirestore();
 
-  const [values, setValues] = useState<UserProfile>(buildDefaultUserProfile());
+  const [values, setValues] = useState<UserProfile>(
+    buildDefaultUserProfile('UTC', auth.currentUser?.displayName ?? null),
+  );
   const [errors, setErrors] = useState<UserProfileValidationErrors>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,7 +72,7 @@ const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseU
 
       try {
         const existingProfile = await getUserProfile(firestore, uid);
-        const defaultProfile = buildDefaultUserProfile();
+        const defaultProfile = buildDefaultUserProfile('UTC', auth.currentUser?.displayName ?? null);
         setValues(existingProfile ?? defaultProfile);
       } catch (error) {
         console.error('Unable to load user profile: ', error);

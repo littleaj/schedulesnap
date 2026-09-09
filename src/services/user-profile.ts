@@ -6,8 +6,8 @@ import {
 } from 'firebase/firestore';
 import type { UserProfile } from '@/types/user-profile';
 
-export const buildDefaultUserProfile = (timezone = 'UTC'): UserProfile => ({
-  targetName: '',
+export const buildDefaultUserProfile = (timezone = 'UTC', displayName: string | null = null): UserProfile => ({
+  targetName: typeof displayName === 'string' ? (displayName.split(' ')[0] ?? '') : '',
   timezone,
   defaultCalendarId: 'primary',
   reminder: {

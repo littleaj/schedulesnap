@@ -73,6 +73,18 @@ describe('userProfileService', () => {
     expect(setDocMock).toHaveBeenCalledWith('doc-ref', profile, { merge: true });
   });
 
+  it('builds default profile with first token from displayName', () => {
+    const profile = buildDefaultUserProfile('UTC', 'Alex Johnson');
+
+    expect(profile.targetName).toBe('Alex');
+  });
+
+  it('builds default profile with empty targetName when displayName is missing', () => {
+    const profile = buildDefaultUserProfile('UTC', null);
+
+    expect(profile.targetName).toBe('');
+  });
+
   it('marks incomplete profile data as incomplete', () => {
     const incompleteProfile = {
       targetName: '',
