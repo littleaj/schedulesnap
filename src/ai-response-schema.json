@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "scheduleOwnerGuess": {
+      "type": "string",
+      "$comment": "name matched against target, if found"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "$comment": "warning message, e.g. 'Year not shown, assumed 2026'"
+      }
+    },
+    "shifts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "$comment": "ISO 8601 date, e.g. '2026-09-05'"
+          },
+          "startTime": {
+            "type": "string",
+            "$comment": "ISO 8601 time, e.g. '14:30'"
+          },
+          "endTime": {
+            "type": "string",
+            "$comment": "ISO 8601 time, e.g. '18:30'"
+          },
+          "role": {
+            "type": "string",
+            "$comment": "Optional, e.g. 'Barista', 'Cashier'"
+          },
+          "location": {
+            "type": "string",
+            "$comment": "Optional, e.g. 'Main Street Cafe'"
+          },
+          "confidence": {
+            "type": "number",
+            "$comment": "0.0-1.0"
+          },
+          "rawText": {
+            "type": "string",
+            "$comment": "the literal text this was parsed from"
+          }
+        },
+        "required": [
+          "date",
+          "startTime",
+          "endTime",
+          "confidence",
+          "rawText"
+        ]
+      }
+    }
+  },
+  "required": [
+    "shifts",
+    "warnings"
+  ]
+}
