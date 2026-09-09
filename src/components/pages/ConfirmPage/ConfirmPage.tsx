@@ -6,8 +6,15 @@ import {
   loadDraftConfirmation,
 } from '@/services/schedule-analysis';
 import './ConfirmPage.css';
+import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 
-const formatShiftSummary = (date: string, startTime: string, endTime: string) => `${date} ${startTime} - ${endTime}`;
+const formatShiftSummary = ({ date, startTime, endTime, role, location }: ScheduleAnalysisShift) => {
+  const datetime = `${date}, ${startTime} - ${endTime}`
+  if (role || location) {
+    return `${datetime} (${role ?? ''}${role && location ? ' @ ' : ''}${location ?? ''})`;
+  }
+  return datetime;
+};
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -33,8 +40,8 @@ const ConfirmPage = () => {
               <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
               <ul>
                 {shifts.map((shift) => (
-                  <li key={formatShiftSummary(shift.date, shift.startTime, shift.endTime)}>
-                    {formatShiftSummary(shift.date, shift.startTime, shift.endTime)}
+                  <li key={formatShiftSummary(shift)}>
+                    {formatShiftSummary(shift)}
                   </li>
                 ))}
               </ul>
@@ -46,14 +53,17 @@ const ConfirmPage = () => {
 
         <div className="confirm-card__actions">
           <ActionButton variant="primary" onClick={() => {
-            // TODO
-          }}>
+            // TODO create events with Google Calendar API
+          }}
+          disabled={shifts.length === 0}>
             Create Events
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
-            // TODO
-          }}>
-            Cancel
+            // TODO clear local storage and reset state
+            navigate("/");
+          }}
+          disabled={shifts.length === 0}>
+            Cancel and Delete Progress
           </ActionButton>
         </div>
       </section>
