@@ -8,6 +8,7 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 - Styling lives in `src/App.css` and `src/index.css`
 - Documentation: [README.md](README.md)
 - Local scripts: `npm run dev`, `npm run build`
+- Design spec: `./spec.md`
 
 ## Working conventions
 
@@ -17,6 +18,7 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 - When adding UI behavior, keep the UX simple and testable.
 - Work in small increments: one component or at most two related components per step. Keep scope narrow, avoid unrelated refactors, and stop for review before continuing.
 - Follow Atomic Design principles, keeping components under `/components/atoms`, `/components/molecules`, `/components/organisms`, `/components/templates`, `/components/pages`.
+- Reference design spec (`./spec.md`) for all feature implementations.
 
 ### CSS
 - For most things, use relative units. Use absolute units for borders.
