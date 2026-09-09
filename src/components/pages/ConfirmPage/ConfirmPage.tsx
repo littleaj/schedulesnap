@@ -45,8 +45,15 @@ const ConfirmPage = () => {
         )}
 
         <div className="confirm-card__actions">
-          <ActionButton variant="secondary" onClick={() => navigate('/capture')}>
-            Back to Capture
+          <ActionButton variant="primary" onClick={() => {
+            // TODO
+          }}>
+            Create Events
+          </ActionButton>
+          <ActionButton variant="secondary" onClick={() => {
+            // TODO
+          }}>
+            Cancel
           </ActionButton>
         </div>
       </section>
