@@ -40,8 +40,11 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
   }, [isEditing]);
 
   const commitValue = () => {
-    onCommit(draftValue);
-    setIsEditing(false);
+    try {
+      onCommit(draftValue);
+    } finally {
+      setIsEditing(false);
+    }
   };
 
   const cancelEdit = () => {
