@@ -15,7 +15,7 @@ vi.mock('react-router', async () => {
   };
 });
 
-vi.mock('@/hooks/useUserProfileForm', () => ({
+vi.mock('@/hooks/user-profile-form', () => ({
   useUserProfileForm: () => ({
     values: {
       targetName: 'Alex',

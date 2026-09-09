@@ -6,7 +6,7 @@ const { submitMock } = vi.hoisted(() => ({
   submitMock: vi.fn(),
 }));
 
-vi.mock('@/hooks/useUserProfileForm', () => ({
+vi.mock('@/hooks/user-profile-form', () => ({
   useUserProfileForm: () => ({
     values: {
       targetName: 'Alex',

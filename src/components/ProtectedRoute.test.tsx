@@ -20,7 +20,7 @@ vi.mock('../hooks/firebase', () => ({
   useFirestore: () => firestoreMock,
 }));
 
-vi.mock('@/services/userProfileService', () => ({
+vi.mock('@/services/user-profile', () => ({
   getUserProfile: getUserProfileMock,
   isUserProfileComplete: (profile: unknown) => Boolean(profile),
 }));
