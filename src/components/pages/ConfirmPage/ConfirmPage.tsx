@@ -76,7 +76,7 @@ const getWeekStartDate = (date: Date) => {
 const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
   const firstShiftDate = shifts[0] ? toLocalDate(shifts[0].date) : null;
   const weekStart = firstShiftDate ? getWeekStartDate(firstShiftDate) : null;
-  const groupedShifts = new Map<string, ScheduleAnalysisShift[]>();
+  const groupedShifts = new Map<string, EditableShift[]>();
 
   for (const shift of shifts) {
     const dayShifts = groupedShifts.get(shift.date) ?? [];
