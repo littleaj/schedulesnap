@@ -2,7 +2,6 @@ export interface CapturedSchedulePhoto {
   base64: string;
   mimeType: string;
   fileName: string;
-  savedAt: string;
 }
 
 export interface ScheduleAnalysisShift {
@@ -24,7 +23,6 @@ export interface ScheduleAnalysisResponse {
 export interface DraftConfirmation {
   shifts: ScheduleAnalysisShift[];
   selectedCalendarId: string;
-  savedAt: string;
 }
 
 export interface AnalysisFlowResumeTarget {

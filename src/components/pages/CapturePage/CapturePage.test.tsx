@@ -35,7 +35,6 @@ describe('CapturePage', () => {
       base64: 'resized-base64',
       mimeType: 'image/jpeg',
       fileName: 'schedule.png',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
 
     render(<CapturePage />);
@@ -54,7 +53,6 @@ describe('CapturePage', () => {
         base64: 'resized-base64',
         mimeType: 'image/jpeg',
         fileName: 'schedule.png',
-        savedAt: '2026-09-09T00:00:00.000Z',
       });
     });
 
@@ -67,7 +65,6 @@ describe('CapturePage', () => {
       base64: 'resized-base64',
       mimeType: 'image/jpeg',
       fileName: 'schedule.png',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
 
     render(<CapturePage />);

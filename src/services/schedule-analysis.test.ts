@@ -60,7 +60,6 @@ describe('schedule-analysis services', () => {
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
 
     saveAnalysisResponse({
@@ -72,7 +71,6 @@ describe('schedule-analysis services', () => {
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
     expect(loadAnalysisResponse()).toEqual({ warnings: [], shifts: [] });
   });
@@ -82,10 +80,9 @@ describe('schedule-analysis services', () => {
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
     saveAnalysisResponse({ warnings: [], shifts: [] });
-    saveDraftConfirmation({ shifts: [], selectedCalendarId: 'primary', savedAt: '2026-09-09T00:00:00.000Z' });
+    saveDraftConfirmation({ shifts: [], selectedCalendarId: 'primary' });
 
     clearAnalysisFlowCache();
 

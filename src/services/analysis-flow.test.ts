@@ -19,7 +19,6 @@ describe('analysis-flow helper', () => {
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
 
     expect(getAnalysisFlowResumeTarget()).toEqual({
@@ -37,20 +36,17 @@ describe('analysis-flow helper', () => {
     saveDraftConfirmation({
       shifts: [],
       selectedCalendarId: 'primary',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
 
     expect(loadCapturedSchedulePhoto()).toEqual({
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
     expect(loadAnalysisResponse()).toEqual({ warnings: [], shifts: [] });
     expect(loadDraftConfirmation()).toEqual({
       shifts: [],
       selectedCalendarId: 'primary',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
     expect(getAnalysisFlowResumeTarget()).toEqual({
       route: '/confirm',

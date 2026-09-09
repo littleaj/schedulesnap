@@ -165,7 +165,6 @@ interface CalendarWriteResult {
 interface DraftCache {
   shifts: ConfirmedShift[];
   selectedCalendarId: string;
-  savedAt: string;        // ISO timestamp, for staleness checks on resume
 }
 ```
 

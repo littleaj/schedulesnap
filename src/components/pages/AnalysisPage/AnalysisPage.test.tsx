@@ -49,7 +49,6 @@ describe('AnalysisPage', () => {
       base64: 'resized-base64',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
     getUserProfileMock.mockResolvedValue({
       targetName: 'Alex',
@@ -76,7 +75,6 @@ describe('AnalysisPage', () => {
           base64: 'resized-base64',
           mimeType: 'image/jpeg',
           fileName: 'schedule.jpg',
-          savedAt: '2026-09-09T00:00:00.000Z',
         },
         'Alex',
       );
@@ -108,7 +106,6 @@ describe('AnalysisPage', () => {
       base64: 'resized-base64',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
-      savedAt: '2026-09-09T00:00:00.000Z',
     });
     getUserProfileMock.mockResolvedValue({
       targetName: 'Alex',

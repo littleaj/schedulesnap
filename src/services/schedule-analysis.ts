@@ -51,8 +51,7 @@ const isDraftConfirmation = (value: unknown): value is DraftConfirmation => {
 
   return Array.isArray(value.shifts)
     && value.shifts.every(isShift)
-    && isString(value.selectedCalendarId)
-    && isString(value.savedAt);
+    && isString(value.selectedCalendarId);
 };
 
 const canUseLocalStorage = () => window?.localStorage !== undefined;
@@ -118,7 +117,7 @@ export const loadCapturedSchedulePhoto = (): CapturedSchedulePhoto | null => {
 
   try {
     const parsedValue: unknown = JSON.parse(rawValue);
-    if (!isRecord(parsedValue) || !isString(parsedValue.base64) || !isString(parsedValue.mimeType) || !isString(parsedValue.fileName) || !isString(parsedValue.savedAt)) {
+    if (!isRecord(parsedValue) || !isString(parsedValue.base64) || !isString(parsedValue.mimeType) || !isString(parsedValue.fileName)) {
       return null;
     }
 
@@ -126,7 +125,6 @@ export const loadCapturedSchedulePhoto = (): CapturedSchedulePhoto | null => {
       base64: parsedValue.base64,
       mimeType: parsedValue.mimeType,
       fileName: parsedValue.fileName,
-      savedAt: parsedValue.savedAt,
     };
   } catch {
     return null;
@@ -255,7 +253,6 @@ export const resizeSchedulePhoto = async (
     base64,
     mimeType: 'image/jpeg',
     fileName: file.name,
-    savedAt: new Date().toISOString(),
   };
 };
 
