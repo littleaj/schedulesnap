@@ -9,7 +9,7 @@ const AnalysisPage = () => {
   return (
     <main className="analysis-page">
       <section className="analysis-card" aria-labelledby="analysis-title" aria-live="polite">
-        <p className="analysis-card__eyebrow">AI review</p>
+        <p className="analysis-card__eyebrow">AI Analysis</p>
         <h1 id="analysis-title">Analyzing your schedule</h1>
 
         <div className="analysis-card__status" role="status" aria-live="polite">
@@ -26,7 +26,7 @@ const AnalysisPage = () => {
         <div className="analysis-card__actions">
 
           <ActionButton variant="primary" onClick={() => navigate('/confirm')}>
-            Continue to review
+            Continue to Review
           </ActionButton>
         </div>
       </section>
