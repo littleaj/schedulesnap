@@ -3,6 +3,7 @@ import { getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
 // cSpell:disable
 const firebaseConfig = {
@@ -24,6 +25,10 @@ interface FirebaseServices {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+initializeAppCheck(app, {
+  provider: new ReCaptchaEnterpriseProvider('6Lf7L6stAAAAABN-_TqQiV3vOmxOwO7P-mt28T5j'),
+  isTokenAutoRefreshEnabled: true
+});
 const firestore = getFirestore(app);
 const firebaseServices = {
   analytics: getAnalytics(app),
