@@ -1,0 +1,83 @@
+.capture-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem 4rem;
+  background: linear-gradient(160deg, #f8fbff 0%, #edf6ff 100%);
+}
+
+.capture-card {
+  width: min(100%, 560px);
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+.capture-card__eyebrow {
+  margin: 0;
+  color: #2563eb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.capture-card h1 {
+  margin: 0.8rem 0 0;
+  font-size: clamp(2rem, 5vw, 2.9rem);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: #0f172a;
+}
+
+.capture-card__intro {
+  margin: 1rem 0 0;
+  color: #475569;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.capture-card__uploader {
+  margin-top: 1.6rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.capture-card__label {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.capture-card__input {
+  display: block;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.capture-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.capture-card__file {
+  margin: 1rem 0 0;
+  color: #0f172a;
+  font-size: 0.96rem;
+}
+
+@media (max-width: 640px) {
+  .capture-card {
+    padding: 1.5rem 1.1rem;
+  }
+
+  .capture-card__actions {
+    flex-direction: column;
+  }
+}
