@@ -1,16 +1,37 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
 import './CapturePage.css';
 import { useNavigate } from 'react-router';
+import { resizeSchedulePhoto, saveCapturedSchedulePhoto } from '@/services/schedule-analysis';
 
 const CapturePage = () => {
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
+    setErrorMessage(null);
+    setIsReady(false);
     setSelectedFile(file);
+
+    if (!file) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      const resizedPhoto = await resizeSchedulePhoto(file);
+      saveCapturedSchedulePhoto(resizedPhoto);
+      setIsReady(true);
+    } catch {
+      setErrorMessage('We could not prepare that photo. Try a different image or recapture it.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -28,7 +49,6 @@ const CapturePage = () => {
           </label>
           <input
             id="schedule-photo"
-            ref={fileInputRef}
             type="file"
             accept="image/*"
             capture="environment"
@@ -40,9 +60,9 @@ const CapturePage = () => {
             <ActionButton
               variant="primary"
               onClick={() => navigate('/analyze')}
-              disabled={!selectedFile}
+              disabled={!selectedFile || isProcessing || !isReady}
             >
-              Analyze
+              {isProcessing ? 'Preparing photo...' : 'Continue to review'}
             </ActionButton>
           </div>
         </div>
@@ -50,6 +70,12 @@ const CapturePage = () => {
         {selectedFile ? (
           <p className="capture-card__file" aria-live="polite">
             Selected file: <strong>{selectedFile.name}</strong>
+          </p>
+        ) : null}
+
+        {errorMessage ? (
+          <p className="capture-card__file" role="alert">
+            {errorMessage}
           </p>
         ) : null}
       </section>
