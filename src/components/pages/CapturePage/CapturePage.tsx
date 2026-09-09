@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
 import './CapturePage.css';
+import { useNavigate } from 'react-router';
 
 const CapturePage = () => {
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -39,14 +41,12 @@ const CapturePage = () => {
           />
 
           <div className="capture-card__actions">
-            <ActionButton variant="primary" onClick={handleUploadClick}>
+            <ActionButton variant="secondary" onClick={handleUploadClick}>
               Upload Photo
             </ActionButton>
             <ActionButton
-              variant="secondary"
-              onClick={() => {
-                // This page is intentionally view-only until a real extraction flow is connected.
-              }}
+              variant="primary"
+              onClick={() => navigate('/analyze')}
               disabled={!selectedFile}
             >
               Continue to review
