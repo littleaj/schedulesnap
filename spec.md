@@ -52,6 +52,7 @@ tests/
 - `/onboarding` — first-run profile setup (name; timezone auto-detected via `Intl.DateTimeFormat().resolvedOptions().timeZone`, editable; reminder preference; default calendar; default shift name; optional name prefix).
 - `/capture` — native file input (`capture="environment"`), no custom camera stream.
 - `/preview` — shows the captured photo with retake/confirm-send options before it goes to Gemini.
+- `/analyze` — dedicated AI-processing route where the image is resized, sent to Firebase AI Logic / Gemini, the structured response is parsed, and the extracted shifts are cached for review. This is the only route that performs direct AI Logic interaction.
 - `/confirm` — mini week-view (hand-rolled grid) of extracted shifts; validation, overlap/conflict resolution, and manual-entry fallback all happen here. Includes ad banner and the accuracy disclaimer.
 - `/settings` — edit profile (name, timezone, reminder, default calendar) anytime, not just onboarding. Includes ad banner.
 - `/privacy` — privacy policy, required by Google's EU User Consent Policy and linked from the AdSense CMP config.
@@ -68,10 +69,10 @@ tests/
 2. First-time users complete onboarding (name, timezone, reminder preference, default calendar). Editable later anytime via Settings.
 3. Take a photo via native file input.
 4. Preview screen: retake or proceed.
-5. On proceed: client resizes the image via Canvas API (max dimension ~1024px, JPEG quality 0.8, no external library) and sends it to Gemini via Firebase AI Logic, prompt parameterized with the user's stored name.
+5. On proceed, navigate to `/analyze`. This route is dedicated to the AI phase: the client resizes the image via Canvas API (max dimension ~1024px, JPEG quality 0.8, no external library), sends it to Gemini via Firebase AI Logic, and uses the user's stored name in the prompt.
 6. Response parsed into `ExtractedShift[]`, immediately cached to `localStorage`.
    - If extraction fails entirely (bad photo, API error, zero shifts found): show a clear error message (see Error messages below) with a next step — retake or manual entry (one shift at a time).
-7. Client queries Google Calendar for existing events in the shift date range and runs overlap detection (including **partial** overlaps — see Conflict detection below) against every extracted shift.
+7. Once extraction succeeds, navigate to `/confirm`. The confirm screen then queries Google Calendar for existing events in the shift date range and runs overlap detection (including **partial** overlaps — see Conflict detection below) against every extracted shift.
 8. Confirm screen (mini week-view) — validation, conflict resolution, and confirmation all happen together, in one pass:
    - A persistent disclaimer banner: extracted data can contain mistakes, review before adding to your calendar.
    - Every edit (inline fix, skip/write choice, calendar change) re-saves the draft to `localStorage`.
