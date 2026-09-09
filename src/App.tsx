@@ -19,6 +19,7 @@ const ScheduleSnap = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/about" element={<div>About page</div>} />
           <Route path="/help" element={<div>Help page</div>} />
 
           <Route element={<ProtectedRoute />}>
