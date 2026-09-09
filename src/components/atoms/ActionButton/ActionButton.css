@@ -28,6 +28,11 @@ button.action-button:not(:disabled):active {
   animation: action-button-hover-gradient 0.9s ease-in-out infinite alternate;
 }
 
+button.action-button:disabled {
+  filter: saturate(0.2);
+  cursor: not-allowed;
+}
+
 button.action-button.primary {
   --action-button-bg-start: var(--md-primary);
   --action-button-bg-end: var(--md-primary-fixed);
