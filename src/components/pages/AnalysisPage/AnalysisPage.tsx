@@ -1,10 +1,79 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
+import { useAuth, useFirestore } from '../../../hooks/firebase';
+import { getUserProfile } from '../../../services/user-profile';
+import {
+  analyzeSchedulePhoto,
+  loadCapturedSchedulePhoto,
+} from '../../../services/schedule-analysis';
 import './AnalysisPage.css';
 
 const AnalysisPage = () => {
   const navigate = useNavigate();
+  const auth = useAuth();
+  const firestore = useFirestore();
+  const [statusMessage, setStatusMessage] = useState('Reading your schedule photo and extracting shifts...');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const runAnalysis = async () => {
+      const capturedPhoto = loadCapturedSchedulePhoto();
+      if (!capturedPhoto) {
+        if (!isActive) {
+          return;
+        }
+
+        setErrorMessage('No captured photo was found. Go back and upload a schedule image first.');
+        setStatusMessage('Waiting for a captured schedule photo.');
+        return;
+      }
+
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        if (!isActive) {
+          return;
+        }
+
+        setErrorMessage('Your sign-in expired before analysis could start. Please sign in again.');
+        setStatusMessage('Analysis paused.');
+        return;
+      }
+
+      try {
+        const profile = await getUserProfile(firestore, uid);
+        const targetName = profile?.targetName ?? auth.currentUser?.displayName ?? '';
+
+        if (!isActive) {
+          return;
+        }
+
+        setStatusMessage('Sending the resized photo to Gemini...');
+        await analyzeSchedulePhoto(capturedPhoto, targetName);
+
+        if (!isActive) {
+          return;
+        }
+
+        navigate('/confirm', { replace: true });
+      } catch {
+        if (!isActive) {
+          return;
+        }
+
+        setErrorMessage('Something went wrong reading your photo. Check your connection and try again.');
+        setStatusMessage('Analysis failed.');
+      }
+    };
+
+    void runAnalysis();
+
+    return () => {
+      isActive = false;
+    };
+  }, [auth, firestore, navigate]);
 
   return (
     <main className="analysis-page">
@@ -13,20 +82,26 @@ const AnalysisPage = () => {
         <h1 id="analysis-title">Analyzing your schedule</h1>
 
         <div className="analysis-card__status" role="status" aria-live="polite">
-          <div className="analysis-card__spinner" aria-hidden="true" />
-          <p>Reading your schedule photo and extracting shifts...</p>
+          <div
+            className={errorMessage ? 'analysis-card__icon analysis-card__icon--error' : 'analysis-card__spinner'}
+            aria-hidden="true"
+          />
+          <p>{statusMessage}</p>
         </div>
 
         <div className="analysis-card__details">
-          <p>
-            ScheduleSnap is checking the image and preparing the extracted shift list for your review.
-          </p>
+          {errorMessage ? (
+            <p role="alert">{errorMessage}</p>
+          ) : (
+            <p>
+              ScheduleSnap is checking the image and preparing the extracted shift list for your review.
+            </p>
+          )}
         </div>
 
         <div className="analysis-card__actions">
-
-          <ActionButton variant="primary" onClick={() => navigate('/confirm')}>
-            Continue to Review
+          <ActionButton variant="secondary" onClick={() => navigate('/capture')}>
+            Back to Capture
           </ActionButton>
         </div>
       </section>
