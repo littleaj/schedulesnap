@@ -7,12 +7,12 @@
   border: 0;
   border-radius: 999px;
   text-decoration: none;
-  background: linear-gradient(135deg, #0f172a, #1d4ed8);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--md-on-surface), var(--md-secondary));
+  color: var(--md-on-secondary);
   font-weight: 800;
   letter-spacing: 0.08em;
   font-size: 0.86rem;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 12px 28px rgba(var(--md-on-surface-rgb), 0.2);
   transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
 }
 

@@ -6,22 +6,22 @@ button.action-button {
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 16px 30px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 16px 30px rgba(var(--md-primary-rgb), 0.5);
 }
 
 button.action-button:hover,
 button.action-button:active {
   transform: translateY(-5px);
-  box-shadow: 0 16px 50px rgba(37, 99, 235, 0.5);
+  box-shadow: 0 16px 50px rgba(var(--md-primary-rgb), 0.5);
 }
 
 button.action-button.primary {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
-  color: white;
+  background: linear-gradient(135deg, var(--md-primary), var(--md-primary-fixed));
+  color: var(--md-on-primary);
 }
 
 button.action-button.secondary {
-  background: #ffffff;
-  color: #1f2937;
-  border: 1px solid rgba(17, 24, 39, 0.25);
+  background: var(--md-surface);
+  color: var(--md-on-surface);
+  border: 1px solid rgba(var(--md-on-surface-rgb), 0.25);
 }

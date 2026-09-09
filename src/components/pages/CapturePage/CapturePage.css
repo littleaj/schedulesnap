@@ -3,21 +3,21 @@
   display: grid;
   place-items: center;
   padding: 2rem 1.25rem 4rem;
-  background: linear-gradient(160deg, #f8fbff 0%, #edf6ff 100%);
+  background: var(--md-gradient-page);
 }
 
 .capture-card {
   width: min(100%, 560px);
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(var(--md-surface-rgb), 0.96);
+  border: 1px solid rgba(var(--md-outline-variant-rgb), 0.2);
   border-radius: 24px;
   padding: 2rem 1.5rem;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 24px 60px rgba(var(--md-on-surface-rgb), 0.08);
 }
 
 .capture-card__eyebrow {
   margin: 0;
-  color: #2563eb;
+  color: var(--md-primary);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -29,12 +29,12 @@
   font-size: clamp(2rem, 5vw, 2.9rem);
   line-height: 1.1;
   letter-spacing: -0.05em;
-  color: #0f172a;
+  color: var(--md-on-surface);
 }
 
 .capture-card__intro {
   margin: 1rem 0 0;
-  color: #475569;
+  color: var(--md-on-surface-variant);
   font-size: 1rem;
   line-height: 1.6;
 }
@@ -47,15 +47,15 @@
 
 .capture-card__label {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--md-on-surface);
 }
 
 .capture-card__input {
   padding: 0.85rem 1rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--md-outline);
   border-radius: 12px;
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--md-surface-container);
+  color: var(--md-on-surface);
 }
 
 .capture-card__actions {
@@ -67,7 +67,7 @@
 
 .capture-card__file {
   margin: 1rem 0 0;
-  color: #0f172a;
+  color: var(--md-on-surface);
   font-size: 0.96rem;
 }
 

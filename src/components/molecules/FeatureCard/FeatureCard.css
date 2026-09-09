@@ -18,18 +18,18 @@
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: #e0ecff;
+  background: var(--md-primary-container);
   font-size: 1.6rem;
 }
 
 .feature-card h2 {
   margin: 0;
   font-size: 1.35rem;
-  color: #0f172a;
+  color: var(--md-on-surface);
 }
 
 .feature-card__body {
-  color: #526072;
+  color: var(--md-on-surface-variant);
 }
 
 .feature-card__body > * {

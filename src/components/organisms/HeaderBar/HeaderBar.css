@@ -3,9 +3,9 @@
   top: 0;
   z-index: 10;
   padding: 1rem 1.25rem;
-  background: rgba(247, 250, 255, 0.92);
+  background: rgba(var(--md-surface-rgb), 0.92);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  border-bottom: 1px solid rgba(var(--md-outline-variant-rgb), 0.22);
 }
 
 .header-bar__nav {

@@ -9,7 +9,7 @@
 .reminder-settings legend {
   font-size: 0.86rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--md-on-surface);
   letter-spacing: 0.02em;
 }
 
@@ -17,5 +17,5 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #1e293b;
+  color: var(--md-on-surface);
 }

@@ -3,5 +3,5 @@
   display: grid;
   place-items: center;
   padding: 2rem 1rem 4rem;
-  background: linear-gradient(160deg, #f8fbff 0%, #e9f4ff 100%);
+  background: var(--md-gradient-page);
 }
