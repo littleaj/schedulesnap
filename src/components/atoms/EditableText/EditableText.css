@@ -1,0 +1,79 @@
+.editable-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.editable-text__display {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  max-width: 100%;
+  padding: 0.15rem 0.3rem;
+  border-radius: 10px;
+  color: var(--md-on-surface);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: text;
+  text-align: center;
+  white-space: normal;
+}
+
+.editable-text__display--placeholder {
+  color: var(--md-on-surface-variant);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.editable-text__display:focus-visible,
+.editable-text__input:focus-visible,
+.editable-text__icon-button:focus-visible {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+.editable-text__editor {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.editable-text__input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--md-outline);
+  border-radius: 12px;
+  background: var(--md-surface-container-low);
+  color: var(--md-on-surface);
+  font: inherit;
+  text-align: center;
+}
+
+.editable-text__actions {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.editable-text__icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 1px solid rgba(var(--md-on-surface-rgb), 0.2);
+  border-radius: 999px;
+  background: rgba(var(--md-surface-rgb), 0.95);
+  color: var(--md-on-surface);
+  cursor: pointer;
+}
+
+.editable-text__icon-button svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  fill: currentColor;
+}
