@@ -24,6 +24,8 @@ describe('ConfirmPage', () => {
           date: '2026-09-05',
           startTime: '09:00',
           endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
           confidence: 0.9,
           rawText: 'Sep 5 9:00 AM - 5:00 PM',
         },
@@ -38,7 +40,12 @@ describe('ConfirmPage', () => {
 
     expect(screen.getByRole('heading', { name: /review your extracted shifts/i })).toBeInTheDocument();
     expect(screen.getByText(/1 extracted shift/i)).toBeInTheDocument();
-    expect(screen.getByText(/2026-09-05 09:00 - 17:00/i)).toBeInTheDocument();
+    expect(screen.getByRole('list', { name: /weekly schedule/i })).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem')).toHaveLength(7);
+    expect(screen.getByText(new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date('2026-09-05T00:00:00')))).toBeInTheDocument();
+    expect(screen.getByText(new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date('2026-09-05T09:00:00')) + ' - ' + new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date('2026-09-05T17:00:00')))).toBeInTheDocument();
+    expect(screen.getByText('Barista')).toBeInTheDocument();
+    expect(screen.getByText('Downtown')).toBeInTheDocument();
   });
 
   it('falls back to capture when no cached review exists', () => {

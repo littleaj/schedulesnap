@@ -7,7 +7,6 @@
 }
 
 .confirm-card {
-  width: min(100%, 640px);
   background: rgba(var(--md-surface-rgb), 0.96);
   border: 1px solid rgba(var(--md-outline-variant-rgb), 0.2);
   border-radius: 24px;
@@ -53,13 +52,80 @@
   font-weight: 600;
 }
 
-.confirm-card__summary ul {
-  margin: 0.9rem 0 0;
-  padding-left: 1.25rem;
+.confirm-card__grid {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.8rem;
 }
 
-.confirm-card__summary li + li {
-  margin-top: 0.5rem;
+.confirm-card__day {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.45rem;
+}
+
+.confirm-card__day-label {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  margin: 0;
+  color: var(--md-on-surface-variant);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.confirm-card__cell {
+  display: grid;
+  min-height: 10rem;
+  align-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 1rem 0.8rem;
+  border-radius: 18px;
+  background: rgba(var(--md-surface-rgb), 0.72);
+  border: 1px solid rgba(var(--md-outline-variant-rgb), 0.28);
+  text-align: center;
+}
+
+.confirm-card__cell-date {
+  margin: 0;
+  color: var(--md-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.confirm-card__cell-time {
+  margin: 0;
+  color: var(--md-on-surface);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.confirm-card__events {
+  display: grid;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.confirm-card__event {
+  display: grid;
+  gap: 0.25rem;
+  justify-items: center;
+}
+
+.confirm-card__cell-role,
+.confirm-card__cell-location {
+  margin: 0;
+  color: var(--md-on-surface-variant);
+  font-size: 0.92rem;
+  line-height: 1.35;
 }
 
 .confirm-card__actions {
@@ -72,6 +138,10 @@
 @media (max-width: 640px) {
   .confirm-card {
     padding: 1.5rem 1.1rem;
+  }
+
+  .confirm-card__grid {
+    grid-template-columns: 1fr;
   }
 
   .confirm-card__actions {

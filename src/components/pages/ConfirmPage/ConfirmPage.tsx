@@ -8,12 +8,84 @@ import {
 import './ConfirmPage.css';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 
-const formatShiftSummary = ({ date, startTime, endTime, role, location }: ScheduleAnalysisShift) => {
-  const datetime = `${date}, ${startTime} - ${endTime}`
-  if (role || location) {
-    return `${datetime} (${role ?? ''}${role && location ? ' @ ' : ''}${location ?? ''})`;
+const weekdayFormatter = new Intl.DateTimeFormat(undefined, {
+  weekday: 'short',
+});
+
+const monthDayFormatter = new Intl.DateTimeFormat(undefined, {
+  month: 'short',
+  day: 'numeric',
+});
+
+const timeFormatter = new Intl.DateTimeFormat(undefined, {
+  hour: 'numeric',
+  minute: '2-digit',
+});
+
+const toLocalDate = (date: string) => new Date(`${date}T00:00:00`);
+
+const toLocalIsoDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
+
+const formatWeekday = (date: Date) => weekdayFormatter.format(date);
+
+const formatMonthDay = (date: Date) => monthDayFormatter.format(date);
+
+const formatShiftTime = ({ date, startTime, endTime }: ScheduleAnalysisShift) => {
+  const start = timeFormatter.format(new Date(`${date}T${startTime}`));
+  const end = timeFormatter.format(new Date(`${date}T${endTime}`));
+
+  return `${start} - ${end}`;
+};
+
+const formatShiftKey = ({ date, startTime, endTime, role, location }: ScheduleAnalysisShift) => {
+  return `${date}-${startTime}-${endTime}-${role ?? ''}-${location ?? ''}`;
+};
+
+const getWeekStartDate = (date: Date) => {
+  const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+  const weekInfo = typeof Intl.Locale === 'function' ? new Intl.Locale(locale).weekInfo : undefined;
+  const firstDay = weekInfo?.firstDay ?? 7;
+  const currentDay = date.getDay() === 0 ? 7 : date.getDay();
+  const offset = (currentDay - firstDay + 7) % 7;
+
+  const weekStart = new Date(date);
+  weekStart.setDate(date.getDate() - offset);
+  weekStart.setHours(0, 0, 0, 0);
+  return weekStart;
+};
+
+const buildWeekDays = (shifts: ScheduleAnalysisShift[]) => {
+  const firstShiftDate = shifts[0] ? toLocalDate(shifts[0].date) : null;
+  const weekStart = firstShiftDate ? getWeekStartDate(firstShiftDate) : null;
+  const groupedShifts = new Map<string, ScheduleAnalysisShift[]>();
+
+  for (const shift of shifts) {
+    const dayShifts = groupedShifts.get(shift.date) ?? [];
+    dayShifts.push(shift);
+    groupedShifts.set(shift.date, dayShifts);
   }
-  return datetime;
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const dayDate = weekStart ? new Date(weekStart) : new Date();
+    if (weekStart) {
+      dayDate.setDate(weekStart.getDate() + index);
+    }
+
+    const isoDate = toLocalIsoDate(dayDate);
+
+    return {
+      isoDate,
+      weekday: formatWeekday(dayDate),
+      monthDay: formatMonthDay(dayDate),
+      shifts: groupedShifts.get(isoDate) ?? [],
+    };
+  });
 };
 
 const ConfirmPage = () => {
@@ -21,6 +93,7 @@ const ConfirmPage = () => {
   const draftConfirmation = loadDraftConfirmation();
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
   const shifts = draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [];
+  const weekDays = shifts.length > 0 ? buildWeekDays(shifts) : [];
 
   return (
     <main className="confirm-page">
@@ -36,15 +109,30 @@ const ConfirmPage = () => {
                 : 'Your extracted shifts were restored from local storage.'}
             </p>
 
-            <div className="confirm-card__summary" aria-label="Extracted shifts summary">
+            <div className="confirm-card__summary" aria-label="Extracted shifts week view">
               <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
-              <ul>
-                {shifts.map((shift) => (
-                  <li key={formatShiftSummary(shift)}>
-                    {formatShiftSummary(shift)}
-                  </li>
+              <div className="confirm-card__grid" role="list" aria-label="Weekly schedule">
+                {weekDays.map((day) => (
+                  <div key={day.isoDate} className="confirm-card__day" role="listitem">
+                    <p className="confirm-card__day-label">{day.weekday}</p>
+                    <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
+                      <p className="confirm-card__cell-date">{day.monthDay}</p>
+
+                      {day.shifts.length > 0 ? (
+                        <div className="confirm-card__events">
+                          {day.shifts.map((shift) => (
+                            <div key={formatShiftKey(shift)} className="confirm-card__event">
+                              <p className="confirm-card__cell-time">{formatShiftTime(shift)}</p>
+                              {shift.role ? <p className="confirm-card__cell-role">{shift.role}</p> : null}
+                              {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
+                    </article>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </>
         ) : (
