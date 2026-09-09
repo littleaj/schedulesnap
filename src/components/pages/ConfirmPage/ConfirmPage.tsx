@@ -49,7 +49,7 @@ const formatShiftKey = ({ date, startTime, endTime, role, location }: ScheduleAn
 
 const getWeekStartDate = (date: Date) => {
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
-  const weekInfo = typeof Intl.Locale === 'function' ? new Intl.Locale(locale).weekInfo : undefined;
+  const weekInfo = typeof Intl.Locale === 'function' ? new Intl.Locale(locale).getWeekInfo() : undefined;
   const firstDay = weekInfo?.firstDay ?? 7;
   const currentDay = date.getDay() === 0 ? 7 : date.getDay();
   const offset = (currentDay - firstDay + 7) % 7;
