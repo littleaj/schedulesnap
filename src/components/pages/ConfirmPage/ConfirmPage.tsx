@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
 import {
   loadAnalysisResponse,
   loadDraftConfirmation,
+  saveDraftConfirmation
 } from '@/services/schedule-analysis';
 import './ConfirmPage.css';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
@@ -115,6 +116,21 @@ const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
   });
 };
 
+const convertTo24Hour = (time12h: string): string => {
+  const [time, modifier] = time12h.trim().split(/\s+/);
+  let [hours, minutes] = time.split(':').map(n => Number.parseInt(n, 10));
+
+  if (modifier) {
+    if (modifier.toLowerCase() === 'pm' && hours < 12) {
+      hours += 12;
+    } else if (modifier.toLowerCase() === 'am' && hours === 12) {
+      hours = 0;
+    }
+  }
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const draftConfirmation = loadDraftConfirmation();
@@ -149,7 +165,22 @@ const ConfirmPage = () => {
         }),
       };
     }));
+    saveDraftConfirmation({
+      shifts: weekDays.flatMap((day) => day.shifts.map(val => ({ ...val, startTime: convertTo24Hour(val.startTime), endTime: convertTo24Hour(val.endTime) }))),
+      selectedCalendarId: '' // TODO populate with default calendar ID
+    });
   };
+
+  useEffect(() => {
+    if (draftConfirmation) {
+      return;
+    }
+
+    saveDraftConfirmation({
+      shifts: shifts.map(val => ({ ...val, startTime: convertTo24Hour(val.startTime), endTime: convertTo24Hour(val.endTime) })),
+      selectedCalendarId: '' // TODO populate with default calendar ID
+     });
+  }, [shifts]);
 
   return (
     <main className="confirm-page">
@@ -161,8 +192,8 @@ const ConfirmPage = () => {
           <>
             <p className="confirm-card__intro">
               {draftConfirmation
-                ? 'Your saved review was restored from local storage.'
-                : 'Your extracted shifts were restored from local storage.'}
+                ? 'Continue reviewing your extracted shifts.'
+                : 'Review shifts extracted from the image.'}
             </p>
 
             <div className="confirm-card__summary" aria-label="Extracted shifts week view">
