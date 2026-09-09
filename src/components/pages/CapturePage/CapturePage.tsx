@@ -13,10 +13,6 @@ const CapturePage = () => {
     setSelectedFile(file);
   };
 
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
-
   return (
     <main className="capture-page">
       <section className="capture-card" aria-labelledby="capture-title">
@@ -41,15 +37,12 @@ const CapturePage = () => {
           />
 
           <div className="capture-card__actions">
-            <ActionButton variant="secondary" onClick={handleUploadClick}>
-              Upload Photo
-            </ActionButton>
             <ActionButton
               variant="primary"
               onClick={() => navigate('/analyze')}
               disabled={!selectedFile}
             >
-              Continue to review
+              Analyze
             </ActionButton>
           </div>
         </div>
