@@ -1,0 +1,60 @@
+.analysis-resume-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(var(--md-on-surface-rgb), 0.48);
+  backdrop-filter: blur(8px);
+}
+
+.analysis-resume-dialog {
+  width: min(100%, 34rem);
+  background: rgba(var(--md-surface-rgb), 0.98);
+  border: 1px solid rgba(var(--md-outline-variant-rgb), 0.2);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 28px 72px rgba(var(--md-on-surface-rgb), 0.18);
+}
+
+.analysis-resume-dialog__eyebrow {
+  margin: 0;
+  color: var(--md-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.analysis-resume-dialog h1 {
+  margin: 0.8rem 0 0;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: var(--md-on-surface);
+}
+
+.analysis-resume-dialog__intro {
+  margin: 1rem 0 0;
+  color: var(--md-on-surface-variant);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.analysis-resume-dialog__actions {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .analysis-resume-dialog {
+    padding: 1.5rem 1.1rem;
+  }
+
+  .analysis-resume-dialog__actions {
+    flex-direction: column;
+  }
+}
