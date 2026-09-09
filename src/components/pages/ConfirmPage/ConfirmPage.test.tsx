@@ -11,6 +11,7 @@ const { loadAnalysisResponseMock, loadDraftConfirmationMock } = vi.hoisted(() =>
 vi.mock('@/services/schedule-analysis', () => ({
   loadAnalysisResponse: loadAnalysisResponseMock,
   loadDraftConfirmation: loadDraftConfirmationMock,
+  saveDraftConfirmation: vi.fn(),
 }));
 
 describe('ConfirmPage', () => {
