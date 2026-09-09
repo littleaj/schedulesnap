@@ -43,9 +43,14 @@ describe('ConfirmPage', () => {
     expect(screen.getByRole('list', { name: /weekly schedule/i })).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
     expect(screen.getByText(new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date('2026-09-05T00:00:00')))).toBeInTheDocument();
-    expect(screen.getByText(new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date('2026-09-05T09:00:00')) + ' - ' + new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit' }).format(new Date('2026-09-05T17:00:00')))).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /start time/i }).some((button) => button.textContent !== 'Start time')).toBe(true);
+    expect(screen.getAllByRole('button', { name: /end time/i }).some((button) => button.textContent !== 'End time')).toBe(true);
     expect(screen.getByText('Barista')).toBeInTheDocument();
     expect(screen.getByText('Downtown')).toBeInTheDocument();
+    expect(screen.getAllByText('Start time')).toHaveLength(6);
+    expect(screen.getAllByText('End time')).toHaveLength(6);
+    expect(screen.getAllByText('Role')).toHaveLength(6);
+    expect(screen.getAllByText('Location')).toHaveLength(6);
   });
 
   it('falls back to capture when no cached review exists', () => {

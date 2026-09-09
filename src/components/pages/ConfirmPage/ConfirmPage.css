@@ -60,16 +60,11 @@
 }
 
 .confirm-card__day {
-  position: relative;
   display: grid;
-  grid-template-rows: auto 1fr;
   gap: 0.45rem;
 }
 
 .confirm-card__day-label {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
   margin: 0;
   color: var(--md-on-surface-variant);
   font-size: 0.82rem;
@@ -82,8 +77,8 @@
 .confirm-card__cell {
   display: grid;
   min-height: 10rem;
-  align-content: center;
-  justify-items: center;
+  align-content: start;
+  justify-items: stretch;
   gap: 0.35rem;
   padding: 1rem 0.8rem;
   border-radius: 18px;
@@ -110,14 +105,28 @@
 
 .confirm-card__events {
   display: grid;
-  gap: 0.65rem;
+  gap: 0.8rem;
   width: 100%;
 }
 
 .confirm-card__event {
   display: grid;
-  gap: 0.25rem;
+  gap: 0.5rem;
   justify-items: center;
+  padding: 0.35rem 0;
+}
+
+.confirm-card__time-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.confirm-card__time-separator {
+  color: var(--md-on-surface-variant);
+  font-weight: 700;
 }
 
 .confirm-card__cell-role,

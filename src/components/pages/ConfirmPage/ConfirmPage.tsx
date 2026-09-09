@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
+import EditableText from '@/components/atoms/EditableText';
 import {
   loadAnalysisResponse,
   loadDraftConfirmation,
@@ -47,6 +48,18 @@ const formatShiftKey = ({ date, startTime, endTime, role, location }: ScheduleAn
   return `${date}-${startTime}-${endTime}-${role ?? ''}-${location ?? ''}`;
 };
 
+interface EditableShift extends ScheduleAnalysisShift {
+  id: string;
+  isPlaceholder: boolean;
+}
+
+interface WeekDay {
+  isoDate: string;
+  weekday: string;
+  monthDay: string;
+  shifts: EditableShift[];
+}
+
 const getWeekStartDate = (date: Date) => {
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
   const weekInfo = typeof Intl.Locale === 'function' ? new Intl.Locale(locale).getWeekInfo() : undefined;
@@ -60,14 +73,14 @@ const getWeekStartDate = (date: Date) => {
   return weekStart;
 };
 
-const buildWeekDays = (shifts: ScheduleAnalysisShift[]) => {
+const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
   const firstShiftDate = shifts[0] ? toLocalDate(shifts[0].date) : null;
   const weekStart = firstShiftDate ? getWeekStartDate(firstShiftDate) : null;
   const groupedShifts = new Map<string, ScheduleAnalysisShift[]>();
 
   for (const shift of shifts) {
     const dayShifts = groupedShifts.get(shift.date) ?? [];
-    dayShifts.push(shift);
+    dayShifts.push({ ...shift, id: formatShiftKey(shift), isPlaceholder: false });
     groupedShifts.set(shift.date, dayShifts);
   }
 
@@ -79,12 +92,26 @@ const buildWeekDays = (shifts: ScheduleAnalysisShift[]) => {
 
     const isoDate = toLocalIsoDate(dayDate);
 
-    return {
+    const weekday: WeekDay = {
       isoDate,
       weekday: formatWeekday(dayDate),
       monthDay: formatMonthDay(dayDate),
-      shifts: groupedShifts.get(isoDate) ?? [],
+      shifts: groupedShifts.get(isoDate)?.map((shift) => ({ ...shift, id: formatShiftKey(shift), isPlaceholder: false })) ?? [
+        {
+          id: `${isoDate}-placeholder`,
+          date: isoDate,
+          startTime: '',
+          endTime: '',
+          role: '',
+          location: '',
+          confidence: 0,
+          rawText: '',
+          isPlaceholder: true,
+        },
+      ],
     };
+
+    return weekday;
   });
 };
 
@@ -93,7 +120,36 @@ const ConfirmPage = () => {
   const draftConfirmation = loadDraftConfirmation();
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
   const shifts = draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [];
-  const weekDays = shifts.length > 0 ? buildWeekDays(shifts) : [];
+  const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
+
+  const hasEditableShift = useMemo(() => {
+    return weekDays.some((day) => day.shifts.some((shift) => shift.startTime || shift.endTime || shift.role || shift.location));
+  }, [weekDays]);
+
+  const updateShiftField = (dayIso: string, shiftId: string, field: keyof Pick<ScheduleAnalysisShift, 'startTime' | 'endTime' | 'role' | 'location'>, value: string) => {
+    setWeekDays((currentWeekDays) => currentWeekDays.map((day) => {
+      if (day.isoDate !== dayIso) {
+        return day;
+      }
+
+      return {
+        ...day,
+        shifts: day.shifts.map((shift) => {
+          if (shift.id !== shiftId) {
+            return shift;
+          }
+
+          const nextShift = {
+            ...shift,
+            [field]: value,
+            isPlaceholder: false,
+          };
+
+          return nextShift;
+        }),
+      };
+    }));
+  };
 
   return (
     <main className="confirm-page">
@@ -118,17 +174,43 @@ const ConfirmPage = () => {
                     <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
                       <p className="confirm-card__cell-date">{day.monthDay}</p>
 
-                      {day.shifts.length > 0 ? (
-                        <div className="confirm-card__events">
-                          {day.shifts.map((shift) => (
-                            <div key={formatShiftKey(shift)} className="confirm-card__event">
-                              <p className="confirm-card__cell-time">{formatShiftTime(shift)}</p>
-                              {shift.role ? <p className="confirm-card__cell-role">{shift.role}</p> : null}
-                              {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
+                      <div className="confirm-card__events">
+                        {day.shifts.map((shift) => (
+                          <div key={shift.id} className="confirm-card__event">
+                            <div className="confirm-card__time-row">
+                              <EditableText
+                                value={shift.startTime}
+                                placeholder="Start time"
+                                ariaLabel={`${day.weekday} start time`}
+                                onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
+                              />
+                              <span className="confirm-card__time-separator" aria-hidden="true">
+                                -
+                              </span>
+                              <EditableText
+                                value={shift.endTime}
+                                placeholder="End time"
+                                ariaLabel={`${day.weekday} end time`}
+                                onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
+                              />
                             </div>
-                          ))}
-                        </div>
-                      ) : null}
+
+                            <EditableText
+                              value={shift.role ?? ''}
+                              placeholder="Role"
+                              ariaLabel={`${day.weekday} role`}
+                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'role', value)}
+                            />
+
+                            <EditableText
+                              value={shift.location ?? ''}
+                              placeholder="Location"
+                              ariaLabel={`${day.weekday} location`}
+                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </article>
                   </div>
                 ))}
@@ -143,14 +225,14 @@ const ConfirmPage = () => {
           <ActionButton variant="primary" onClick={() => {
             // TODO create events with Google Calendar API
           }}
-          disabled={shifts.length === 0}>
+          disabled={!hasEditableShift}>
             Create Events
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
             // TODO clear local storage and reset state
             navigate("/");
           }}
-          disabled={shifts.length === 0}>
+          disabled={!hasEditableShift}>
             Cancel and Delete Progress
           </ActionButton>
         </div>
