@@ -1,9 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  clearAnalysisFlowCache,
   calculateResizedDimensions,
+  loadDraftConfirmation,
   loadAnalysisResponse,
   loadCapturedSchedulePhoto,
   parseAnalysisResponse,
+  saveDraftConfirmation,
   saveAnalysisResponse,
   saveCapturedSchedulePhoto,
 } from './schedule-analysis';
@@ -72,5 +75,22 @@ describe('schedule-analysis services', () => {
       savedAt: '2026-09-09T00:00:00.000Z',
     });
     expect(loadAnalysisResponse()).toEqual({ warnings: [], shifts: [] });
+  });
+
+  it('clears all analysis-flow caches together', () => {
+    saveCapturedSchedulePhoto({
+      base64: 'abc123',
+      mimeType: 'image/jpeg',
+      fileName: 'schedule.jpg',
+      savedAt: '2026-09-09T00:00:00.000Z',
+    });
+    saveAnalysisResponse({ warnings: [], shifts: [] });
+    saveDraftConfirmation({ shifts: [], selectedCalendarId: 'primary', savedAt: '2026-09-09T00:00:00.000Z' });
+
+    clearAnalysisFlowCache();
+
+    expect(loadCapturedSchedulePhoto()).toBeNull();
+    expect(loadAnalysisResponse()).toBeNull();
+    expect(loadDraftConfirmation()).toBeNull();
   });
 });

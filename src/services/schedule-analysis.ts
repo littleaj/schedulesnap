@@ -3,12 +3,14 @@ import { getAI, getGenerativeModel } from 'firebase/ai';
 import aiResponseSchema from '@/ai-response-schema.json';
 import type {
   CapturedSchedulePhoto,
+  DraftConfirmation,
   ScheduleAnalysisResponse,
   ScheduleAnalysisShift,
 } from '@/types/schedule-analysis';
 
 const CAPTURED_PHOTO_STORAGE_KEY = 'schedulesnap:captured-photo';
 const ANALYSIS_RESPONSE_STORAGE_KEY = 'schedulesnap:analysis-response';
+const DRAFT_CONFIRMATION_STORAGE_KEY = 'schedulesnap:draft-confirmation';
 const DEFAULT_MAX_DIMENSION = 1024;
 const DEFAULT_JPEG_QUALITY = 0.8;
 
@@ -40,6 +42,17 @@ const isAnalysisResponse = (value: unknown): value is ScheduleAnalysisResponse =
     && value.warnings.every(isString)
     && Array.isArray(value.shifts)
     && value.shifts.every(isShift);
+};
+
+const isDraftConfirmation = (value: unknown): value is DraftConfirmation => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return Array.isArray(value.shifts)
+    && value.shifts.every(isShift)
+    && isString(value.selectedCalendarId)
+    && isString(value.savedAt);
 };
 
 const canUseLocalStorage = () => window?.localStorage !== undefined;
@@ -144,6 +157,42 @@ export const loadAnalysisResponse = (): ScheduleAnalysisResponse | null => {
   } catch {
     return null;
   }
+};
+
+export const saveDraftConfirmation = (draft: DraftConfirmation) => {
+  if (!canUseLocalStorage()) {
+    return;
+  }
+
+  window.localStorage.setItem(DRAFT_CONFIRMATION_STORAGE_KEY, JSON.stringify(draft));
+};
+
+export const loadDraftConfirmation = (): DraftConfirmation | null => {
+  if (!canUseLocalStorage()) {
+    return null;
+  }
+
+  const rawValue = window.localStorage.getItem(DRAFT_CONFIRMATION_STORAGE_KEY);
+  if (!rawValue) {
+    return null;
+  }
+
+  try {
+    const parsedValue: unknown = JSON.parse(rawValue);
+    return isDraftConfirmation(parsedValue) ? parsedValue : null;
+  } catch {
+    return null;
+  }
+};
+
+export const clearAnalysisFlowCache = () => {
+  if (!canUseLocalStorage()) {
+    return;
+  }
+
+  window.localStorage.removeItem(CAPTURED_PHOTO_STORAGE_KEY);
+  window.localStorage.removeItem(ANALYSIS_RESPONSE_STORAGE_KEY);
+  window.localStorage.removeItem(DRAFT_CONFIRMATION_STORAGE_KEY);
 };
 
 export const buildAnalysisPrompt = (targetName: string, todayIso: string) => `You are extracting a work schedule from a photo of a printed or handwritten schedule, calendar, or whiteboard.

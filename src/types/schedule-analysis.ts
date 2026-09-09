@@ -20,3 +20,14 @@ export interface ScheduleAnalysisResponse {
   warnings: string[];
   shifts: ScheduleAnalysisShift[];
 }
+
+export interface DraftConfirmation {
+  shifts: ScheduleAnalysisShift[];
+  selectedCalendarId: string;
+  savedAt: string;
+}
+
+export interface AnalysisFlowResumeTarget {
+  route: '/analyze' | '/confirm';
+  description: string;
+}
