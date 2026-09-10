@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
-import { useGoogleCalendarToken } from '@/hooks/google-calendar-token';
+import { useGoogleCalendarToken } from '@/hooks/google-token';
 import {
   loadAnalysisResponse,
   loadDraftConfirmation,

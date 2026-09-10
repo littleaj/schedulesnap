@@ -70,7 +70,7 @@ const readAccessTokenFromRedirectResult = (auth: Auth): Promise<string | null> =
       return accessToken;
     })
     .catch((error: unknown) => {
-      const authError = error instanceof Error ? error : new Error('Unable to complete Google Calendar reauthorization.');
+      const authError = error instanceof Error ? error : new Error('Unable to complete Google authorization.');
       throw authError;
     });
 };
@@ -106,7 +106,7 @@ export const useGoogleCalendarToken = () => {
 
     redirectResultChecked = true;
 
-    (async () => {
+    void (async () => {
       try {
         const nextToken = await readAccessTokenFromRedirectResult(auth);
         if (nextToken) {
