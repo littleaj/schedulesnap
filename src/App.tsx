@@ -15,6 +15,7 @@ import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
 import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
 import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
 import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
+import { GoogleOAuthTokenProvider } from './contexts/google-oauth';
 
 interface AppShellContentProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
@@ -66,7 +67,6 @@ const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps
     </>
   );
 };
-
 const ScheduleSnap = () => {
   const [resumeTarget, setResumeTarget] = useState<AnalysisFlowResumeTarget | null>(null);
 
@@ -77,7 +77,9 @@ const ScheduleSnap = () => {
   return (
     <div className="app-shell">
       <BrowserRouter>
-        <AppShellContent resumeTarget={resumeTarget} onResumeHandled={() => setResumeTarget(null)} />
+        <GoogleOAuthTokenProvider>
+          <AppShellContent resumeTarget={resumeTarget} onResumeHandled={() => setResumeTarget(null)} />
+        </GoogleOAuthTokenProvider>
       </BrowserRouter>
     </div>
   );

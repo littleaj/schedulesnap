@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
@@ -9,6 +9,7 @@ import {
 } from '@/services/schedule-analysis';
 import './ConfirmPage.css';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
+import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 
 const weekdayFormatter = new Intl.DateTimeFormat(undefined, {
   weekday: 'short',
@@ -150,20 +151,43 @@ const convertTo24Hour = (timeValue: string): string => {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 };
 
+interface GoogleCalendarEvent {
+  summary: string;
+  location?: string;
+  start: {
+    dateTime: string;
+    timeZone: string;
+  };
+  end: {
+    dateTime: string;
+    timeZone: string;
+  };
+}
+
 const ConfirmPage = () => {
   const navigate = useNavigate();
+  const { getToken } = useContext(GoogleOAuthTokenContext);
+
   const draftConfirmation = loadDraftConfirmation();
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
     .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
   const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
 
+  if (shifts.length > 0) {
+    console.log("Loaded shifts from", draftConfirmation ? "draft confirmation" : "analysis response");
+  }
+
   const hasEditableShift = useMemo(() => {
     return weekDays.some((day) => day.shifts.some((shift) => shift.startTime || shift.endTime || shift.role || shift.location));
   }, [weekDays]);
 
   const handleCreateEvents = async () => {
-    const calendarId = draftConfirmation?.selectedCalendarId || 'primary';
+    if (!draftConfirmation) {
+      console.error("No draft confirmation available, cannot create events.");
+      return;
+    }
+    const calendarId = draftConfirmation.selectedCalendarId || 'primary';
     const eventsToCreate = weekDays.flatMap((day) => day.shifts
       .filter((shift) => !shift.isPlaceholder && shift.date && shift.startTime && shift.endTime)
       .map((shift) => {
@@ -191,9 +215,11 @@ const ConfirmPage = () => {
       }))
       .filter((event): event is NonNullable<typeof event> => event !== null);
 
-    const createEventRequest = async (eventBody: { summary: string; location?: string; start: { dateTime: string; timeZone: string }; end: { dateTime: string; timeZone: string } }) => {
-      // FIXME: get access token from Google OAuth flow
-      let accessToken = "";
+    console.log('Number of events to create:', eventsToCreate.length);
+
+    const createEventRequest = async (eventBody: GoogleCalendarEvent) => {
+      const accessToken = getToken();
+      console.log(`Creating event in ${calendarId} calendar: `, eventBody.summary, eventBody.start.dateTime);
       let response = await fetch(
         `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
         {
@@ -208,19 +234,22 @@ const ConfirmPage = () => {
 
       if (response.status === 401) {
         // FIXME: handle token expiration and re-authentication
+
+        console.error('Unauthorized: Google OAuth token may have expired: \n', await response.text());
+
         // clearToken();
-        accessToken = "";
-        response = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
-          {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(eventBody),
-          },
-        );
+        // accessToken = "";
+        // response = await fetch(
+        //   `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
+        //   {
+        //     method: 'POST',
+        //     headers: {
+        //       Authorization: `Bearer ${accessToken}`,
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(eventBody),
+        //   },
+        // );
       }
 
       return response;
@@ -273,7 +302,7 @@ const ConfirmPage = () => {
     saveDraftConfirmation({
       shifts: shifts.map(val => ({ ...val, startTime: convertTo24Hour(val.startTime), endTime: convertTo24Hour(val.endTime) })),
       selectedCalendarId: '' // TODO populate with default calendar ID
-     });
+    });
   }, [shifts]);
 
   return (

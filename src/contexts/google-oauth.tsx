@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 export interface GoogleOAuthControls {
-  token: string | null;
+  getToken: () => string | null;
   setToken: (token: string | null) => void;
 }
 
-let googleOAuthToken: string | null = null;
+export const GoogleOAuthTokenContext = React.createContext<GoogleOAuthControls>({} as GoogleOAuthControls);
 
-export const GoogleOAuthTokenContext = React.createContext<GoogleOAuthControls>({
-  token: googleOAuthToken,
-  setToken: (token: string | null) => {
-    googleOAuthToken = token;
-  }
-});
+export const GoogleOAuthTokenProvider = ({ children }: { children: React.ReactNode }) => {
+  const getToken = () => sessionStorage.getItem('googleOAuthToken');
+  const setToken = (token: string | null) => {
+    if (!token) {
+      sessionStorage.removeItem('googleOAuthToken');
+      return;
+    }
+    sessionStorage.setItem('googleOAuthToken', token);
+  };
 
-export const GoogleOAuthTokenProvider = GoogleOAuthTokenContext.Provider;
+  const controls = useMemo(() => ({ getToken, setToken }), []);
+
+  return (
+    <GoogleOAuthTokenContext.Provider value={controls}>
+      {children}
+    </GoogleOAuthTokenContext.Provider>
+  );
+};
