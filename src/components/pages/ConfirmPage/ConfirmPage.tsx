@@ -292,9 +292,9 @@ const ConfirmPage = () => {
 
             <div className="confirm-card__summary" aria-label="Extracted shifts week view">
               <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
-              <div className="confirm-card__grid" role="list" aria-label="Weekly schedule">
+              <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
                 {weekDays.map((day) => (
-                  <div key={day.isoDate} className="confirm-card__day" role="listitem">
+                  <li key={day.isoDate} className="confirm-card__day">
                     <p className="confirm-card__day-label">{day.weekday}</p>
                     <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
                       <p className="confirm-card__cell-date">{day.monthDay}</p>
@@ -337,9 +337,9 @@ const ConfirmPage = () => {
                         ))}
                       </div>
                     </article>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           </>
         ) : (

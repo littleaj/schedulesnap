@@ -44,6 +44,13 @@
   background: var(--md-surface-container);
   border: 1px solid var(--md-secondary-container);
   color: var(--md-on-surface);
+
+  & ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
 }
 
 .confirm-card__summary p {
