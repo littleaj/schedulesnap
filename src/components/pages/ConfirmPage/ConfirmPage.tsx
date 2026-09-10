@@ -10,6 +10,7 @@ import {
 import './ConfirmPage.css';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
+import { useGoogleLogin } from '@/hooks/google-login';
 
 const weekdayFormatter = new Intl.DateTimeFormat(undefined, {
   weekday: 'short',
@@ -167,6 +168,7 @@ interface GoogleCalendarEvent {
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const { getToken } = useContext(GoogleOAuthTokenContext);
+  const { authenticate } = useGoogleLogin();
 
   const draftConfirmation = loadDraftConfirmation();
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
@@ -217,10 +219,8 @@ const ConfirmPage = () => {
 
     console.log('Number of events to create:', eventsToCreate.length);
 
-    const createEventRequest = async (eventBody: GoogleCalendarEvent) => {
-      const accessToken = getToken();
-      console.log(`Creating event in ${calendarId} calendar: `, eventBody.summary, eventBody.start.dateTime);
-      const response = await fetch(
+    const doFetch = async (eventBody: GoogleCalendarEvent, accessToken: string) => {
+      return await fetch(
         `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
         {
           method: 'POST',
@@ -231,9 +231,28 @@ const ConfirmPage = () => {
           body: JSON.stringify(eventBody),
         },
       );
+    }
+
+    const createEventRequest = async (eventBody: GoogleCalendarEvent) => {
+      let accessToken = getToken();
+      if (!accessToken) {
+        await authenticate();
+        accessToken = getToken();
+        if (!accessToken) {
+          throw new Error('Failed to obtain access token after authentication');
+        }
+      }
+      console.log(`Creating event in ${calendarId} calendar: `, eventBody.summary, eventBody.start.dateTime);
+      const response = await doFetch(eventBody, accessToken);
 
       if (response.status === 401) {
-        console.error('Unauthorized: Google OAuth token may have expired: \n', await response.text());
+        // Unauthorized: Google OAuth token may have expired
+        await authenticate();
+        accessToken = getToken();
+        if (!accessToken) {
+          throw new Error('Failed to obtain access token after authentication');
+        }
+        return await doFetch(eventBody, accessToken);
       }
 
       return response;
