@@ -62,7 +62,7 @@ const CapturePage = () => {
               onClick={() => navigate('/analyze')}
               disabled={!selectedFile || isProcessing || !isReady}
             >
-              {isProcessing ? 'Preparing photo...' : 'Continue to review'}
+              {isProcessing ? 'Preparing photo...' : 'Analyze Photo'}
             </ActionButton>
           </div>
         </div>
