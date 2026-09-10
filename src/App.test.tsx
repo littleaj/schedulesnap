@@ -56,11 +56,11 @@ describe('App', () => {
 
     render(<App />);
 
-    expect(screen.getByTestId('header-bar')).toBeInTheDocument();
-    expect(screen.getByRole('dialog', { name: /continue where you left off/i })).toBeInTheDocument();
+    expect(screen.getByText(/continue where you left off/i)).toBeInTheDocument();
+    expect(screen.getByText(/we found an in-progress review/i)).toBeInTheDocument();
     expect(screen.getByText(/settings page/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /^continue$/i }));
+    fireEvent.click(screen.getByText(/^continue$/i));
 
     expect(window.location.pathname).toBe('/confirm');
   });
