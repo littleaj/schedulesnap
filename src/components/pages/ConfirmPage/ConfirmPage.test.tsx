@@ -1,17 +1,18 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import ConfirmPage from './ConfirmPage';
 
-const { loadAnalysisResponseMock, loadDraftConfirmationMock } = vi.hoisted(() => ({
+const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock } = vi.hoisted(() => ({
   loadAnalysisResponseMock: vi.fn(),
   loadDraftConfirmationMock: vi.fn(),
+  saveDraftConfirmationMock: vi.fn(),
 }));
 
 vi.mock('@/services/schedule-analysis', () => ({
   loadAnalysisResponse: loadAnalysisResponseMock,
   loadDraftConfirmation: loadDraftConfirmationMock,
-  saveDraftConfirmation: vi.fn(),
+  saveDraftConfirmation: saveDraftConfirmationMock,
 }));
 
 describe('ConfirmPage', () => {
@@ -52,6 +53,45 @@ describe('ConfirmPage', () => {
     expect(screen.getAllByText('End time')).toHaveLength(6);
     expect(screen.getAllByText('Role')).toHaveLength(6);
     expect(screen.getAllByText('Location')).toHaveLength(6);
+  });
+
+  it('saves edited values to the draft when a shift is updated', () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      warnings: [],
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+
+    render(
+      <MemoryRouter>
+        <ConfirmPage />
+      </MemoryRouter>,
+    );
+
+    const startTimeButton = screen.getAllByRole('button', { name: /start time/i }).find((button) => button.textContent !== 'Start time');
+    expect(startTimeButton).toBeTruthy();
+
+    fireEvent.doubleClick(startTimeButton!);
+    const input = screen.getByDisplayValue('9:00 AM');
+    fireEvent.change(input, { target: { value: '10:30 AM' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(saveDraftConfirmationMock).toHaveBeenLastCalledWith(expect.objectContaining({
+      shifts: expect.arrayContaining([
+        expect.objectContaining({ date: '2026-09-05', startTime: '10:30' }),
+      ]),
+    }));
   });
 
   it('falls back to capture when no cached review exists', () => {

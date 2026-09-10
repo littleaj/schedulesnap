@@ -37,7 +37,13 @@ const formatWeekday = (date: Date) => weekdayFormatter.format(date);
 
 const formatMonthDay = (date: Date) => monthDayFormatter.format(date);
 
-const formatTime = (time: string) => timeFormatter.format(new Date(`1970-01-01T${time}`));
+const formatTime = (time: string) => {
+  if (!time?.trim()) {
+    return '';
+  }
+  return timeFormatter.format(new Date(`1970-01-01T${time}`));
+};
+
 
 const formatShiftKey = ({ date, startTime, endTime, role, location }: ScheduleAnalysisShift) => {
   return `${date}-${startTime}-${endTime}-${role ?? ''}-${location ?? ''}`;
@@ -117,20 +123,32 @@ const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
   });
 };
 
-const convertTo24Hour = (time12h: string): string => {
-  const [time, modifier] = time12h.trim().split(/\s+/);
-  let [hours, minutes] = time.split(':').map(n => Number.parseInt(n, 10));
-
-  if (modifier) {
-    if (modifier.toLowerCase() === 'pm' && hours < 12) {
-      hours += 12;
-    } else if (modifier.toLowerCase() === 'am' && hours === 12) {
-      hours = 0;
-    }
+const convertTo24Hour = (timeValue: string): string => {
+  if (!timeValue?.trim()) {
+    return '';
   }
 
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-}
+  const trimmedValue = timeValue.trim();
+  const match = trimmedValue.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i);
+
+  if (!match) {
+    return trimmedValue;
+  }
+
+  let hours = Number.parseInt(match[1], 10);
+  const minutes = Number.parseInt(match[2] ?? '0', 10);
+  const modifier = match[3]?.toLowerCase();
+
+  if (modifier === 'pm' && hours < 12) {
+    hours += 12;
+  }
+
+  if (modifier === 'am' && hours === 12) {
+    hours = 0;
+  }
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+};
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -144,31 +162,38 @@ const ConfirmPage = () => {
   }, [weekDays]);
 
   const updateShiftField = (dayIso: string, shiftId: string, field: keyof Pick<ScheduleAnalysisShift, 'startTime' | 'endTime' | 'role' | 'location'>, value: string) => {
-    setWeekDays((currentWeekDays) => currentWeekDays.map((day) => {
-      if (day.isoDate !== dayIso) {
-        return day;
-      }
+    setWeekDays((currentWeekDays) => {
+      const nextWeekDays = currentWeekDays.map((day) => {
+        if (day.isoDate !== dayIso) {
+          return day;
+        }
 
-      return {
-        ...day,
-        shifts: day.shifts.map((shift) => {
-          if (shift.id !== shiftId) {
-            return shift;
-          }
+        return {
+          ...day,
+          shifts: day.shifts.map((shift) => {
+            if (shift.id !== shiftId) {
+              return shift;
+            }
 
-          const nextShift = {
-            ...shift,
-            [field]: value,
-            isPlaceholder: false,
-          };
+            return {
+              ...shift,
+              [field]: value,
+              isPlaceholder: false,
+            };
+          }),
+        };
+      });
 
-          return nextShift;
-        }),
-      };
-    }));
-    saveDraftConfirmation({
-      shifts: weekDays.flatMap((day) => day.shifts.map(val => ({ ...val, startTime: convertTo24Hour(val.startTime), endTime: convertTo24Hour(val.endTime) }))),
-      selectedCalendarId: '' // TODO populate with default calendar ID
+      saveDraftConfirmation({
+        shifts: nextWeekDays.flatMap((day) => day.shifts.map((val) => ({
+          ...val,
+          startTime: convertTo24Hour(val.startTime),
+          endTime: convertTo24Hour(val.endTime),
+        }))),
+        selectedCalendarId: '' // TODO populate with default calendar ID
+      });
+
+      return nextWeekDays;
     });
   };
 
