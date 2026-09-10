@@ -9,9 +9,14 @@ const { authMock, onAuthStateChangedMock } = vi.hoisted(() => ({
   onAuthStateChangedMock: vi.fn(),
 }));
 
-vi.mock('firebase/auth', () => ({
-  onAuthStateChanged: onAuthStateChangedMock,
-}));
+vi.mock('firebase/auth', async () => {
+  const actual = await vi.importActual<typeof import('firebase/auth')>('firebase/auth');
+
+  return {
+    ...actual,
+    onAuthStateChanged: onAuthStateChangedMock,
+  };
+});
 
 vi.mock('../../../hooks/firebase', () => ({
   useAuth: () => authMock,
