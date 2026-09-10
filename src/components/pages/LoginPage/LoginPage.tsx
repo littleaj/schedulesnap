@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
-import useGoogleLogin from '@/hooks/google-login';
+import { useGoogleLogin } from '@/hooks/google-login';
 import './LoginPage.css';
 
 const LoginPage = () => {
