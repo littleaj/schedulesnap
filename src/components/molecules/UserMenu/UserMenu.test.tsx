@@ -3,8 +3,8 @@ import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import UserMenu from './UserMenu';
 
-const { signInWithRedirectMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
-  signInWithRedirectMock: vi.fn(),
+const { signInWithPopupMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
+  signInWithPopupMock: vi.fn(),
   navigateMock: vi.fn(),
   getUserProfileMock: vi.fn(),
 }));
@@ -21,7 +21,7 @@ vi.mock('firebase/auth', async () => {
         return this;
       }
     },
-    signInWithRedirect: signInWithRedirectMock,
+    signInWithPopup: signInWithPopupMock,
   };
 });
 
@@ -46,7 +46,7 @@ vi.mock('@/services/user-profile', () => ({
 
 describe('UserMenu', () => {
   beforeEach(() => {
-    signInWithRedirectMock.mockReset();
+    signInWithPopupMock.mockReset();
     navigateMock.mockReset();
     getUserProfileMock.mockReset();
   });
@@ -76,7 +76,7 @@ describe('UserMenu', () => {
   });
 
   it('runs Google login directly when logged-out LOGIN is clicked', async () => {
-    signInWithRedirectMock.mockResolvedValue(undefined);
+    signInWithPopupMock.mockResolvedValue(undefined);
 
     render(
       <MemoryRouter>
@@ -88,10 +88,10 @@ describe('UserMenu', () => {
     fireEvent.click(screen.getByRole('menuitem', { name: /^login$/i }));
 
     await waitFor(() => {
-      expect(signInWithRedirectMock).toHaveBeenCalledTimes(1);
+      expect(signInWithPopupMock).toHaveBeenCalledTimes(1);
     });
 
-    const provider = signInWithRedirectMock.mock.calls[0][1];
+    const provider = signInWithPopupMock.mock.calls[0][1];
     expect(provider.scopes).toContain('https://www.googleapis.com/auth/calendar.events');
   });
 });

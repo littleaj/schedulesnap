@@ -2,8 +2,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import LoginPage from './LoginPage';
 
-const { signInWithRedirectMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
-  signInWithRedirectMock: vi.fn(),
+const { signInWithPopupMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
+  signInWithPopupMock: vi.fn(),
   navigateMock: vi.fn(),
   getUserProfileMock: vi.fn(),
 }));
@@ -20,7 +20,7 @@ vi.mock('firebase/auth', async () => {
         return this;
       }
     },
-    signInWithRedirect: signInWithRedirectMock,
+    signInWithPopup: signInWithPopupMock,
   };
 });
 
@@ -45,7 +45,7 @@ vi.mock('@/services/user-profile', () => ({
 
 describe('LoginPage', () => {
   beforeEach(() => {
-    signInWithRedirectMock.mockReset();
+    signInWithPopupMock.mockReset();
     navigateMock.mockReset();
     getUserProfileMock.mockReset();
   });
@@ -64,24 +64,24 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
 
     await waitFor(() => {
-      expect(signInWithRedirectMock).toHaveBeenCalledTimes(1);
+      expect(signInWithPopupMock).toHaveBeenCalledTimes(1);
     });
 
-    const provider = signInWithRedirectMock.mock.calls[0][1];
+    const provider = signInWithPopupMock.mock.calls[0][1];
     expect(provider.scopes).toContain('https://www.googleapis.com/auth/calendar.events');
   });
 
   it('starts the redirect-based Google sign-in flow for first-time and returning users', async () => {
-    signInWithRedirectMock.mockResolvedValue(undefined);
+    signInWithPopupMock.mockResolvedValue(undefined);
 
     render(<LoginPage />);
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
 
     await waitFor(() => {
-      expect(signInWithRedirectMock).toHaveBeenCalledTimes(1);
+      expect(signInWithPopupMock).toHaveBeenCalledTimes(1);
     });
 
-    expect(signInWithRedirectMock).toHaveBeenCalledWith(
+    expect(signInWithPopupMock).toHaveBeenCalledWith(
       expect.objectContaining({ uid: 'test-user' }),
       expect.objectContaining({ scopes: expect.arrayContaining(['https://www.googleapis.com/auth/calendar.events']) }),
     );
