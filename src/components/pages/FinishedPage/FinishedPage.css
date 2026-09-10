@@ -1,0 +1,56 @@
+.finished-page {
+  display: grid;
+  place-items: center;
+  padding: 2rem 1.25rem 4rem;
+  background: var(--md-gradient-page);
+}
+
+.finished-card {
+  width: min(100%, 560px);
+  background: rgba(var(--md-surface-rgb), 0.96);
+  border: 1px solid rgba(var(--md-outline-variant-rgb), 0.2);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(var(--md-on-surface-rgb), 0.08);
+}
+
+.finished-card__eyebrow {
+  margin: 0;
+  color: var(--md-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.finished-card h1 {
+  margin: 0.8rem 0 0;
+  font-size: clamp(2rem, 5vw, 2.9rem);
+  line-height: 1.1;
+  letter-spacing: -0.05em;
+  color: var(--md-on-surface);
+}
+
+.finished-card__intro {
+  margin: 1rem 0 0;
+  color: var(--md-on-surface-variant);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.finished-card__actions {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .finished-card {
+    padding: 1.5rem 1.1rem;
+  }
+
+  .finished-card__actions {
+    flex-direction: column;
+  }
+}
