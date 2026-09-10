@@ -1,6 +1,5 @@
 import { GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
-import { useNavigate } from 'react-router';
-import { useAuth, useFirestore } from './firebase';
+import { useAuth } from './firebase';
 
 const CALENDAR_EVENTS_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
 const ACCESSIBLE_CALENDARS_SCOPE = 'https://www.googleapis.com/auth/calendar.calendars.readonly';
