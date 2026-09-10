@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
+import { useGoogleCalendarToken } from '@/hooks/google-calendar-token';
 import {
   loadAnalysisResponse,
   loadDraftConfirmation,
@@ -152,6 +153,7 @@ const convertTo24Hour = (timeValue: string): string => {
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
+  const { getAccessToken, clearToken, isAuthorizing } = useGoogleCalendarToken();
   const draftConfirmation = loadDraftConfirmation();
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
@@ -161,6 +163,71 @@ const ConfirmPage = () => {
   const hasEditableShift = useMemo(() => {
     return weekDays.some((day) => day.shifts.some((shift) => shift.startTime || shift.endTime || shift.role || shift.location));
   }, [weekDays]);
+
+  const handleCreateEvents = async () => {
+    const calendarId = draftConfirmation?.selectedCalendarId || 'primary';
+    const eventsToCreate = weekDays.flatMap((day) => day.shifts
+      .filter((shift) => !shift.isPlaceholder && shift.date && shift.startTime && shift.endTime)
+      .map((shift) => {
+        const start24Hour = convertTo24Hour(shift.startTime);
+        const end24Hour = convertTo24Hour(shift.endTime);
+        const startDateTime = new Date(`${shift.date}T${start24Hour}:00`);
+        const endDateTime = new Date(`${shift.date}T${end24Hour}:00`);
+
+        if (!start24Hour || !end24Hour || Number.isNaN(startDateTime.getTime()) || Number.isNaN(endDateTime.getTime())) {
+          return null;
+        }
+
+        return {
+          summary: shift.role || shift.location || 'Work Shift',
+          location: shift.location || undefined,
+          start: {
+            dateTime: startDateTime.toISOString(),
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'UTC',
+          },
+          end: {
+            dateTime: endDateTime.toISOString(),
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'UTC',
+          },
+        };
+      }))
+      .filter((event): event is NonNullable<typeof event> => event !== null);
+
+    const createEventRequest = async (eventBody: { summary: string; location?: string; start: { dateTime: string; timeZone: string }; end: { dateTime: string; timeZone: string } }) => {
+      let accessToken = await getAccessToken();
+      let response = await fetch(
+        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(eventBody),
+        },
+      );
+
+      if (response.status === 401) {
+        clearToken();
+        accessToken = await getAccessToken();
+        response = await fetch(
+          `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(eventBody),
+          },
+        );
+      }
+
+      return response;
+    };
+
+    await Promise.allSettled(eventsToCreate.map(createEventRequest));
+  };
 
   const updateShiftField = (dayIso: string, shiftId: string, field: keyof Pick<ScheduleAnalysisShift, 'startTime' | 'endTime' | 'role' | 'location'>, value: string) => {
     setWeekDays((currentWeekDays) => {
@@ -281,10 +348,10 @@ const ConfirmPage = () => {
 
         <div className="confirm-card__actions">
           <ActionButton variant="primary" onClick={() => {
-            // TODO create events with Google Calendar API
+            void handleCreateEvents();
           }}
-            disabled={!hasEditableShift}>
-            Create Events
+            disabled={!hasEditableShift || isAuthorizing}>
+            {isAuthorizing ? 'Authorizing...' : 'Create Events'}
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
             // TODO clear local storage and reset state
