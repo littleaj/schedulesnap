@@ -10,6 +10,7 @@ import OnboardingPage from '@/components/pages/OnboardingPage';
 import CapturePage from '@/components/pages/CapturePage';
 import AnalysisPage from '@/components/pages/AnalysisPage';
 import ConfirmPage from '@/components/pages/ConfirmPage';
+import FinishedPage from '@/components/pages/FinishedPage';
 import SettingsPage from '@/components/pages/SettingsPage';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
 import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
@@ -60,6 +61,7 @@ const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps
           <Route path="/capture" element={<CapturePage />} />
           <Route path="/analyze" element={<AnalysisPage />} />
           <Route path="/confirm" element={<ConfirmPage />} />
+          <Route path="/finished" element={<FinishedPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
         </Route>

@@ -171,7 +171,7 @@ const ConfirmPage = () => {
   const draftConfirmation = loadDraftConfirmation();
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
-    .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
+  .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
   const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
 
   if (shifts.length > 0) {
@@ -220,7 +220,7 @@ const ConfirmPage = () => {
     const createEventRequest = async (eventBody: GoogleCalendarEvent) => {
       const accessToken = getToken();
       console.log(`Creating event in ${calendarId} calendar: `, eventBody.summary, eventBody.start.dateTime);
-      let response = await fetch(
+      const response = await fetch(
         `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
         {
           method: 'POST',
@@ -233,29 +233,18 @@ const ConfirmPage = () => {
       );
 
       if (response.status === 401) {
-        // FIXME: handle token expiration and re-authentication
-
         console.error('Unauthorized: Google OAuth token may have expired: \n', await response.text());
-
-        // clearToken();
-        // accessToken = "";
-        // response = await fetch(
-        //   `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
-        //   {
-        //     method: 'POST',
-        //     headers: {
-        //       Authorization: `Bearer ${accessToken}`,
-        //       'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(eventBody),
-        //   },
-        // );
       }
 
       return response;
     };
 
-    await Promise.allSettled(eventsToCreate.map(createEventRequest));
+    const settledResponses = await Promise.allSettled(eventsToCreate.map(createEventRequest));
+    const hasSuccess = settledResponses.some((result) => result.status === 'fulfilled' && result.value.ok);
+
+    if (hasSuccess) {
+      navigate('/finished', { replace: true });
+    }
   };
 
   const updateShiftField = (dayIso: string, shiftId: string, field: keyof Pick<ScheduleAnalysisShift, 'startTime' | 'endTime' | 'role' | 'location'>, value: string) => {

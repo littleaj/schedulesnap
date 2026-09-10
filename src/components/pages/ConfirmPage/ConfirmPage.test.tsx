@@ -2,13 +2,23 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ConfirmPage from './ConfirmPage';
+import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 
-const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock, useGoogleCalendarTokenMock } = vi.hoisted(() => ({
+const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock, useGoogleCalendarTokenMock, navigateMock } = vi.hoisted(() => ({
   loadAnalysisResponseMock: vi.fn(),
   loadDraftConfirmationMock: vi.fn(),
   saveDraftConfirmationMock: vi.fn(),
   useGoogleCalendarTokenMock: vi.fn(),
+  navigateMock: vi.fn(),
 }));
+
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof import('react-router')>('react-router');
+  return {
+    ...actual,
+    useNavigate: () => navigateMock,
+  };
+});
 
 vi.mock('@/services/schedule-analysis', () => ({
   loadAnalysisResponse: loadAnalysisResponseMock,
@@ -23,6 +33,7 @@ vi.mock('@/hooks/useGoogleCalendarToken', () => ({
 describe('ConfirmPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    navigateMock.mockReset();
     useGoogleCalendarTokenMock.mockReturnValue({
       getAccessToken: vi.fn().mockResolvedValue('google-access-token'),
       clearToken: vi.fn(),
@@ -111,7 +122,53 @@ describe('ConfirmPage', () => {
     });
   });
 
-  it.todo('creates Google Calendar events from the reviewed shifts using the Firebase auth token');
+  it('redirects to the finished page after creating Google Calendar events', async () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    const getToken = vi.fn(() => 'google-access-token');
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      status: 200,
+      ok: true,
+      text: vi.fn().mockResolvedValue('ok'),
+    }));
+
+    render(
+      <GoogleOAuthTokenContext.Provider value={{ getToken, setToken: vi.fn() }}>
+        <MemoryRouter>
+          <ConfirmPage />
+        </MemoryRouter>
+      </GoogleOAuthTokenContext.Provider>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /create events/i }));
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        'https://www.googleapis.com/calendar/v3/calendars/primary/events',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            Authorization: 'Bearer google-access-token',
+          }),
+        }),
+      );
+      expect(navigateMock).toHaveBeenCalledWith('/finished', { replace: true });
+    });
+  });
 
   it('falls back to capture when no cached review exists', () => {
     loadDraftConfirmationMock.mockReturnValue(null);
