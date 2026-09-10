@@ -223,7 +223,7 @@ const ConfirmPage = () => {
             </p>
 
             <div className="confirm-card__summary" aria-label="Extracted shifts week view">
-              <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
+              <p>{shifts.filter(shift => shift.startTime || shift.endTime || shift.role || shift.location).length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
               <div className="confirm-card__grid" role="list" aria-label="Weekly schedule">
                 {weekDays.map((day) => (
                   <div key={day.isoDate} className="confirm-card__day" role="listitem">
