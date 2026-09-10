@@ -130,7 +130,7 @@ const convertTo24Hour = (timeValue: string): string => {
   }
 
   const trimmedValue = timeValue.trim();
-  const match = trimmedValue.match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i);
+  const match = (/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/i).exec(trimmedValue);
 
   if (!match) {
     return trimmedValue;
