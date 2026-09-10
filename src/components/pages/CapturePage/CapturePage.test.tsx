@@ -27,7 +27,7 @@ describe('CapturePage', () => {
 
     expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/choose a schedule photo/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /continue to review/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Analyze Photo/i })).toBeInTheDocument();
   });
 
   it('resizes and caches the selected file before enabling review', async () => {
@@ -57,7 +57,7 @@ describe('CapturePage', () => {
     });
 
     expect(screen.getByText(/schedule\.png/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /continue to review/i })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /Analyze Photo/i })).toBeEnabled();
   });
 
   it('navigates to analysis after a photo is prepared', async () => {
@@ -76,10 +76,10 @@ describe('CapturePage', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /continue to review/i })).toBeEnabled();
+      expect(screen.getByRole('button', { name: /Analyze Photo/i })).toBeEnabled();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /continue to review/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Analyze Photo/i }));
 
     expect(navigateMock).toHaveBeenCalledWith('/analyze');
   });
