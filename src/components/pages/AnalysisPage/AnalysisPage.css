@@ -1,5 +1,4 @@
 .analysis-page {
-  min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: 2rem 1.25rem 4rem;
