@@ -16,6 +16,7 @@ const AnalysisResumeDialog = ({ resumeTarget, onContinue, onDiscard }: AnalysisR
         className="analysis-resume-dialog"
         aria-modal="true"
         aria-labelledby="analysis-resume-title"
+        open
       >
         <p className="analysis-resume-dialog__eyebrow">Continue your workflow</p>
         <h1 id="analysis-resume-title">Continue where you left off?</h1>
