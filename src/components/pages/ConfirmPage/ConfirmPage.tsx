@@ -12,6 +12,7 @@ import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import { useGoogleLogin } from '@/hooks/google-login';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
+import type { GoogleCalendarEvent } from '@/types/google-calendar';
 
 const weekdayFormatter = new Intl.DateTimeFormat(undefined, {
   weekday: 'short',
@@ -140,19 +141,6 @@ const convertTo24Hour = (timeValue: string): string => {
 
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 };
-
-interface GoogleCalendarEvent {
-  summary: string;
-  location?: string;
-  start: {
-    dateTime: string;
-    timeZone: string;
-  };
-  end: {
-    dateTime: string;
-    timeZone: string;
-  };
-}
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
