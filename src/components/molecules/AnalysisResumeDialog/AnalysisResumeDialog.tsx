@@ -11,10 +11,9 @@ interface AnalysisResumeDialogProps {
 
 const AnalysisResumeDialog = ({ resumeTarget, onContinue, onDiscard }: AnalysisResumeDialogProps) => {
   return (
-    <div className="analysis-resume-dialog__backdrop" role="presentation">
-      <section
+    <div className="analysis-resume-dialog__backdrop">
+      <dialog
         className="analysis-resume-dialog"
-        role="dialog"
         aria-modal="true"
         aria-labelledby="analysis-resume-title"
       >
@@ -32,7 +31,7 @@ const AnalysisResumeDialog = ({ resumeTarget, onContinue, onDiscard }: AnalysisR
             Start fresh
           </ActionButton>
         </div>
-      </section>
+      </dialog>
     </div>
   );
 };
