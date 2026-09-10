@@ -1,38 +1,57 @@
-import { GoogleAuthProvider, reauthenticateWithRedirect, signInWithRedirect, type User } from 'firebase/auth';
+import { GoogleAuthProvider, reauthenticateWithPopup, signInWithPopup, type User, type UserCredential } from 'firebase/auth';
 import { useAuth } from './firebase';
+import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
+import { useContext } from 'react';
 
 const CALENDAR_EVENTS_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
-const ACCESSIBLE_CALENDARS_SCOPE = 'https://www.googleapis.com/auth/calendar.calendars.readonly'; // TODO: ensure this is the correct scope
+
+// TODO: determine which scope is correct
+const ACCESSIBLE_CALENDARS_READONLY_SCOPE = 'https://www.googleapis.com/auth/calendar.calendars.readonly';
+const CALENDAR_LIST_READONLY_SCOPE = 'https://www.googleapis.com/auth/calendar.calendarlist.readonly';
 
 export interface GoogleLoginControls {
-  /**
-   * Will call {@link signInWithRedirect} if no user is signed in, or {@link reauthenticateWithRedirect} if a user is signed in.
-   *
-   * @param [user] The currently signed-in user, if any.
-   */
-  authenticate: (user?: User | null) => Promise<never>;
-  provider: GoogleAuthProvider;
+  authenticate: (user?: User | null) => Promise<UserCredential>;
+}
+
+function buildGoogleAuthProvider(): GoogleAuthProvider {
+  const provider = new GoogleAuthProvider();
+  provider.addScope(CALENDAR_EVENTS_SCOPE);
+  return provider;
 }
 
 export const useGoogleLogin = (): GoogleLoginControls => {
   const auth = useAuth();
 
-  const provider = new GoogleAuthProvider();
-  provider.addScope(CALENDAR_EVENTS_SCOPE);
-  provider.addScope(ACCESSIBLE_CALENDARS_SCOPE);
+  const { setToken } = useContext(GoogleOAuthTokenContext);
 
+  const authProvider = buildGoogleAuthProvider();
+
+  const fetchCredential = async (user?: User | null) => {
+    if (!user) {
+      console.log("Signing in with Google (popup)...");
+      return await signInWithPopup(auth, authProvider);
+    }
+    console.log(`Reauthenticating with Google (popup) for ${user.email} (${user.displayName})`);
+    return await reauthenticateWithPopup(user, authProvider);
+  };
 
   const authenticate = async (user?: User | null) => {
-    if (!user) {
-      console.log("Signing in with Google (redirect)...");
-      return await signInWithRedirect(auth, provider);
+    const credential = await fetchCredential(user);
+
+    const oauth = GoogleAuthProvider.credentialFromResult(credential);
+    const accessToken = oauth?.accessToken ?? null;
+
+    if (accessToken) {
+      console.log("Saving access token...")
+    } else {
+      console.log("Clearing access token...");
     }
-    console.log(`Reauthenticating with Google (redirect) for ${user.email} (${user.displayName})`);
-    return await reauthenticateWithRedirect(user, provider);
+    setToken(accessToken);
+
+    return credential;
   };
 
   return {
-    authenticate,
-    provider
+    authenticate
   };
 };
