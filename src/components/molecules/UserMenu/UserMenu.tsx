@@ -11,7 +11,7 @@ interface UserMenuProps {
 
 const UserMenu = ({ user }: UserMenuProps) => {
   const isLoggedIn = Boolean(user);
-  const loginWithGoogle = useGoogleLogin();
+  const { authenticate: loginWithGoogle } = useGoogleLogin();
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
