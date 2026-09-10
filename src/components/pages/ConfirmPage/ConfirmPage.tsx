@@ -11,6 +11,7 @@ import './ConfirmPage.css';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import { useGoogleLogin } from '@/hooks/google-login';
+import type { EditableShift, WeekDay } from '@/types/shift-display';
 
 const weekdayFormatter = new Intl.DateTimeFormat(undefined, {
   weekday: 'short',
@@ -50,18 +51,6 @@ const formatTime = (time: string) => {
 const formatShiftKey = ({ date, startTime, endTime, role, location }: ScheduleAnalysisShift) => {
   return `${date}-${startTime}-${endTime}-${role ?? ''}-${location ?? ''}`;
 };
-
-interface EditableShift extends ScheduleAnalysisShift {
-  id: string;
-  isPlaceholder: boolean;
-}
-
-interface WeekDay {
-  isoDate: string;
-  weekday: string;
-  monthDay: string;
-  shifts: EditableShift[];
-}
 
 const getWeekStartDate = (date: Date) => {
   const locale = Intl.DateTimeFormat().resolvedOptions().locale;
@@ -213,7 +202,7 @@ const ConfirmPage = () => {
             dateTime: endDateTime.toISOString(),
             timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'UTC',
           },
-        };
+        } satisfies GoogleCalendarEvent;
       }))
       .filter((event): event is NonNullable<typeof event> => event !== null);
 
