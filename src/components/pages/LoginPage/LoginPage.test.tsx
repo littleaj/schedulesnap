@@ -2,8 +2,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import LoginPage from './LoginPage';
 
-const { signInWithPopupMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
-  signInWithPopupMock: vi.fn(),
+const { signInWithRedirectMock, navigateMock, getUserProfileMock } = vi.hoisted(() => ({
+  signInWithRedirectMock: vi.fn(),
   navigateMock: vi.fn(),
   getUserProfileMock: vi.fn(),
 }));
@@ -20,7 +20,7 @@ vi.mock('firebase/auth', async () => {
         return this;
       }
     },
-    signInWithPopup: signInWithPopupMock,
+    signInWithRedirect: signInWithRedirectMock,
   };
 });
 
@@ -45,7 +45,7 @@ vi.mock('@/services/user-profile', () => ({
 
 describe('LoginPage', () => {
   beforeEach(() => {
-    signInWithPopupMock.mockReset();
+    signInWithRedirectMock.mockReset();
     navigateMock.mockReset();
     getUserProfileMock.mockReset();
   });
@@ -64,39 +64,26 @@ describe('LoginPage', () => {
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
 
     await waitFor(() => {
-      expect(signInWithPopupMock).toHaveBeenCalledTimes(1);
+      expect(signInWithRedirectMock).toHaveBeenCalledTimes(1);
     });
 
-    const provider = signInWithPopupMock.mock.calls[0][1];
+    const provider = signInWithRedirectMock.mock.calls[0][1];
     expect(provider.scopes).toContain('https://www.googleapis.com/auth/calendar.events');
   });
 
-  it('redirects first-time users to onboarding and returning users to capture', async () => {
-    signInWithPopupMock.mockResolvedValue({ user: { displayName: 'Test User', uid: 'user-123' } });
-    getUserProfileMock.mockResolvedValueOnce(null);
+  it('starts the redirect-based Google sign-in flow for first-time and returning users', async () => {
+    signInWithRedirectMock.mockResolvedValue(undefined);
 
-    const { rerender } = render(<LoginPage />);
+    render(<LoginPage />);
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
 
     await waitFor(() => {
-      expect(navigateMock).toHaveBeenCalledWith('/onboarding', { replace: true });
+      expect(signInWithRedirectMock).toHaveBeenCalledTimes(1);
     });
 
-    getUserProfileMock.mockResolvedValueOnce({
-      targetName: 'Alex',
-      timezone: 'UTC',
-      defaultCalendarId: 'primary',
-      reminder: {
-        enabled: true,
-        minutesBefore: 60,
-      },
-    });
-
-    rerender(<LoginPage />);
-    fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
-
-    await waitFor(() => {
-      expect(navigateMock).toHaveBeenLastCalledWith('/capture', { replace: true });
-    });
+    expect(signInWithRedirectMock).toHaveBeenCalledWith(
+      expect.objectContaining({ uid: 'test-user' }),
+      expect.objectContaining({ scopes: expect.arrayContaining(['https://www.googleapis.com/auth/calendar.events']) }),
+    );
   });
 });
