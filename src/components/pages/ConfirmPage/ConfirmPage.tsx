@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
-import { useGoogleCalendarToken } from '@/hooks/google-token';
 import {
   loadAnalysisResponse,
   loadDraftConfirmation,
@@ -153,7 +152,6 @@ const convertTo24Hour = (timeValue: string): string => {
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
-  const { getAccessToken, clearToken, isAuthorizing } = useGoogleCalendarToken();
   const draftConfirmation = loadDraftConfirmation();
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
@@ -194,7 +192,8 @@ const ConfirmPage = () => {
       .filter((event): event is NonNullable<typeof event> => event !== null);
 
     const createEventRequest = async (eventBody: { summary: string; location?: string; start: { dateTime: string; timeZone: string }; end: { dateTime: string; timeZone: string } }) => {
-      let accessToken = await getAccessToken();
+      // FIXME: get access token from Google OAuth flow
+      let accessToken = "";
       let response = await fetch(
         `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
         {
@@ -208,8 +207,9 @@ const ConfirmPage = () => {
       );
 
       if (response.status === 401) {
-        clearToken();
-        accessToken = await getAccessToken();
+        // FIXME: handle token expiration and re-authentication
+        // clearToken();
+        accessToken = "";
         response = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
           {
@@ -350,8 +350,8 @@ const ConfirmPage = () => {
           <ActionButton variant="primary" onClick={() => {
             void handleCreateEvents();
           }}
-            disabled={!hasEditableShift || isAuthorizing}>
-            {isAuthorizing ? 'Authorizing...' : 'Create Events'}
+            disabled={!hasEditableShift}>
+            {'Create Events'}
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
             // TODO clear local storage and reset state
