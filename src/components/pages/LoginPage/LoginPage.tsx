@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
 import { useGoogleLogin } from '@/hooks/google-login';
 import './LoginPage.css';
+import { useAuth } from '@/hooks/firebase';
+import { Navigate } from 'react-router';
 
 const LoginPage = () => {
-  const loginWithGoogle = useGoogleLogin();
+  const auth = useAuth();
+  const { authenticate: loginWithGoogle } = useGoogleLogin();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -22,6 +25,10 @@ const LoginPage = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (auth.currentUser) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <main className="login-page">
