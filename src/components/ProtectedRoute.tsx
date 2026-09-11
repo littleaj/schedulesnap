@@ -17,28 +17,33 @@ const ProtectedRoute = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
       setUser(nextUser);
-
       if (!nextUser) {
         setHasCompletedOnboarding(false);
         setIsChecking(false);
-        return;
       }
-
-      void (async () => {
-        try {
-          const profile = await getUserProfile(firestore, nextUser.uid);
-          setHasCompletedOnboarding(isUserProfileComplete(profile));
-        } catch (error) {
-          console.error('Unable to verify onboarding status: ', error);
-          setHasCompletedOnboarding(false);
-        } finally {
-          setIsChecking(false);
-        }
-      })();
     });
 
     return () => unsubscribe();
-  }, [auth, firestore]);
+  }, [auth]);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        if (!user) {
+          return;
+        }
+        const profile = await getUserProfile(firestore, user.uid);
+        const completedProfile = isUserProfileComplete(profile);
+        console.log("Profile complete? ", completedProfile);
+        setHasCompletedOnboarding(completedProfile);
+      } catch (error) {
+        console.error('Unable to verify onboarding status: ', error);
+        setHasCompletedOnboarding(false);
+      } finally {
+        setIsChecking(false);
+      }
+    })();
+  }, [firestore, user]);
 
   if (isChecking) {
     return <div>Checking session...</div>;
