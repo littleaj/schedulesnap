@@ -41,12 +41,13 @@ export const useGoogleLogin = (): GoogleLoginControls => {
     const oauth = GoogleAuthProvider.credentialFromResult(credential);
     const accessToken = oauth?.accessToken ?? null;
 
+    setToken(null);
     if (accessToken) {
       console.log("Saving access token...")
+      setToken(accessToken);
     } else {
       console.log("Clearing access token...");
     }
-    setToken(accessToken);
 
     return credential;
   };
