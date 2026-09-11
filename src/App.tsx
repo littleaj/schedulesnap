@@ -24,7 +24,7 @@ interface AppShellContentProps {
   onResumeHandled: () => void;
 }
 
-const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps) => {
+const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: AppShellContentProps) => {
   const navigate = useNavigate();
   const user = useCurrentUser();
 
@@ -82,7 +82,9 @@ const ScheduleSnap = () => {
         <GoogleOAuthTokenProvider>
           <HeaderBar />
           <Routes>
-            <Route element={<AppShellContent resumeTarget={resumeTarget} onResumeHandled={() => setResumeTarget(null)} />}>
+            <Route element={<ResumeProgressWrapper
+                resumeTarget={resumeTarget}
+                onResumeHandled={() => setResumeTarget(null)} />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/about" element={<div>About page</div>} />
