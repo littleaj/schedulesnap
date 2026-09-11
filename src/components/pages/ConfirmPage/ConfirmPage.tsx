@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
 import {
+  clearAnalysisFlowCache,
   loadAnalysisResponse,
   loadDraftConfirmation,
   saveDraftConfirmation
@@ -143,6 +144,7 @@ const ConfirmPage = () => {
     // TODO: Handle the case where some events failed to be created.
 
     if (hasSuccess) {
+      clearAnalysisFlowCache(user?.uid);
       navigate('/finished', { replace: true });
     }
   };
@@ -272,7 +274,11 @@ const ConfirmPage = () => {
             {'Create Events'}
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
-            // TODO clear local storage and reset state
+            if (!user) {
+              console.warn("No user found while attempting to clear analysis flow cache.");
+            } else {
+              clearAnalysisFlowCache(user.uid);
+            }
             navigate("/");
           }}
             disabled={!hasEditableShift}>
