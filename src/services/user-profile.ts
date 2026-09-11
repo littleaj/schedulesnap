@@ -16,9 +16,8 @@ export const buildDefaultUserProfile = (timezone = 'UTC', displayName: string | 
   },
 });
 
-const sanitizeProfileData = (data: unknown): UserProfile => {
+const sanitizeProfileData = (source: Partial<UserProfile>): UserProfile => {
   const defaults = buildDefaultUserProfile();
-  const source = typeof data === 'object' && data ? data as Partial<UserProfile> : {};
   const reminder = source.reminder ?? defaults.reminder;
 
   return {
