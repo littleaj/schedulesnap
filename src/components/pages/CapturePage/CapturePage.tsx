@@ -3,6 +3,7 @@ import ActionButton from '@/components/atoms/ActionButton';
 import './CapturePage.css';
 import { useNavigate } from 'react-router';
 import { resizeSchedulePhoto, saveCapturedSchedulePhoto } from '@/services/schedule-analysis';
+import { useAuth } from '@/hooks/firebase';
 
 const CapturePage = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const CapturePage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const auth = useAuth();
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
@@ -24,8 +26,14 @@ const CapturePage = () => {
     setIsProcessing(true);
 
     try {
-      const resizedPhoto = await resizeSchedulePhoto(file);
-      saveCapturedSchedulePhoto(resizedPhoto);
+      const resizedPhoto = await resizeSchedulePhoto
+      (file);
+
+      if (!auth.currentUser) {
+        throw new Error("User is not authenticated.");
+      }
+
+      saveCapturedSchedulePhoto(auth.currentUser.uid, resizedPhoto);
       setIsReady(true);
     } catch {
       setErrorMessage('We could not prepare that photo. Try a different image or recapture it.');

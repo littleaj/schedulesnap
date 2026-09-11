@@ -9,46 +9,48 @@ import {
   saveDraftConfirmation,
 } from './schedule-analysis';
 
+const fakeUid = "fake-uid-analysis-flow";
+
 describe('analysis-flow helper', () => {
   beforeEach(() => {
     window.localStorage.clear();
   });
 
   it('chooses the right resume target for each cached artifact', () => {
-    saveCapturedSchedulePhoto({
+    saveCapturedSchedulePhoto(fakeUid, {
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
     });
 
-    expect(getAnalysisFlowResumeTarget()).toEqual({
+    expect(getAnalysisFlowResumeTarget(fakeUid)).toEqual({
       route: '/analyze',
       description: 'a saved schedule photo',
     });
 
-    saveAnalysisResponse({ warnings: [], shifts: [] });
+    saveAnalysisResponse(fakeUid, { warnings: [], shifts: [] });
 
-    expect(getAnalysisFlowResumeTarget()).toEqual({
+    expect(getAnalysisFlowResumeTarget(fakeUid)).toEqual({
       route: '/confirm',
       description: 'a saved analysis result',
     });
 
-    saveDraftConfirmation({
+    saveDraftConfirmation(fakeUid, {
       shifts: [],
       selectedCalendarId: 'primary',
     });
 
-    expect(loadCapturedSchedulePhoto()).toEqual({
+    expect(loadCapturedSchedulePhoto(fakeUid)).toEqual({
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
     });
-    expect(loadAnalysisResponse()).toEqual({ warnings: [], shifts: [] });
-    expect(loadDraftConfirmation()).toEqual({
+    expect(loadAnalysisResponse(fakeUid)).toEqual({ warnings: [], shifts: [] });
+    expect(loadDraftConfirmation(fakeUid)).toEqual({
       shifts: [],
       selectedCalendarId: 'primary',
     });
-    expect(getAnalysisFlowResumeTarget()).toEqual({
+    expect(getAnalysisFlowResumeTarget(fakeUid)).toEqual({
       route: '/confirm',
       description: 'an in-progress review',
     });

@@ -43,7 +43,8 @@ vi.mock('@/services/schedule-analysis', () => ({
 
 describe('AnalysisPage', () => {
   it('renders the loading state and kicks off analysis from cached capture data', async () => {
-    useAuthMock.mockReturnValue({ currentUser: { uid: 'user-123', displayName: 'Alex' } });
+    const fakeUid = 'user-123';
+    useAuthMock.mockReturnValue({ currentUser: { uid: fakeUid, displayName: 'Alex' } });
     useFirestoreMock.mockReturnValue({});
     loadCapturedSchedulePhotoMock.mockReturnValue({
       base64: 'resized-base64',
@@ -70,7 +71,7 @@ describe('AnalysisPage', () => {
     expect(screen.getByRole('heading', { name: /analyzing your schedule/i })).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(analyzeSchedulePhotoMock).toHaveBeenCalledWith(
+      expect(analyzeSchedulePhotoMock).toHaveBeenCalledWith(fakeUid,
         {
           base64: 'resized-base64',
           mimeType: 'image/jpeg',

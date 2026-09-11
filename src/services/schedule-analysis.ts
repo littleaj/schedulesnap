@@ -8,6 +8,10 @@ import type {
   ScheduleAnalysisShift,
 } from '@/types/schedule-analysis';
 
+const getCapturedPhotoStorageKey = (uid: string) => `schedulesnap:${uid}:captured-photo`;
+const getAnalysisResponseStorageKey = (uid: string) => `schedulesnap:${uid}:analysis-response`;
+const getDraftConfirmationStorageKey = (uid: string) => `schedulesnap:${uid}:draft-confirmation`;
+
 const CAPTURED_PHOTO_STORAGE_KEY = 'schedulesnap:captured-photo';
 const ANALYSIS_RESPONSE_STORAGE_KEY = 'schedulesnap:analysis-response';
 const DRAFT_CONFIRMATION_STORAGE_KEY = 'schedulesnap:draft-confirmation';
@@ -97,20 +101,20 @@ export const calculateResizedDimensions = (width: number, height: number, maxDim
   };
 };
 
-export const saveCapturedSchedulePhoto = (photo: CapturedSchedulePhoto) => {
+export const saveCapturedSchedulePhoto = (uid: string, photo: CapturedSchedulePhoto) => {
   if (!canUseLocalStorage()) {
     return;
   }
 
-  window.localStorage.setItem(CAPTURED_PHOTO_STORAGE_KEY, JSON.stringify(photo));
+  window.localStorage.setItem(getCapturedPhotoStorageKey(uid), JSON.stringify(photo));
 };
 
-export const loadCapturedSchedulePhoto = (): CapturedSchedulePhoto | null => {
+export const loadCapturedSchedulePhoto = (uid: string): CapturedSchedulePhoto | null => {
   if (!canUseLocalStorage()) {
     return null;
   }
 
-  const rawValue = window.localStorage.getItem(CAPTURED_PHOTO_STORAGE_KEY);
+  const rawValue = window.localStorage.getItem(getCapturedPhotoStorageKey(uid));
   if (!rawValue) {
     return null;
   }
@@ -131,20 +135,20 @@ export const loadCapturedSchedulePhoto = (): CapturedSchedulePhoto | null => {
   }
 };
 
-export const saveAnalysisResponse = (response: ScheduleAnalysisResponse) => {
+export const saveAnalysisResponse = (uid: string, response: ScheduleAnalysisResponse) => {
   if (!canUseLocalStorage()) {
     return;
   }
 
-  window.localStorage.setItem(ANALYSIS_RESPONSE_STORAGE_KEY, JSON.stringify(response));
+  window.localStorage.setItem(getAnalysisResponseStorageKey(uid), JSON.stringify(response));
 };
 
-export const loadAnalysisResponse = (): ScheduleAnalysisResponse | null => {
+export const loadAnalysisResponse = (uid: string): ScheduleAnalysisResponse | null => {
   if (!canUseLocalStorage()) {
     return null;
   }
 
-  const rawValue = window.localStorage.getItem(ANALYSIS_RESPONSE_STORAGE_KEY);
+  const rawValue = window.localStorage.getItem(getAnalysisResponseStorageKey(uid));
   if (!rawValue) {
     return null;
   }
@@ -157,20 +161,20 @@ export const loadAnalysisResponse = (): ScheduleAnalysisResponse | null => {
   }
 };
 
-export const saveDraftConfirmation = (draft: DraftConfirmation) => {
+export const saveDraftConfirmation = (uid: string, draft: DraftConfirmation) => {
   if (!canUseLocalStorage()) {
     return;
   }
 
-  window.localStorage.setItem(DRAFT_CONFIRMATION_STORAGE_KEY, JSON.stringify(draft));
+  window.localStorage.setItem(getDraftConfirmationStorageKey(uid), JSON.stringify(draft));
 };
 
-export const loadDraftConfirmation = (): DraftConfirmation | null => {
+export const loadDraftConfirmation = (uid: string): DraftConfirmation | null => {
   if (!canUseLocalStorage()) {
     return null;
   }
 
-  const rawValue = window.localStorage.getItem(DRAFT_CONFIRMATION_STORAGE_KEY);
+  const rawValue = window.localStorage.getItem(getDraftConfirmationStorageKey(uid));
   if (!rawValue) {
     return null;
   }
@@ -183,14 +187,14 @@ export const loadDraftConfirmation = (): DraftConfirmation | null => {
   }
 };
 
-export const clearAnalysisFlowCache = () => {
+export const clearAnalysisFlowCache = (uid: string) => {
   if (!canUseLocalStorage()) {
     return;
   }
 
-  window.localStorage.removeItem(CAPTURED_PHOTO_STORAGE_KEY);
-  window.localStorage.removeItem(ANALYSIS_RESPONSE_STORAGE_KEY);
-  window.localStorage.removeItem(DRAFT_CONFIRMATION_STORAGE_KEY);
+  window.localStorage.removeItem(getCapturedPhotoStorageKey(uid));
+  window.localStorage.removeItem(getAnalysisResponseStorageKey(uid));
+  window.localStorage.removeItem(getDraftConfirmationStorageKey(uid));
 };
 
 export const buildAnalysisPrompt = (targetName: string, todayIso: string) => `You are extracting a work schedule from a photo of a printed or handwritten schedule, calendar, or whiteboard.
@@ -257,6 +261,7 @@ export const resizeSchedulePhoto = async (
 };
 
 export const analyzeSchedulePhoto = async (
+  uid: string,
   photo: CapturedSchedulePhoto,
   targetName: string,
   todayIso = new Date().toISOString().slice(0, 10),
@@ -286,7 +291,7 @@ export const analyzeSchedulePhoto = async (
         },
       });
       const parsedResponse = parseAnalysisResponse(result.response.text());
-      saveAnalysisResponse(parsedResponse);
+      saveAnalysisResponse(uid, parsedResponse);
       return parsedResponse;
    } catch (error) {
      throw new Error(`Failed to analyze schedule photo: ${error}`);

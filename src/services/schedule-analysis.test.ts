@@ -11,6 +11,8 @@ import {
   saveCapturedSchedulePhoto,
 } from './schedule-analysis';
 
+const fakeUid = "fake-uid-schedule-analysis";
+
 describe('schedule-analysis services', () => {
   beforeEach(() => {
     window.localStorage.clear();
@@ -56,38 +58,38 @@ describe('schedule-analysis services', () => {
   });
 
   it('saves and loads cached capture and analysis payloads', () => {
-    saveCapturedSchedulePhoto({
+    saveCapturedSchedulePhoto(fakeUid, {
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
     });
 
-    saveAnalysisResponse({
+    saveAnalysisResponse(fakeUid, {
       warnings: [],
       shifts: [],
     });
 
-    expect(loadCapturedSchedulePhoto()).toEqual({
+    expect(loadCapturedSchedulePhoto(fakeUid)).toEqual({
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
     });
-    expect(loadAnalysisResponse()).toEqual({ warnings: [], shifts: [] });
+    expect(loadAnalysisResponse(fakeUid)).toEqual({ warnings: [], shifts: [] });
   });
 
   it('clears all analysis-flow caches together', () => {
-    saveCapturedSchedulePhoto({
+    saveCapturedSchedulePhoto(fakeUid, {
       base64: 'abc123',
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
     });
-    saveAnalysisResponse({ warnings: [], shifts: [] });
-    saveDraftConfirmation({ shifts: [], selectedCalendarId: 'primary' });
+    saveAnalysisResponse(fakeUid, { warnings: [], shifts: [] });
+    saveDraftConfirmation(fakeUid, { shifts: [], selectedCalendarId: 'primary' });
 
-    clearAnalysisFlowCache();
+    clearAnalysisFlowCache(fakeUid);
 
-    expect(loadCapturedSchedulePhoto()).toBeNull();
-    expect(loadAnalysisResponse()).toBeNull();
-    expect(loadDraftConfirmation()).toBeNull();
+    expect(loadCapturedSchedulePhoto(fakeUid)).toBeNull();
+    expect(loadAnalysisResponse(fakeUid)).toBeNull();
+    expect(loadDraftConfirmation(fakeUid)).toBeNull();
   });
 });

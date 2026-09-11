@@ -19,8 +19,16 @@ const AnalysisPage = () => {
   useEffect(() => {
     let isActive = true;
 
+    if (!auth.currentUser) {
+      setErrorMessage('Your sign-in expired before analysis could start. Please sign in again.');
+      setStatusMessage('Analysis paused.');
+      throw new Error("User is not authenticated.");
+    }
+
+    const { uid } = auth.currentUser;
+
     const runAnalysis = async () => {
-      const capturedPhoto = loadCapturedSchedulePhoto();
+      const capturedPhoto = loadCapturedSchedulePhoto(uid);
       if (!capturedPhoto) {
         if (!isActive) {
           return;
@@ -28,17 +36,6 @@ const AnalysisPage = () => {
 
         setErrorMessage('No captured photo was found. Go back and upload a schedule image first.');
         setStatusMessage('Waiting for a captured schedule photo.');
-        return;
-      }
-
-      const uid = auth.currentUser?.uid;
-      if (!uid) {
-        if (!isActive) {
-          return;
-        }
-
-        setErrorMessage('Your sign-in expired before analysis could start. Please sign in again.');
-        setStatusMessage('Analysis paused.');
         return;
       }
 
@@ -50,8 +47,8 @@ const AnalysisPage = () => {
           return;
         }
 
-        setStatusMessage('Sending the resized photo to Gemini...');
-        await analyzeSchedulePhoto(capturedPhoto, targetName);
+        setStatusMessage('Analyzing your schedule photo...');
+        await analyzeSchedulePhoto(uid, capturedPhoto, targetName);
 
         if (!isActive) {
           return;

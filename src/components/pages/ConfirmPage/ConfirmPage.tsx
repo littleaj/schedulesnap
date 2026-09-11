@@ -15,14 +15,22 @@ import type { WeekDay } from '@/types/shift-display';
 import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
+import { useAuth } from '@/hooks/firebase';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const { getToken } = useContext(GoogleOAuthTokenContext);
   const { authenticate } = useGoogleLogin();
+  const auth = useAuth();
 
-  const draftConfirmation = loadDraftConfirmation();
-  const analysisResponse = draftConfirmation ? null : loadAnalysisResponse();
+  if (!auth.currentUser) {
+    throw new Error("User is not authenticated.");
+  }
+
+  const { uid } = auth.currentUser;
+
+  const draftConfirmation = loadDraftConfirmation(uid);
+  const analysisResponse = draftConfirmation ? null : loadAnalysisResponse(uid);
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
   .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
   const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
@@ -162,7 +170,7 @@ const ConfirmPage = () => {
         };
       });
 
-      saveDraftConfirmation({
+      saveDraftConfirmation(uid, {
         shifts: nextWeekDays.flatMap((day) => day.shifts.map((val) => ({
           ...val,
           startTime: convertTo24Hour(val.startTime),
@@ -180,9 +188,9 @@ const ConfirmPage = () => {
       return;
     }
 
-    saveDraftConfirmation({
+    saveDraftConfirmation(uid, {
       shifts: shifts.map(val => ({ ...val, startTime: convertTo24Hour(val.startTime), endTime: convertTo24Hour(val.endTime) })),
-      selectedCalendarId: '' // TODO populate with default calendar ID
+      selectedCalendarId: '' // TODO populate with selected  calendar ID
     });
   }, [shifts]);
 

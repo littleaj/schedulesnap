@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from './hooks/firebase';
 import './App.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AnalysisResumeDialog from '@/components/molecules/AnalysisResumeDialog';
@@ -25,6 +26,7 @@ interface AppShellContentProps {
 
 const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps) => {
   const navigate = useNavigate();
+  const auth = useAuth();
 
   const handleContinue = () => {
     if (!resumeTarget) {
@@ -36,14 +38,18 @@ const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps
   };
 
   const handleDiscard = () => {
-    clearAnalysisFlowCache();
+    if (!auth.currentUser) {
+      return;
+    }
+
+    clearAnalysisFlowCache(auth.currentUser.uid);
     onResumeHandled();
   };
 
   return (
     <>
       <HeaderBar />
-      {resumeTarget ? (
+      {resumeTarget && auth.currentUser ? (
         <AnalysisResumeDialog
           resumeTarget={resumeTarget}
           onContinue={handleContinue}
@@ -72,9 +78,15 @@ const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps
 const ScheduleSnap = () => {
   const [resumeTarget, setResumeTarget] = useState<AnalysisFlowResumeTarget | null>(null);
 
+  const auth = useAuth();
+
   useEffect(() => {
-    setResumeTarget(getAnalysisFlowResumeTarget());
-  }, []);
+    if (!auth.currentUser) {
+      return;
+    }
+
+    setResumeTarget(getAnalysisFlowResumeTarget(auth.currentUser.uid));
+  }, [auth.currentUser]);
 
   return (
     <div className="app-shell">

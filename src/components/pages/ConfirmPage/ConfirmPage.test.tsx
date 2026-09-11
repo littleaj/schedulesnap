@@ -12,6 +12,13 @@ const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmati
   navigateMock: vi.fn(),
 }));
 
+const fakeUid = "fake-uid-confirm-page";
+vi.mock('@/hooks/firebase', () => ({
+  useAuth: () => ({
+    currentUser: { uid: fakeUid },
+  }),
+}));
+
 vi.mock('react-router', async () => {
   const actual = await vi.importActual<typeof import('react-router')>('react-router');
   return {
@@ -114,7 +121,7 @@ describe('ConfirmPage', () => {
     fireEvent.keyDown(input, { key: 'Enter' });
 
     await waitFor(() => {
-      expect(saveDraftConfirmationMock).toHaveBeenCalledWith(expect.objectContaining({
+      expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
         shifts: expect.arrayContaining([
           expect.objectContaining({ date: '2026-09-05', startTime: '10:30' }),
         ]),

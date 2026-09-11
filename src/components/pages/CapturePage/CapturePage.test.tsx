@@ -12,6 +12,13 @@ const {
   navigateMock: vi.fn(),
 }));
 
+const fakeUid = "fake-uid-capture-page";
+vi.mock('@/hooks/firebase', () => ({
+  useAuth: () => ({
+    currentUser: { uid: fakeUid },
+  }),
+}));
+
 vi.mock('react-router', () => ({
   useNavigate: () => navigateMock,
 }));
@@ -49,7 +56,7 @@ describe('CapturePage', () => {
 
     await waitFor(() => {
       expect(resizeSchedulePhotoMock).toHaveBeenCalledTimes(1);
-      expect(saveCapturedSchedulePhotoMock).toHaveBeenCalledWith({
+      expect(saveCapturedSchedulePhotoMock).toHaveBeenCalledWith(fakeUid, {
         base64: 'resized-base64',
         mimeType: 'image/jpeg',
         fileName: 'schedule.png',
