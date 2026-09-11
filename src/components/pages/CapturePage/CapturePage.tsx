@@ -51,7 +51,6 @@ const CapturePage = () => {
             id="schedule-photo"
             type="file"
             accept="image/*"
-            capture="environment"
             onChange={handleFileChange}
             className="capture-card__input"
           />
