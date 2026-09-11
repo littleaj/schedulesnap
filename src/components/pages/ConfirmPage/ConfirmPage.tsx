@@ -11,96 +11,10 @@ import './ConfirmPage.css';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import { useGoogleLogin } from '@/hooks/google-login';
-import type { EditableShift, WeekDay } from '@/types/shift-display';
+import type { WeekDay } from '@/types/shift-display';
 import type { GoogleCalendarEvent } from '@/types/google-calendar';
-import { convertTo24Hour, getWeekStartDate } from '@/utils/time-utils';
-
-const weekdayFormatter = new Intl.DateTimeFormat(undefined, {
-  weekday: 'short',
-});
-
-const monthDayFormatter = new Intl.DateTimeFormat(undefined, {
-  month: 'short',
-  day: 'numeric',
-});
-
-const timeFormatter = new Intl.DateTimeFormat(undefined, {
-  timeStyle: 'short',
-});
-
-const toLocalDate = (date: string) => new Date(`${date}T00:00:00`);
-
-const toLocalIsoDate = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-};
-
-const formatWeekday = (date: Date) => weekdayFormatter.format(date);
-
-const formatMonthDay = (date: Date) => monthDayFormatter.format(date);
-
-const formatTime = (time: string) => {
-  if (!time?.trim()) {
-    return '';
-  }
-  return timeFormatter.format(new Date(`1970-01-01T${time}`));
-};
-
-
-const formatShiftKey = ({ date, startTime, endTime, role, location }: ScheduleAnalysisShift) => {
-  return `${date}-${startTime}-${endTime}-${role ?? ''}-${location ?? ''}`;
-};
-
-const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
-  const firstShiftDate = shifts[0] ? toLocalDate(shifts[0].date) : null;
-  const weekStart = firstShiftDate ? getWeekStartDate(firstShiftDate) : null;
-  const groupedShifts = new Map<string, EditableShift[]>();
-
-  for (const shift of shifts) {
-    const dayShifts = groupedShifts.get(shift.date) ?? [];
-    dayShifts.push({ ...shift, id: formatShiftKey(shift), isPlaceholder: false });
-    groupedShifts.set(shift.date, dayShifts);
-  }
-
-  return Array.from({ length: 7 }, (_, index) => {
-    const dayDate = weekStart ? new Date(weekStart) : new Date();
-    if (weekStart) {
-      dayDate.setDate(weekStart.getDate() + index);
-    }
-
-    const isoDate = toLocalIsoDate(dayDate);
-
-    const weekday: WeekDay = {
-      isoDate,
-      weekday: formatWeekday(dayDate),
-      monthDay: formatMonthDay(dayDate),
-      shifts: groupedShifts.get(isoDate)?.map((shift) => ({
-        ...shift,
-        startTime: formatTime(shift.startTime),
-        endTime: formatTime(shift.endTime),
-        id: formatShiftKey(shift),
-        isPlaceholder: false
-      })) ?? [
-          {
-            id: `${isoDate}-placeholder`,
-            date: isoDate,
-            startTime: '',
-            endTime: '',
-            role: '',
-            location: '',
-            confidence: 0,
-            rawText: '',
-            isPlaceholder: true,
-          },
-        ],
-    };
-
-    return weekday;
-  });
-};
+import { convertTo24Hour } from '@/utils/time-utils';
+import { buildWeekDays } from './utils/weekdays';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
