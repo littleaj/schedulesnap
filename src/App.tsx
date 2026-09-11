@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router';
-import { useAuth } from './hooks/firebase';
 import './App.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AnalysisResumeDialog from '@/components/molecules/AnalysisResumeDialog';
@@ -14,12 +12,12 @@ import AnalysisPage from '@/components/pages/AnalysisPage';
 import ConfirmPage from '@/components/pages/ConfirmPage';
 import FinishedPage from '@/components/pages/FinishedPage';
 import SettingsPage from '@/components/pages/SettingsPage';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
+import { BrowserRouter, Route, Routes, useNavigate, Outlet } from 'react-router';
 import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
 import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
 import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
-import { GoogleOAuthTokenProvider } from './contexts/google-oauth';
-import useCurrentUser from './hooks/current-user';
+import { GoogleOAuthTokenProvider } from '@/contexts/google-oauth';
+import useCurrentUser from '@/hooks/current-user';
 
 interface AppShellContentProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
