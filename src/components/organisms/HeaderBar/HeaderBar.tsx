@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { onAuthStateChanged, type User } from 'firebase/auth';
+import React from 'react';
 import AppLogoLink from '@/components/atoms/AppLogoLink';
 import IconLink from '@/components/atoms/IconLink';
 import NavButtonLink from '@/components/atoms/NavButtonLink';
