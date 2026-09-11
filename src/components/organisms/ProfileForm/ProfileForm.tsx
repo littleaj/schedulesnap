@@ -101,7 +101,6 @@ const ProfileForm = ({
           value={values.defaultCalendarId}
           options={calendarOptions}
           onChange={(event) => onDefaultCalendarIdChange(event.target.value)}
-          hint="Calendar list integration will expand this list automatically."
           error={errors.defaultCalendarId}
         />
 
