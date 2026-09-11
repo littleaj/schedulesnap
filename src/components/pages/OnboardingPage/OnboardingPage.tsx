@@ -12,9 +12,11 @@ const OnboardingPage = () => {
 
   const handleSubmit = async () => {
     const isSaved = await form.submit();
+    console.log("Submitting settings:", isSaved);
 
     if (isSaved) {
-      navigate('/capture', { replace: true });
+      console.log("Continuing to /capture...")
+      navigate('/capture');
     }
   };
 
