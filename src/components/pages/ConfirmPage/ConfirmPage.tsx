@@ -84,33 +84,55 @@ const ConfirmPage = () => {
       );
     }
 
-    const createEventRequest = async (eventBody: GoogleCalendarEvent) => {
-      let accessToken = getToken();
+    let accessToken = getToken();
+    if (!accessToken) {
+      console.log('No access token found, initiating authentication...');
+      await authenticate();
+      accessToken = getToken();
       if (!accessToken) {
-        await authenticate();
-        accessToken = getToken();
-        if (!accessToken) {
-          throw new Error('Failed to obtain access token after authentication');
-        }
+        throw new Error('Failed to obtain access token after authentication');
       }
+    }
+
+    const createEventRequest = async (eventBody: GoogleCalendarEvent, accessToken: string) => {
       console.log(`Creating event in ${calendarId} calendar: `, eventBody.summary, eventBody.start.dateTime);
       const response = await doFetch(eventBody, accessToken);
 
       if (response.status === 401) {
         // Unauthorized: Google OAuth token may have expired
         await authenticate();
-        accessToken = getToken();
-        if (!accessToken) {
+        const newToken = getToken();
+        if (!newToken) {
           throw new Error('Failed to obtain access token after authentication');
         }
-        return await doFetch(eventBody, accessToken);
+        return await doFetch(eventBody, newToken);
       }
 
       return response;
     };
 
-    const settledResponses = await Promise.allSettled(eventsToCreate.map(createEventRequest));
-    const hasSuccess = settledResponses.some((result) => result.status === 'fulfilled' && result.value.ok);
+
+    let hasSuccess = false;
+    for (const event of eventsToCreate) {
+      const response = await createEventRequest(event, accessToken);
+      hasSuccess = hasSuccess || response.ok;
+
+      if (response.status === 401) {
+        console.log('Unauthorized: Access token may have expired.');
+        await authenticate();
+        accessToken = getToken();
+        if (!accessToken) {
+          throw new Error('Failed to obtain access token after authentication');
+        }
+        const retryResponse = await createEventRequest(event, accessToken);
+        if (retryResponse.status === 401) {
+          throw new Error("Unauthorized: token still invalid after re-authentication");
+        }
+      }
+    }
+
+    // TODO: Handle the case where none of the events were successfully created.
+    // TODO: Handle the case where some events failed to be created.
 
     if (hasSuccess) {
       navigate('/finished', { replace: true });
