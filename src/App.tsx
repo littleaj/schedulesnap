@@ -19,12 +19,12 @@ import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenProvider } from '@/contexts/google-oauth';
 import useCurrentUser from '@/hooks/current-user';
 
-interface AppShellContentProps {
+interface ResumeProgressWrapperProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
   onResumeHandled: () => void;
 }
 
-const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: AppShellContentProps) => {
+const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: ResumeProgressWrapperProps) => {
   const navigate = useNavigate();
   const user = useCurrentUser();
 
@@ -46,7 +46,6 @@ const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: AppShellConten
     onResumeHandled();
   };
 
-  console.log("Rendering AppShellContent", { resumeTarget, "user.uid": user?.uid });
   return (
     <>
       {resumeTarget && user ? (
