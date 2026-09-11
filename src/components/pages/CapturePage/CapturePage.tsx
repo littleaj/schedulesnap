@@ -3,7 +3,6 @@ import ActionButton from '@/components/atoms/ActionButton';
 import './CapturePage.css';
 import { useNavigate } from 'react-router';
 import { resizeSchedulePhoto, saveCapturedSchedulePhoto } from '@/services/schedule-analysis';
-import { useAuth } from '@/hooks/firebase';
 import useCurrentUser from '@/hooks/current-user';
 import { useUserOnboardingStatus } from '@/hooks/user-onboarding';
 
@@ -13,7 +12,6 @@ const CapturePage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const auth = useAuth();
   const { isChecking, hasCompletedOnboarding } = useUserOnboardingStatus();
   const user = useCurrentUser();
 
