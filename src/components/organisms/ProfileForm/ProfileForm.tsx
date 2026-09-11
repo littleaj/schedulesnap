@@ -6,6 +6,7 @@ import ReminderSettings from '@/components/molecules/ReminderSettings';
 import type { UserProfile, UserProfileValidationErrors } from '@/types/user-profile';
 import './ProfileForm.css';
 
+// FIXME: Fetch timezone options from Intl or something
 const TIMEZONE_OPTIONS = [
   { value: 'UTC', label: 'UTC' },
   { value: 'America/New_York', label: 'America/New_York' },
@@ -13,6 +14,7 @@ const TIMEZONE_OPTIONS = [
   { value: 'America/Los_Angeles', label: 'America/Los_Angeles' },
 ];
 
+// FIXME: Fetch calendar options dynamically from the user's Google Calendar list
 const CALENDAR_OPTIONS = [
   { value: 'primary', label: 'Primary calendar' },
 ];
