@@ -15,7 +15,6 @@ import type { WeekDay } from '@/types/shift-display';
 import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
-import { useAuth } from '@/hooks/firebase';
 import useCurrentUser from '@/hooks/current-user';
 
 const ConfirmPage = () => {
