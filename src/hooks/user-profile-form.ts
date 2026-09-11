@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useAuth, useFirestore } from '@/hooks/firebase';
+import { useFirestore } from '@/hooks/firebase';
 import {
   buildDefaultUserProfile,
   getUserProfile,
   saveUserProfile,
 } from '@/services/user-profile';
 import type { UserProfile, UserProfileValidationErrors } from '@/types/user-profile';
+import useCurrentUser from './current-user';
 
 interface UseUserProfileFormOptions {
   successMessage: string;
@@ -49,11 +50,11 @@ const validateProfile = (profile: UserProfile): UserProfileValidationErrors => {
 };
 
 const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseUserProfileFormResult => {
-  const auth = useAuth();
   const firestore = useFirestore();
+  const user = useCurrentUser();
 
   const [values, setValues] = useState<UserProfile>(
-    buildDefaultUserProfile('UTC', auth.currentUser?.displayName ?? null),
+    buildDefaultUserProfile('UTC', user?.displayName ?? null),
   );
   const [errors, setErrors] = useState<UserProfileValidationErrors>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +64,7 @@ const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseU
 
   useEffect(() => {
     const loadProfile = async () => {
-      const uid = auth.currentUser?.uid;
+      const uid = user?.uid;
       if (!uid) {
         setIsLoading(false);
         setErrorMessage('Unable to load profile because no user is signed in.');
@@ -72,7 +73,7 @@ const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseU
 
       try {
         const existingProfile = await getUserProfile(firestore, uid);
-        const defaultProfile = buildDefaultUserProfile('UTC', auth.currentUser?.displayName ?? null);
+        const defaultProfile = buildDefaultUserProfile('UTC', user?.displayName ?? null);
         setValues(existingProfile ?? defaultProfile);
       } catch (error) {
         console.error('Unable to load user profile: ', error);
@@ -83,7 +84,7 @@ const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseU
     };
 
     void loadProfile();
-  }, [auth, firestore]);
+  }, [user, firestore]);
 
   const setTargetName = (value: string) => {
     setLatestSuccessMessage(null);
@@ -131,7 +132,7 @@ const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseU
       return false;
     }
 
-    const uid = auth.currentUser?.uid;
+    const uid = user?.uid;
     if (!uid) {
       setErrorMessage('Unable to save profile because no user is signed in.');
       return false;

@@ -1,31 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
-import { useAuth, useFirestore } from '../../../hooks/firebase';
+import { useFirestore } from '../../../hooks/firebase';
 import { getUserProfile } from '../../../services/user-profile';
 import {
   analyzeSchedulePhoto,
   loadCapturedSchedulePhoto,
 } from '../../../services/schedule-analysis';
 import './AnalysisPage.css';
+import useCurrentUser from '@/hooks/current-user';
 
 const AnalysisPage = () => {
   const navigate = useNavigate();
-  const auth = useAuth();
   const firestore = useFirestore();
   const [statusMessage, setStatusMessage] = useState('Reading your schedule photo and extracting shifts...');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const user = useCurrentUser();
 
   useEffect(() => {
     let isActive = true;
 
-    if (!auth.currentUser) {
+    if (!user) {
       setErrorMessage('Your sign-in expired before analysis could start. Please sign in again.');
       setStatusMessage('Analysis paused.');
       throw new Error("User is not authenticated.");
     }
 
-    const { uid } = auth.currentUser;
+    const { uid } = user;
 
     const runAnalysis = async () => {
       const capturedPhoto = loadCapturedSchedulePhoto(uid);
@@ -41,7 +42,7 @@ const AnalysisPage = () => {
 
       try {
         const profile = await getUserProfile(firestore, uid);
-        const targetName = profile?.targetName ?? auth.currentUser?.displayName ?? '';
+        const targetName = profile?.targetName ?? user?.displayName ?? '';
 
         if (!isActive) {
           return;
@@ -70,7 +71,7 @@ const AnalysisPage = () => {
     return () => {
       isActive = false;
     };
-  }, [auth, firestore, navigate]);
+  }, [user, firestore, navigate]);
 
   return (
     <main className="analysis-page">

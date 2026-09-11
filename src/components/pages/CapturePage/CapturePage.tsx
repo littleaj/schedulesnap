@@ -4,6 +4,7 @@ import './CapturePage.css';
 import { useNavigate } from 'react-router';
 import { resizeSchedulePhoto, saveCapturedSchedulePhoto } from '@/services/schedule-analysis';
 import { useAuth } from '@/hooks/firebase';
+import useCurrentUser from '@/hooks/current-user';
 import { useUserOnboardingStatus } from '@/hooks/user-onboarding';
 
 const CapturePage = () => {
@@ -14,6 +15,7 @@ const CapturePage = () => {
   const [isReady, setIsReady] = useState(false);
   const auth = useAuth();
   const { isChecking, hasCompletedOnboarding } = useUserOnboardingStatus();
+  const user = useCurrentUser();
 
   if (isChecking || !hasCompletedOnboarding) {
     return null;
@@ -32,14 +34,13 @@ const CapturePage = () => {
     setIsProcessing(true);
 
     try {
-      const resizedPhoto = await resizeSchedulePhoto
-      (file);
+      const resizedPhoto = await resizeSchedulePhoto(file);
 
-      if (!auth.currentUser) {
+      if (!user) {
         throw new Error("User is not authenticated.");
       }
 
-      saveCapturedSchedulePhoto(auth.currentUser.uid, resizedPhoto);
+      saveCapturedSchedulePhoto(user.uid, resizedPhoto);
       setIsReady(true);
     } catch {
       setErrorMessage('We could not prepare that photo. Try a different image or recapture it.');

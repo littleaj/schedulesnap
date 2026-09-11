@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Outlet } from 'react-router';
 import { useAuth } from './hooks/firebase';
 import './App.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
@@ -18,6 +19,7 @@ import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
 import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
 import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenProvider } from './contexts/google-oauth';
+import useCurrentUser from './hooks/current-user';
 
 interface AppShellContentProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
@@ -26,7 +28,7 @@ interface AppShellContentProps {
 
 const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps) => {
   const navigate = useNavigate();
-  const auth = useAuth();
+  const user = useCurrentUser();
 
   const handleContinue = () => {
     if (!resumeTarget) {
@@ -38,61 +40,67 @@ const AppShellContent = ({ resumeTarget, onResumeHandled }: AppShellContentProps
   };
 
   const handleDiscard = () => {
-    if (!auth.currentUser) {
+    if (!user) {
       return;
     }
 
-    clearAnalysisFlowCache(auth.currentUser.uid);
+    clearAnalysisFlowCache(user.uid);
     onResumeHandled();
   };
 
+  console.log("Rendering AppShellContent", { resumeTarget, "user.uid": user?.uid });
   return (
     <>
-      <HeaderBar />
-      {resumeTarget && auth.currentUser ? (
+      {resumeTarget && user ? (
         <AnalysisResumeDialog
           resumeTarget={resumeTarget}
           onContinue={handleContinue}
           onDiscard={handleDiscard}
         />
       ) : null}
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/about" element={<div>About page</div>} />
-        <Route path="/help" element={<div>Help page</div>} />
-
-        <Route element={<ProtectedRoute />}>
-          <Route path="/logout" element={<LogoutPage />} />
-          <Route path="/capture" element={<CapturePage />} />
-          <Route path="/analyze" element={<AnalysisPage />} />
-          <Route path="/confirm" element={<ConfirmPage />} />
-          <Route path="/finished" element={<FinishedPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/onboarding" element={<OnboardingPage />} />
-        </Route>
-      </Routes>
+      <Outlet />
     </>
   );
 };
 const ScheduleSnap = () => {
   const [resumeTarget, setResumeTarget] = useState<AnalysisFlowResumeTarget | null>(null);
 
-  const auth = useAuth();
+  const user = useCurrentUser();
 
   useEffect(() => {
-    if (!auth.currentUser) {
+    console.log("Checking for analysis flow resume target", { "user.uid": user?.uid });
+    if (!user) {
       return;
     }
 
-    setResumeTarget(getAnalysisFlowResumeTarget(auth.currentUser.uid));
-  }, [auth.currentUser]);
+    const analysisFlowTarget = getAnalysisFlowResumeTarget(user.uid);
+    console.log("Checkied for analysis flow resume target: ", analysisFlowTarget?.route);
+    setResumeTarget(analysisFlowTarget);
+  }, [user]);
 
   return (
     <div className="app-shell">
       <BrowserRouter>
         <GoogleOAuthTokenProvider>
-          <AppShellContent resumeTarget={resumeTarget} onResumeHandled={() => setResumeTarget(null)} />
+          <HeaderBar />
+          <Routes>
+            <Route element={<AppShellContent resumeTarget={resumeTarget} onResumeHandled={() => setResumeTarget(null)} />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/about" element={<div>About page</div>} />
+              <Route path="/help" element={<div>Help page</div>} />
+
+              <Route element={<ProtectedRoute />}>
+                <Route path="/logout" element={<LogoutPage />} />
+                <Route path="/capture" element={<CapturePage />} />
+                <Route path="/analyze" element={<AnalysisPage />} />
+                <Route path="/confirm" element={<ConfirmPage />} />
+                <Route path="/finished" element={<FinishedPage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/onboarding" element={<OnboardingPage />} />
+              </Route>
+            </Route>
+          </Routes>
         </GoogleOAuthTokenProvider>
       </BrowserRouter>
     </div>

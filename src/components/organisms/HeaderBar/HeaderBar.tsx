@@ -4,21 +4,14 @@ import AppLogoLink from '@/components/atoms/AppLogoLink';
 import IconLink from '@/components/atoms/IconLink';
 import NavButtonLink from '@/components/atoms/NavButtonLink';
 import UserMenu from '@/components/molecules/UserMenu';
-import { useAuth } from '@/hooks/firebase';
 import './HeaderBar.css';
+import useCurrentUser from '@/hooks/current-user';
 const HelpIcon = '/assets/help-icon.svg';
 
 const HeaderBar = () => {
-  const auth = useAuth();
-  const [user, setUser] = useState<User | null>(auth.currentUser);
+  const user = useCurrentUser();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, nextUser => {
-      setUser(nextUser);
-    });
-
-    return () => unsubscribe();
-  }, [auth]);
+  console.log("[HeaderBar] currentUser: ", !!user)
 
   return (
     <header className="header-bar">

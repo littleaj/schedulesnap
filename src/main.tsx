@@ -4,6 +4,7 @@ import App from './App';
 import './styles/colors.css';
 import './index.css';
 import { FirebaseProvider } from '@/contexts/firebase';
+import { CurrentUserProvider } from './contexts/current-user';
 
 
 const node = document.getElementById('root');
@@ -13,7 +14,9 @@ const root = createRoot(node);
 root.render(
   <React.StrictMode>
     <FirebaseProvider>
-      <App />
+      <CurrentUserProvider>
+        <App />
+      </CurrentUserProvider>
     </FirebaseProvider>
   </React.StrictMode>
 );

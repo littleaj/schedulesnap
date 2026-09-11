@@ -2,16 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useAuth } from '@/hooks/firebase';
+import useCurrentUser from '@/hooks/current-user';
 
 const ProtectedRoute = () => {
   const auth = useAuth();
   const location = useLocation();
   const [isChecking, setIsChecking] = useState(true);
-  const [user, setUser] = useState(auth.currentUser);
+  const user = useCurrentUser();
 
+  console.log("Rendering ProtectedRoute", { isChecking, user: !!user });
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
-      setUser(nextUser);
       setIsChecking(false);
     });
 

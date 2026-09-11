@@ -16,18 +16,19 @@ import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
 import { useAuth } from '@/hooks/firebase';
+import useCurrentUser from '@/hooks/current-user';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const { getToken } = useContext(GoogleOAuthTokenContext);
   const { authenticate } = useGoogleLogin();
-  const auth = useAuth();
+  const user = useCurrentUser();
 
-  if (!auth.currentUser) {
+  if (!user) {
     throw new Error("User is not authenticated.");
   }
 
-  const { uid } = auth.currentUser;
+  const { uid } = user;
 
   const draftConfirmation = loadDraftConfirmation(uid);
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse(uid);
