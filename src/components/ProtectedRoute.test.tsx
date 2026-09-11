@@ -61,7 +61,7 @@ describe('ProtectedRoute', () => {
     });
   });
 
-  it('redirects authenticated users without a profile to onboarding for protected app routes', async () => {
+  it('renders protected routes for authenticated users even without a profile', async () => {
     authMock.currentUser = { uid: 'user-123' };
     getUserProfileMock.mockResolvedValue(null);
 
@@ -73,7 +73,6 @@ describe('ProtectedRoute', () => {
     render(
       <MemoryRouter initialEntries={['/capture']}>
         <Routes>
-          <Route path="/onboarding" element={<div>Onboarding page</div>} />
           <Route element={<ProtectedRoute />}>
             <Route path="/capture" element={<div>Protected content</div>} />
           </Route>
@@ -82,7 +81,7 @@ describe('ProtectedRoute', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText('Onboarding page')).toBeInTheDocument();
+      expect(screen.getByText('Protected content')).toBeInTheDocument();
     });
   });
 

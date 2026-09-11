@@ -1,15 +1,20 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CapturePage from './CapturePage';
 
 const {
   resizeSchedulePhotoMock,
   saveCapturedSchedulePhotoMock,
   navigateMock,
+  getUserProfileMock,
+  isUserProfileCompleteMock,
 } = vi.hoisted(() => ({
   resizeSchedulePhotoMock: vi.fn(),
   saveCapturedSchedulePhotoMock: vi.fn(),
   navigateMock: vi.fn(),
+  getUserProfileMock: vi.fn(),
+  isUserProfileCompleteMock: vi.fn(),
 }));
 
 const fakeUid = "fake-uid-capture-page";
@@ -17,22 +22,83 @@ vi.mock('@/hooks/firebase', () => ({
   useAuth: () => ({
     currentUser: { uid: fakeUid },
   }),
+  useFirestore: () => ({}) ,
 }));
 
-vi.mock('react-router', () => ({
-  useNavigate: () => navigateMock,
-}));
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual<typeof import('react-router')>('react-router');
+
+  return {
+    ...actual,
+    useNavigate: () => navigateMock,
+  };
+});
 
 vi.mock('@/services/schedule-analysis', () => ({
   resizeSchedulePhoto: resizeSchedulePhotoMock,
   saveCapturedSchedulePhoto: saveCapturedSchedulePhotoMock,
 }));
 
-describe('CapturePage', () => {
-  it('renders the upload instructions and file input', () => {
-    render(<CapturePage />);
+vi.mock('@/services/user-profile', () => ({
+  getUserProfile: getUserProfileMock,
+  isUserProfileComplete: isUserProfileCompleteMock,
+}));
 
-    expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
+describe('CapturePage', () => {
+  beforeEach(() => {
+    navigateMock.mockReset();
+    resizeSchedulePhotoMock.mockReset();
+    saveCapturedSchedulePhotoMock.mockReset();
+    getUserProfileMock.mockReset();
+    isUserProfileCompleteMock.mockReset();
+
+    getUserProfileMock.mockResolvedValue({
+      targetName: 'Alex',
+      timezone: 'UTC',
+      defaultCalendarId: 'primary',
+      reminder: { enabled: true, minutesBefore: 30 },
+    });
+    isUserProfileCompleteMock.mockReturnValue(true);
+  });
+
+  it('redirects to onboarding when the user profile is incomplete', async () => {
+    getUserProfileMock.mockResolvedValue(null);
+    isUserProfileCompleteMock.mockReturnValue(false);
+
+    render(
+      <MemoryRouter initialEntries={['/capture']}>
+        <Routes>
+          <Route path="/capture" element={<CapturePage />} />
+          <Route path="/onboarding" element={<div>Onboarding page</div>} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(navigateMock).toHaveBeenCalledWith(
+        '/onboarding',
+        expect.objectContaining({
+          replace: true,
+          state: expect.objectContaining({
+            from: expect.objectContaining({ pathname: '/capture' }),
+          }),
+        })
+      );
+    });
+  });
+
+  it('renders the upload instructions and file input', async () => {
+    render(
+      <MemoryRouter initialEntries={['/capture']}>
+        <Routes>
+          <Route path="/capture" element={<CapturePage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
+    });
     expect(screen.getByLabelText(/choose a schedule photo/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Analyze Photo/i })).toBeInTheDocument();
   });
@@ -44,7 +110,17 @@ describe('CapturePage', () => {
       fileName: 'schedule.png',
     });
 
-    render(<CapturePage />);
+    render(
+      <MemoryRouter initialEntries={['/capture']}>
+        <Routes>
+          <Route path="/capture" element={<CapturePage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
+    });
 
     const input = screen.getByLabelText(/choose a schedule photo/i) as HTMLInputElement;
 
@@ -74,7 +150,17 @@ describe('CapturePage', () => {
       fileName: 'schedule.png',
     });
 
-    render(<CapturePage />);
+    render(
+      <MemoryRouter initialEntries={['/capture']}>
+        <Routes>
+          <Route path="/capture" element={<CapturePage />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
+    });
 
     fireEvent.change(screen.getByLabelText(/choose a schedule photo/i), {
       target: {

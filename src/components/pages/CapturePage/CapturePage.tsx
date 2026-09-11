@@ -4,6 +4,7 @@ import './CapturePage.css';
 import { useNavigate } from 'react-router';
 import { resizeSchedulePhoto, saveCapturedSchedulePhoto } from '@/services/schedule-analysis';
 import { useAuth } from '@/hooks/firebase';
+import { useUserOnboardingStatus } from '@/hooks/user-onboarding';
 
 const CapturePage = () => {
   const navigate = useNavigate();
@@ -12,6 +13,11 @@ const CapturePage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
   const auth = useAuth();
+  const { isChecking, hasCompletedOnboarding } = useUserOnboardingStatus();
+
+  if (isChecking || !hasCompletedOnboarding) {
+    return null;
+  }
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] ?? null;
