@@ -38,15 +38,13 @@ describe('EditableText', () => {
       />,
     );
 
-    expect(screen.getByText('Role')).toBeInTheDocument();
-
-    fireEvent.doubleClick(screen.getByRole('button', { name: /role/i }));
+    expect(screen.getByPlaceholderText('Role')).toBeInTheDocument();
 
     const input = screen.getByLabelText(/role/i);
     fireEvent.change(input, { target: { value: 'Cashier' } });
     fireEvent.keyDown(input, { key: 'Escape' });
 
     expect(onCommit).not.toHaveBeenCalled();
-    expect(screen.getByText('Role')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Role')).toBeInTheDocument();
   });
 });

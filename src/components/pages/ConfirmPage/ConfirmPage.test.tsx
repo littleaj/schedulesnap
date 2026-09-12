@@ -97,10 +97,10 @@ describe('ConfirmPage', () => {
     expect(screen.getAllByRole('button', { name: /end time/i }).some((button) => button.textContent !== 'End time')).toBe(true);
     expect(screen.getByText('Barista')).toBeInTheDocument();
     expect(screen.getByText('Downtown')).toBeInTheDocument();
-    expect(screen.getAllByText('Start time')).toHaveLength(6);
-    expect(screen.getAllByText('End time')).toHaveLength(6);
-    expect(screen.getAllByText('Role')).toHaveLength(6);
-    expect(screen.getAllByText('Location')).toHaveLength(6);
+    expect(screen.getAllByPlaceholderText('Start time')).toHaveLength(6);
+    expect(screen.getAllByPlaceholderText('End time')).toHaveLength(6);
+    expect(screen.getAllByPlaceholderText('Role')).toHaveLength(6);
+    expect(screen.getAllByPlaceholderText('Location')).toHaveLength(6);
   });
 
   it('renders the captured schedule photo preview when available', () => {
