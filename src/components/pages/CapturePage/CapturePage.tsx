@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
 import './CapturePage.css';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { resizeSchedulePhoto, saveCapturedSchedulePhoto } from '@/services/schedule-analysis';
 import useCurrentUser from '@/hooks/current-user';
 import { useUserOnboardingStatus } from '@/hooks/user-onboarding';
@@ -14,6 +14,7 @@ const CapturePage = () => {
   const [isReady, setIsReady] = useState(false);
   const { isChecking, hasCompletedOnboarding } = useUserOnboardingStatus();
   const user = useCurrentUser();
+  const location = useLocation();
 
   if (isChecking || !hasCompletedOnboarding) {
     return null;
@@ -71,7 +72,7 @@ const CapturePage = () => {
           <div className="capture-card__actions">
             <ActionButton
               variant="primary"
-              onClick={() => navigate('/analyze')}
+              onClick={() => navigate('/analyze', { state: { from: location } })}
               disabled={!selectedFile || isProcessing || !isReady}
             >
               {isProcessing ? 'Preparing photo...' : 'Analyze Photo'}
