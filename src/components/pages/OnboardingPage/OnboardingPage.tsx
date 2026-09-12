@@ -16,7 +16,7 @@ const OnboardingPage = () => {
 
     if (isSaved) {
       console.log("Continuing to /capture...")
-      navigate('/capture');
+      navigate('/capture', { replace: true });
     }
   };
 
