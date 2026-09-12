@@ -3,13 +3,14 @@ import ActionButton from '@/components/atoms/ActionButton';
 import { useGoogleLogin } from '@/hooks/google-login';
 import './LoginPage.css';
 import useCurrentUser from '@/hooks/current-user';
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 
 const LoginPage = () => {
   const user = useCurrentUser();
   const { authenticate: loginWithGoogle } = useGoogleLogin();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const location = useLocation();
 
   const handleGoogleLogin = async () => {
     setErrorMessage(null);
@@ -26,9 +27,8 @@ const LoginPage = () => {
     }
   };
 
-  // FIXME: Redirect to the page the user was trying to access before login
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={location.state?.from?.pathname || "/"} replace />;
   }
 
   return (
