@@ -72,6 +72,16 @@
   cursor: pointer;
 }
 
+.editable-text__icon-button[aria-label='OK'] {
+  background: var(--md-success-container);
+  color: var(--md-on-success-container);
+}
+
+.editable-text__icon-button[aria-label='Cancel'] {
+  background: var(--md-error-container);
+  color: var(--md-on-error-container);
+}
+
 .editable-text__icon-button svg {
   width: 0.95rem;
   height: 0.95rem;
