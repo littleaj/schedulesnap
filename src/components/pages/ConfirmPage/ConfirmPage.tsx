@@ -247,6 +247,7 @@ const ConfirmPage = () => {
           ...val,
           startTime: convertTo24Hour(val.startTime),
           endTime: convertTo24Hour(val.endTime),
+          isPlaceholder: !val.startTime && !val.endTime && !val.role && !val.location,
         }))),
         selectedCalendarId: profile?.defaultCalendarId ?? 'primary'
       });
@@ -325,7 +326,7 @@ const ConfirmPage = () => {
 
                     <div className="confirm-card__events">
                       {day.shifts.map((shift) => (
-                        <div key={shift.id} className="confirm-card__event">
+                        <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}>
                           <div className="confirm-card__time-row">
                             <EditableText
                               value={shift.startTime}

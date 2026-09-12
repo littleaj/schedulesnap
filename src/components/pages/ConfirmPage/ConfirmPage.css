@@ -94,22 +94,20 @@
   background: var(--md-surface-container);
   border: 1px solid var(--md-secondary-container);
   color: var(--md-on-surface);
-
-  & ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
 }
 
 .confirm-card__summary p {
   margin: 0;
-  font-weight: 600;
+}
+
+.confirm-card__summary-result {
+  font-weight: 700;
 }
 
 .confirm-card__grid {
-  margin-top: 0.9rem;
+  list-style: none;
+  margin-block: 1.5rem 0;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.8rem;
@@ -123,8 +121,8 @@
 .confirm-card__day-label {
   margin: 0;
   color: var(--md-on-surface-variant);
-  font-size: 0.82rem;
-  font-weight: 700;
+  /* font-size: 0.82rem; */
+  font-weight: 800;
   letter-spacing: 0.08em;
   text-align: center;
   text-transform: uppercase;
@@ -132,6 +130,7 @@
 
 .confirm-card__cell {
   display: grid;
+  grid-template-rows: auto 1fr;
   min-height: 10rem;
   align-content: start;
   justify-items: stretch;
@@ -139,13 +138,16 @@
   padding: 1rem 0.8rem;
   border-radius: 18px;
   background: rgba(var(--md-surface-rgb), 0.72);
-  border: 1px solid rgba(var(--md-outline-variant-rgb), 0.28);
+  border: 1px solid rgba(var(--md-outline-variant-rgb), 0.8);
   text-align: center;
 }
 
 .confirm-card__cell-date {
   margin: 0;
-  color: var(--md-primary);
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  padding: 0.5rem;
+  border-radius: 9px;
   font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -160,16 +162,31 @@
 }
 
 .confirm-card__events {
-  display: grid;
+  display: flex;
   gap: 0.8rem;
   width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .confirm-card__event {
-  display: grid;
-  gap: 0.5rem;
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 0.25rem;
   padding: 0.35rem 0;
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  justify-content: center;
+  align-items: center;
+  border-radius: 9px;
+}
+
+.confirm-card__event--off {
+  background-color: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
 }
 
 .confirm-card__time-row {
@@ -215,7 +232,7 @@
   }
 
   .confirm-card__photo-panel {
-    max-height: none;
+    /* max-height: none; */
     min-height: 16rem;
   }
 
