@@ -88,7 +88,7 @@ describe('ConfirmPage', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: /review your extracted shifts/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /review your shifts/i })).toBeInTheDocument();
     expect(screen.getByText(/1 extracted shift/i)).toBeInTheDocument();
     expect(screen.getByRole('list', { name: /weekly schedule/i })).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
@@ -132,9 +132,9 @@ describe('ConfirmPage', () => {
       </MemoryRouter>,
     );
 
-    const image = screen.getByRole('img', { name: /captured schedule image/i });
+    const image = screen.getByRole('img', { name: /captured schedule/i });
     expect(image).toHaveAttribute('src', 'data:image/jpeg;base64,ZmFrZS1pbWFnZS1kYXRh');
-    expect(image).toHaveAttribute('alt', 'Captured schedule image');
+    expect(image).toHaveAttribute('alt', 'Captured schedule');
   });
 
   it('saves edited values to the draft when a shift is updated', async () => {

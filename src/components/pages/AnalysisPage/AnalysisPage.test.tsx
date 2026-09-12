@@ -8,14 +8,14 @@ const {
   getUserProfileMock,
   loadCapturedSchedulePhotoMock,
   navigateMock,
-  useAuthMock,
+  currentUserMock,
   useFirestoreMock,
 } = vi.hoisted(() => ({
   analyzeSchedulePhotoMock: vi.fn(),
   getUserProfileMock: vi.fn(),
   loadCapturedSchedulePhotoMock: vi.fn(),
   navigateMock: vi.fn(),
-  useAuthMock: vi.fn(),
+  currentUserMock: vi.fn(),
   useFirestoreMock: vi.fn(),
 }));
 
@@ -27,8 +27,11 @@ vi.mock('react-router', async () => {
   };
 });
 
+vi.mock('@/hooks/current-user', () => ({
+  default: () => currentUserMock(),
+}));
+
 vi.mock('@/hooks/firebase', () => ({
-  useAuth: () => useAuthMock(),
   useFirestore: () => useFirestoreMock(),
 }));
 
@@ -44,7 +47,7 @@ vi.mock('@/services/schedule-analysis', () => ({
 describe('AnalysisPage', () => {
   it('renders the loading state and kicks off analysis from cached capture data', async () => {
     const fakeUid = 'user-123';
-    useAuthMock.mockReturnValue({ currentUser: { uid: fakeUid, displayName: 'Alex' } });
+    currentUserMock.mockReturnValue({ uid: fakeUid, displayName: 'Alex' });
     useFirestoreMock.mockReturnValue({});
     loadCapturedSchedulePhotoMock.mockReturnValue({
       base64: 'resized-base64',
@@ -84,7 +87,7 @@ describe('AnalysisPage', () => {
   });
 
   it('shows a back button when no cached capture exists', async () => {
-    useAuthMock.mockReturnValue({ currentUser: { uid: 'user-123', displayName: 'Alex' } });
+    currentUserMock.mockReturnValue({ uid: 'user-123', displayName: 'Alex' });
     useFirestoreMock.mockReturnValue({});
     loadCapturedSchedulePhotoMock.mockReturnValue(null);
 
@@ -101,7 +104,7 @@ describe('AnalysisPage', () => {
   });
 
   it('shows an error icon when analysis fails', async () => {
-    useAuthMock.mockReturnValue({ currentUser: { uid: 'user-123', displayName: 'Alex' } });
+    currentUserMock.mockReturnValue({ uid: 'user-123', displayName: 'Alex' });
     useFirestoreMock.mockReturnValue({});
     loadCapturedSchedulePhotoMock.mockReturnValue({
       base64: 'resized-base64',

@@ -1,10 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import ProfileForm from './ProfileForm';
 
 describe('ProfileForm', () => {
-  it('renders all profile fields and submit label', () => {
-    render(
+  const renderForm = (props: Partial<React.ComponentProps<typeof ProfileForm>> = {}) => render(
+    <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
       <ProfileForm
         heading="Profile setup"
         subheading="Tell us about your schedule preferences"
@@ -27,8 +28,13 @@ describe('ProfileForm', () => {
         onReminderEnabledChange={() => undefined}
         onReminderMinutesChange={() => undefined}
         onSubmit={() => undefined}
+        {...props}
       />
-    );
+    </GoogleOAuthTokenContext.Provider>
+  );
+
+  it('renders all profile fields and submit label', () => {
+    renderForm();
 
     expect(screen.getByRole('heading', { name: /profile setup/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/name on schedule/i)).toBeInTheDocument();
@@ -46,31 +52,23 @@ describe('ProfileForm', () => {
     const onReminderMinutesChange = vi.fn();
     const onSubmit = vi.fn();
 
-    render(
-      <ProfileForm
-        heading="Profile setup"
-        subheading="Tell us about your schedule preferences"
-        values={{
-          targetName: 'Alex',
-          timezone: 'UTC',
-          defaultCalendarId: 'primary',
-          reminder: {
-            enabled: true,
-            minutesBefore: 60,
-          },
-        }}
-        errors={{}}
-        isLoading={false}
-        isSubmitting={false}
-        submitLabel="Save profile"
-        onTargetNameChange={onTargetNameChange}
-        onTimezoneChange={onTimezoneChange}
-        onDefaultCalendarIdChange={onDefaultCalendarIdChange}
-        onReminderEnabledChange={onReminderEnabledChange}
-        onReminderMinutesChange={onReminderMinutesChange}
-        onSubmit={onSubmit}
-      />
-    );
+    renderForm({
+      values: {
+        targetName: 'Alex',
+        timezone: 'UTC',
+        defaultCalendarId: 'primary',
+        reminder: {
+          enabled: true,
+          minutesBefore: 60,
+        },
+      },
+      onTargetNameChange,
+      onTimezoneChange,
+      onDefaultCalendarIdChange,
+      onReminderEnabledChange,
+      onReminderMinutesChange,
+      onSubmit,
+    });
 
     fireEvent.change(screen.getByLabelText(/name on schedule/i), { target: { value: 'Taylor' } });
     fireEvent.change(screen.getByLabelText(/timezone/i), { target: { value: 'America/Chicago' } });

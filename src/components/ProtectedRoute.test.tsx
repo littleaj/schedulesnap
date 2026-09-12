@@ -4,11 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ProtectedRoute from './ProtectedRoute';
 import type { User } from 'firebase/auth';
 
-const { authMock, firestoreMock, onAuthStateChangedMock, getUserProfileMock } = vi.hoisted(() => ({
+const { authMock, firestoreMock, onAuthStateChangedMock, getUserProfileMock, currentUserMock } = vi.hoisted(() => ({
   authMock: { currentUser: null as Partial<User> | null },
   firestoreMock: {},
   onAuthStateChangedMock: vi.fn(),
   getUserProfileMock: vi.fn(),
+  currentUserMock: vi.fn(),
 }));
 
 vi.mock('firebase/auth', () => ({
@@ -20,6 +21,10 @@ vi.mock('../hooks/firebase', () => ({
   useFirestore: () => firestoreMock,
 }));
 
+vi.mock('@/hooks/current-user', () => ({
+  default: () => currentUserMock(),
+}));
+
 vi.mock('@/services/user-profile', () => ({
   getUserProfile: getUserProfileMock,
   isUserProfileComplete: (profile: unknown) => Boolean(profile),
@@ -28,12 +33,13 @@ vi.mock('@/services/user-profile', () => ({
 describe('ProtectedRoute', () => {
   beforeEach(() => {
     authMock.currentUser = null;
+    currentUserMock.mockReset();
     onAuthStateChangedMock.mockReset();
     getUserProfileMock.mockReset();
   });
 
   it('renders the nested route for authenticated users', async () => {
-    authMock.currentUser = { uid: 'user-123' };
+    currentUserMock.mockReturnValue({ uid: 'user-123' });
     getUserProfileMock.mockResolvedValue({
       targetName: 'Alex',
       timezone: 'UTC',
@@ -62,7 +68,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('renders protected routes for authenticated users even without a profile', async () => {
-    authMock.currentUser = { uid: 'user-123' };
+    currentUserMock.mockReturnValue({ uid: 'user-123' });
     getUserProfileMock.mockResolvedValue(null);
 
     onAuthStateChangedMock.mockImplementation((_auth, callback) => {
@@ -86,7 +92,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('allows access to settings even when onboarding is incomplete', async () => {
-    authMock.currentUser = { uid: 'user-123' };
+    currentUserMock.mockReturnValue({ uid: 'user-123' });
     getUserProfileMock.mockResolvedValue(null);
 
     onAuthStateChangedMock.mockImplementation((_auth, callback) => {
@@ -110,6 +116,7 @@ describe('ProtectedRoute', () => {
   });
 
   it('redirects unauthenticated users to the login page', async () => {
+    currentUserMock.mockReturnValue(null);
     onAuthStateChangedMock.mockImplementation((_auth, callback) => {
       callback(null);
       return () => undefined;

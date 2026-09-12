@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import SettingsPage from './SettingsPage';
 
 const { submitMock } = vi.hoisted(() => ({
@@ -32,8 +33,14 @@ vi.mock('@/hooks/user-profile-form', () => ({
 }));
 
 describe('SettingsPage', () => {
+  const renderPage = () => render(
+    <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
+      <SettingsPage />
+    </GoogleOAuthTokenContext.Provider>
+  );
+
   it('renders settings heading and save action', () => {
-    render(<SettingsPage />);
+    renderPage();
 
     expect(screen.getByRole('heading', { name: /profile settings/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /save settings/i })).toBeInTheDocument();
@@ -41,7 +48,7 @@ describe('SettingsPage', () => {
 
   it('shows save feedback and triggers save when submitted', async () => {
     submitMock.mockResolvedValue(true);
-    render(<SettingsPage />);
+    renderPage();
 
     expect(screen.getByText(/profile saved/i)).toBeInTheDocument();
 

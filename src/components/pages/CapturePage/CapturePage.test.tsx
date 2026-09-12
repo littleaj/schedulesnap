@@ -9,20 +9,23 @@ const {
   navigateMock,
   getUserProfileMock,
   isUserProfileCompleteMock,
+  currentUserMock,
 } = vi.hoisted(() => ({
   resizeSchedulePhotoMock: vi.fn(),
   saveCapturedSchedulePhotoMock: vi.fn(),
   navigateMock: vi.fn(),
   getUserProfileMock: vi.fn(),
   isUserProfileCompleteMock: vi.fn(),
+  currentUserMock: vi.fn(),
 }));
 
 const fakeUid = "fake-uid-capture-page";
+vi.mock('@/hooks/current-user', () => ({
+  default: () => currentUserMock(),
+}));
+
 vi.mock('@/hooks/firebase', () => ({
-  useAuth: () => ({
-    currentUser: { uid: fakeUid },
-  }),
-  useFirestore: () => ({}) ,
+  useFirestore: () => ({}),
 }));
 
 vi.mock('react-router', async () => {
@@ -51,6 +54,8 @@ describe('CapturePage', () => {
     saveCapturedSchedulePhotoMock.mockReset();
     getUserProfileMock.mockReset();
     isUserProfileCompleteMock.mockReset();
+    currentUserMock.mockReset();
+    currentUserMock.mockReturnValue({ uid: fakeUid });
 
     getUserProfileMock.mockResolvedValue({
       targetName: 'Alex',

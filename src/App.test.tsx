@@ -3,12 +3,12 @@ import { Outlet } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import App from './App';
 
-const { useAuthMock } = vi.hoisted(() => ({
-  useAuthMock: vi.fn(),
+const { currentUserMock } = vi.hoisted(() => ({
+  currentUserMock: vi.fn(),
 }));
 
-vi.mock('@/hooks/firebase', () => ({
-  useAuth: () => useAuthMock(),
+vi.mock('@/hooks/current-user', () => ({
+  default: () => currentUserMock(),
 }));
 
 vi.mock('@/components/ProtectedRoute', () => ({
@@ -61,7 +61,7 @@ vi.mock('@/services/analysis-flow', () => ({
 describe('App', () => {
   it('shows the resume dialog above the current page and continues to the cached route', () => {
     window.history.pushState({}, '', '/settings');
-    useAuthMock.mockReturnValue({ currentUser: { uid: 'user-123', displayName: 'Alex' } });
+    currentUserMock.mockReturnValue({ uid: 'user-123', displayName: 'Alex' });
 
     render(<App />);
 

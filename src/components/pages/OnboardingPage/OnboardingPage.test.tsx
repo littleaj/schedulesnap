@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import OnboardingPage from './OnboardingPage';
 
 const { navigateMock, submitMock } = vi.hoisted(() => ({
@@ -41,9 +42,15 @@ vi.mock('@/hooks/user-profile-form', () => ({
 }));
 
 describe('OnboardingPage', () => {
+  const renderPage = () => render(
+    <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
+      <OnboardingPage />
+    </GoogleOAuthTokenContext.Provider>
+  );
+
   it('renders the onboarding heading and profile form', () => {
     submitMock.mockResolvedValue(false);
-    render(<OnboardingPage />);
+    renderPage();
 
     expect(screen.getByRole('heading', { name: /complete your profile/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /save and continue/i })).toBeInTheDocument();
@@ -51,7 +58,7 @@ describe('OnboardingPage', () => {
 
   it('navigates to capture after a successful submit', async () => {
     submitMock.mockResolvedValue(true);
-    render(<OnboardingPage />);
+    renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: /save and continue/i }));
 

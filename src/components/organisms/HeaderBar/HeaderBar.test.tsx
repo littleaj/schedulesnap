@@ -1,39 +1,23 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import type { User } from 'firebase/auth';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import HeaderBar from './HeaderBar';
 
-const { authMock, onAuthStateChangedMock } = vi.hoisted(() => ({
-  authMock: { currentUser: null as Partial<User> | null },
-  onAuthStateChangedMock: vi.fn(),
+const { currentUserMock } = vi.hoisted(() => ({
+  currentUserMock: vi.fn(),
 }));
 
-vi.mock('firebase/auth', async () => {
-  const actual = await vi.importActual<typeof import('firebase/auth')>('firebase/auth');
-
-  return {
-    ...actual,
-    onAuthStateChanged: onAuthStateChangedMock,
-  };
-});
-
-vi.mock('../../../hooks/firebase', () => ({
-  useAuth: () => authMock,
-  useFirestore: () => ({ mocked: true }),
+vi.mock('@/hooks/current-user', () => ({
+  default: () => currentUserMock(),
 }));
 
 describe('HeaderBar', () => {
   beforeEach(() => {
-    authMock.currentUser = null;
-    onAuthStateChangedMock.mockReset();
+    currentUserMock.mockReset();
+    currentUserMock.mockReturnValue(null);
   });
 
   it('shows the logo, primary action, help link, and logged-out menu state', async () => {
-    onAuthStateChangedMock.mockImplementation((_auth, callback) => {
-      callback(null);
-      return () => undefined;
-    });
 
     render(
       <MemoryRouter>
@@ -56,15 +40,10 @@ describe('HeaderBar', () => {
   });
 
   it('shows the logged-in avatar and enables the settings link', async () => {
-    authMock.currentUser = {
+    currentUserMock.mockReturnValue({
       displayName: 'Test User',
       photoURL: 'https://example.com/avatar.png',
       uid: 'user-123',
-    };
-
-    onAuthStateChangedMock.mockImplementation((_auth, callback) => {
-      callback(authMock.currentUser as User);
-      return () => undefined;
     });
 
     render(
