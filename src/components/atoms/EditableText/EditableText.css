@@ -57,6 +57,17 @@
 .editable-text__actions {
   display: inline-flex;
   gap: 0.35rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, max-height 0.15s ease;
+}
+
+.editable-text__editor:focus-within .editable-text__actions {
+  max-height: 2rem;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .editable-text__icon-button {

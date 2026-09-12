@@ -64,11 +64,9 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
     }
   };
 
-  const displayValue = value || placeholder;
-
   return (
     <span className={`editable-text ${className}`.trim()}>
-      {isEditing ? (
+      {isEditing || !value ? (
         <span className="editable-text__editor">
           <input
             ref={inputRef}
@@ -89,7 +87,7 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
           </span>
         </span>
       ) : (
-        <span
+        <span // NOSONAR - role="button" is intended
           className={`editable-text__display ${value ? '' : 'editable-text__display--placeholder'}`.trim()}
           role="button"
           tabIndex={0}
@@ -102,7 +100,7 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
             }
           }}
         >
-          {displayValue}
+          {value}
         </span>
       )}
     </span>
