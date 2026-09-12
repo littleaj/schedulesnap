@@ -314,7 +314,8 @@ const ConfirmPage = () => {
 
         {shifts.length > 0 ? (
           <div className="confirm-card__summary" aria-label="Extracted shifts week view">
-            <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
+            <p className="confirm-card__summary-result">{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
+            <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed. Double click on the text to make changes.</p>
             <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
               {weekDays.map((day) => (
                 <li key={day.isoDate} className="confirm-card__day">
