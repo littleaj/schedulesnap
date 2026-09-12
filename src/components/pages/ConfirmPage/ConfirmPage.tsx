@@ -313,59 +313,57 @@ const ConfirmPage = () => {
         </div>
 
         {shifts.length > 0 ? (
-          <>
-            <div className="confirm-card__summary" aria-label="Extracted shifts week view">
-              <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
-              <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
-                {weekDays.map((day) => (
-                  <li key={day.isoDate} className="confirm-card__day">
-                    <p className="confirm-card__day-label">{day.weekday}</p>
-                    <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
-                      <p className="confirm-card__cell-date">{day.monthDay}</p>
+          <div className="confirm-card__summary" aria-label="Extracted shifts week view">
+            <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
+            <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
+              {weekDays.map((day) => (
+                <li key={day.isoDate} className="confirm-card__day">
+                  <p className="confirm-card__day-label">{day.weekday}</p>
+                  <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
+                    <p className="confirm-card__cell-date">{day.monthDay}</p>
 
-                      <div className="confirm-card__events">
-                        {day.shifts.map((shift) => (
-                          <div key={shift.id} className="confirm-card__event">
-                            <div className="confirm-card__time-row">
-                              <EditableText
-                                value={shift.startTime}
-                                placeholder="Start time"
-                                ariaLabel={`${day.weekday} start time`}
-                                onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
-                              />
-                              <span className="confirm-card__time-separator" aria-hidden="true">
-                                -
-                              </span>
-                              <EditableText
-                                value={shift.endTime}
-                                placeholder="End time"
-                                ariaLabel={`${day.weekday} end time`}
-                                onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
-                              />
-                            </div>
-
+                    <div className="confirm-card__events">
+                      {day.shifts.map((shift) => (
+                        <div key={shift.id} className="confirm-card__event">
+                          <div className="confirm-card__time-row">
                             <EditableText
-                              value={shift.role ?? ''}
-                              placeholder="Role"
-                              ariaLabel={`${day.weekday} role`}
-                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'role', value)}
+                              value={shift.startTime}
+                              placeholder="Start time"
+                              ariaLabel={`${day.weekday} start time`}
+                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
                             />
-
+                            <span className="confirm-card__time-separator" aria-hidden="true">
+                              -
+                            </span>
                             <EditableText
-                              value={shift.location ?? ''}
-                              placeholder="Location"
-                              ariaLabel={`${day.weekday} location`}
-                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
+                              value={shift.endTime}
+                              placeholder="End time"
+                              ariaLabel={`${day.weekday} end time`}
+                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
                             />
                           </div>
-                        ))}
-                      </div>
-                    </article>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </>
+
+                          <EditableText
+                            value={shift.role ?? ''}
+                            placeholder="Role"
+                            ariaLabel={`${day.weekday} role`}
+                            onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'role', value)}
+                          />
+
+                          <EditableText
+                            value={shift.location ?? ''}
+                            placeholder="Location"
+                            ariaLabel={`${day.weekday} location`}
+                            onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : (
           <p className="confirm-card__intro">No saved review was found. Start over from capture to continue.</p>
         )}
