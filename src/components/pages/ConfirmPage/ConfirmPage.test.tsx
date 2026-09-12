@@ -4,11 +4,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ConfirmPage from './ConfirmPage';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 
-const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock, useGoogleCalendarTokenMock, navigateMock } = vi.hoisted(() => ({
+const { loadAnalysisResponseMock, loadDraftConfirmationMock, loadCapturedSchedulePhotoMock, saveDraftConfirmationMock, getUserProfileMock, useCurrentUserMock, useFirestoreMock, navigateMock } = vi.hoisted(() => ({
   loadAnalysisResponseMock: vi.fn(),
   loadDraftConfirmationMock: vi.fn(),
+  loadCapturedSchedulePhotoMock: vi.fn(),
   saveDraftConfirmationMock: vi.fn(),
-  useGoogleCalendarTokenMock: vi.fn(),
+  getUserProfileMock: vi.fn(),
+  useCurrentUserMock: vi.fn(),
+  useFirestoreMock: vi.fn(),
   navigateMock: vi.fn(),
 }));
 
@@ -17,6 +20,11 @@ vi.mock('@/hooks/firebase', () => ({
   useAuth: () => ({
     currentUser: { uid: fakeUid },
   }),
+  useFirestore: () => useFirestoreMock(),
+}));
+
+vi.mock('@/hooks/current-user', () => ({
+  default: () => useCurrentUserMock(),
 }));
 
 vi.mock('react-router', async () => {
@@ -28,25 +36,32 @@ vi.mock('react-router', async () => {
 });
 
 vi.mock('@/services/schedule-analysis', () => ({
+  clearAnalysisFlowCache: vi.fn(),
   loadAnalysisResponse: loadAnalysisResponseMock,
   loadDraftConfirmation: loadDraftConfirmationMock,
+  loadCapturedSchedulePhoto: loadCapturedSchedulePhotoMock,
   saveDraftConfirmation: saveDraftConfirmationMock,
 }));
 
-vi.mock('@/hooks/useGoogleCalendarToken', () => ({
-  useGoogleCalendarToken: useGoogleCalendarTokenMock,
+vi.mock('@/services/user-profile', () => ({
+  getUserProfile: getUserProfileMock,
 }));
 
 describe('ConfirmPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     navigateMock.mockReset();
-    useGoogleCalendarTokenMock.mockReturnValue({
-      getAccessToken: vi.fn().mockResolvedValue('google-access-token'),
-      clearToken: vi.fn(),
-      isAuthorizing: false,
-      authError: null,
+    getUserProfileMock.mockResolvedValue({
+      targetName: 'Alex',
+      timezone: 'UTC',
+      defaultCalendarId: 'primary',
+      reminder: {
+        enabled: false,
+        minutesBefore: 30,
+      },
     });
+    useCurrentUserMock.mockReturnValue({ uid: fakeUid, displayName: 'Alex' });
+    useFirestoreMock.mockReturnValue({});
   });
 
   it('renders the cached analysis response when resuming a review', () => {
@@ -86,6 +101,40 @@ describe('ConfirmPage', () => {
     expect(screen.getAllByText('End time')).toHaveLength(6);
     expect(screen.getAllByText('Role')).toHaveLength(6);
     expect(screen.getAllByText('Location')).toHaveLength(6);
+  });
+
+  it('renders the captured schedule photo preview when available', () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      warnings: [],
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+    loadCapturedSchedulePhotoMock.mockReturnValue({
+      base64: 'ZmFrZS1pbWFnZS1kYXRh',
+      mimeType: 'image/jpeg',
+      fileName: 'schedule.jpg',
+    });
+
+    render(
+      <MemoryRouter>
+        <ConfirmPage />
+      </MemoryRouter>,
+    );
+
+    const image = screen.getByRole('img', { name: /captured schedule image/i });
+    expect(image).toHaveAttribute('src', 'data:image/jpeg;base64,ZmFrZS1pbWFnZS1kYXRh');
+    expect(image).toHaveAttribute('alt', 'Captured schedule image');
   });
 
   it('saves edited values to the draft when a shift is updated', async () => {

@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
 import {
   clearAnalysisFlowCache,
   loadAnalysisResponse,
+  loadCapturedSchedulePhoto,
   loadDraftConfirmation,
   saveDraftConfirmation
 } from '@/services/schedule-analysis';
@@ -17,24 +18,93 @@ import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
 import useCurrentUser from '@/hooks/current-user';
+import { getUserProfile } from '@/services/user-profile';
+import { useFirestore } from '@/hooks/firebase';
+import type { UserProfile } from '@/types/user-profile';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const { getToken } = useContext(GoogleOAuthTokenContext);
   const { authenticate } = useGoogleLogin();
   const user = useCurrentUser();
+  const firestore = useFirestore();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   if (!user) {
     throw new Error("User is not authenticated.");
   }
 
+
   const { uid } = user;
+
+  useEffect(() => {
+    void (async () => {
+      const settings = await getUserProfile(firestore, uid);
+      setProfile(settings);
+    })();
+  }, [firestore, uid]);
 
   const draftConfirmation = loadDraftConfirmation(uid);
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse(uid);
+  const capturedPhoto = useMemo(() => loadCapturedSchedulePhoto(uid), [uid]);
+  const capturedPhotoDataUrl = capturedPhoto ? `data:${capturedPhoto.mimeType};base64,${capturedPhoto.base64}` : null;
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
   .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
   const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const dragStateRef = useRef<{ active: boolean; startX: number; startY: number; originX: number; originY: number }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    originX: 0,
+    originY: 0,
+  });
+
+  const handlePhotoZoom = (delta: number) => {
+    setZoomLevel((currentZoom) => {
+      const nextZoom = Math.max(1, Number((currentZoom + delta).toFixed(2)));
+      return nextZoom;
+    });
+  };
+
+  const handlePhotoWheel = (event: WheelEvent) => {
+    event.preventDefault();
+    handlePhotoZoom(event.deltaY < 0 ? 0.1 : -0.1);
+  };
+
+  const handlePhotoPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) {
+      return;
+    }
+
+    dragStateRef.current = {
+      active: true,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: panOffset.x,
+      originY: panOffset.y,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handlePhotoPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!dragStateRef.current.active) {
+      return;
+    }
+
+    const deltaX = event.clientX - dragStateRef.current.startX;
+    const deltaY = event.clientY - dragStateRef.current.startY;
+    setPanOffset({
+      x: dragStateRef.current.originX + deltaX,
+      y: dragStateRef.current.originY + deltaY,
+    });
+  };
+
+  const handlePhotoPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    dragStateRef.current.active = false;
+    event.currentTarget.releasePointerCapture(event.pointerId);
+  };
 
   if (shifts.length > 0) {
     console.log("Loaded shifts from", draftConfirmation ? "draft confirmation" : "analysis response");
@@ -178,7 +248,7 @@ const ConfirmPage = () => {
           startTime: convertTo24Hour(val.startTime),
           endTime: convertTo24Hour(val.endTime),
         }))),
-        selectedCalendarId: '' // TODO populate with default calendar ID
+        selectedCalendarId: profile?.defaultCalendarId ?? 'primary'
       });
 
       return nextWeekDays;
@@ -192,24 +262,58 @@ const ConfirmPage = () => {
 
     saveDraftConfirmation(uid, {
       shifts: shifts.map(val => ({ ...val, startTime: convertTo24Hour(val.startTime), endTime: convertTo24Hour(val.endTime) })),
-      selectedCalendarId: '' // TODO populate with selected  calendar ID
+      selectedCalendarId: profile?.defaultCalendarId ?? 'primary'
     });
   }, [shifts]);
+
+  useEffect(() => {
+    const el = document.getElementById('confirm-card-photo-viewport');
+    if (!el) {
+      return;
+    }
+    el.addEventListener('wheel', handlePhotoWheel, { passive: false });
+    return () => {
+      el.removeEventListener('wheel', handlePhotoWheel);
+    };
+  }, []);
 
   return (
     <main className="confirm-page">
       <section className="confirm-card" aria-labelledby="confirm-title">
-        <p className="confirm-card__eyebrow">Review and confirm</p>
-        <h1 id="confirm-title">Review your extracted shifts</h1>
+        <div className="confirm-card__header">
+          <div className="confirm-card__heading-group">
+            <p className="confirm-card__eyebrow">Review schedule</p>
+            <h1 id="confirm-title">Review your shifts</h1>
+            <p className="confirm-card__intro">
+              Compare your shifts with the scanned image and make any necessary adjustments.
+            </p>
+          </div>
+
+          {capturedPhotoDataUrl ? (
+            <div className="confirm-card__photo-panel" aria-label="Captured schedule photo preview">
+              <div
+                id="confirm-card-photo-viewport"
+                className="confirm-card__photo-viewport"
+                onPointerDown={handlePhotoPointerDown}
+                onPointerMove={handlePhotoPointerMove}
+                onPointerUp={handlePhotoPointerUp}
+                onPointerLeave={handlePhotoPointerUp}
+              >
+                <img
+                  className="confirm-card__photo"
+                  src={capturedPhotoDataUrl}
+                  alt="Captured schedule"
+                  style={{
+                    transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomLevel})`,
+                  }}
+                />
+              </div>
+            </div>
+          ) : null}
+        </div>
 
         {shifts.length > 0 ? (
           <>
-            <p className="confirm-card__intro">
-              {draftConfirmation
-                ? 'Continue reviewing your extracted shifts.'
-                : 'Review shifts extracted from the image.'}
-            </p>
-
             <div className="confirm-card__summary" aria-label="Extracted shifts week view">
               <p>{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
               <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
