@@ -25,6 +25,8 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
   const [isEditing, setIsEditing] = useState(false);
   const [draftValue, setDraftValue] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
+  const okRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!isEditing) {
@@ -44,12 +46,16 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
       onCommit(draftValue);
     } finally {
       setIsEditing(false);
+      inputRef.current?.blur();
+      okRef.current?.blur();
     }
   };
 
   const cancelEdit = () => {
     setDraftValue(value);
     setIsEditing(false);
+    inputRef.current?.blur();
+    cancelRef.current?.blur();
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -78,10 +84,10 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
             onKeyDown={handleKeyDown}
           />
           <span className="editable-text__actions">
-            <button type="button" className="editable-text__icon-button" aria-label="OK" onClick={commitValue}>
+            <button ref={okRef} type="button" className="editable-text__icon-button" aria-label="OK" onClick={commitValue}>
               <ConfirmIcon />
             </button>
-            <button type="button" className="editable-text__icon-button" aria-label="Cancel" onClick={cancelEdit}>
+            <button ref={cancelRef} type="button" className="editable-text__icon-button" aria-label="Cancel" onClick={cancelEdit}>
               <CancelIcon />
             </button>
           </span>
