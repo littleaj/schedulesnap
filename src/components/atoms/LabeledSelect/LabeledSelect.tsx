@@ -35,7 +35,7 @@ const LabeledSelect = ({ id, label, options, hint, error, ...props }: LabeledSel
         {...props}
       >
         {options.map(option => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value} selected={props.value === option.value}>{option.label}</option>
         ))}
       </select>
       {message}
