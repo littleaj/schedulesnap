@@ -41,6 +41,8 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
     }
   }, [isEditing]);
 
+  // TODO: add functionality so that when this component is blured, it should cancel the edit. However, it should not cancel if the focus moves to the OK or Cancel buttons.
+
   const commitValue = () => {
     try {
       onCommit(draftValue);
