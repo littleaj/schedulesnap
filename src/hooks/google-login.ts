@@ -16,6 +16,7 @@ export interface GoogleLoginControls {
 function buildGoogleAuthProvider(): GoogleAuthProvider {
   const provider = new GoogleAuthProvider();
   provider.addScope(CALENDAR_EVENTS_SCOPE);
+  provider.addScope(CALENDAR_LIST_READONLY_SCOPE);
   return provider;
 }
 

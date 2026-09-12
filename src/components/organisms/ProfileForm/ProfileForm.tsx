@@ -1,23 +1,11 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
 import LabeledInput from '@/components/atoms/LabeledInput';
 import LabeledSelect from '@/components/atoms/LabeledSelect';
 import ReminderSettings from '@/components/molecules/ReminderSettings';
 import type { UserProfile, UserProfileValidationErrors } from '@/types/user-profile';
 import './ProfileForm.css';
-
-// FIXME: Fetch timezone options from Intl or something
-const TIMEZONE_OPTIONS = [
-  { value: 'UTC', label: 'UTC' },
-  { value: 'America/New_York', label: 'America/New_York' },
-  { value: 'America/Chicago', label: 'America/Chicago' },
-  { value: 'America/Los_Angeles', label: 'America/Los_Angeles' },
-];
-
-// FIXME: Fetch calendar options dynamically from the user's Google Calendar list
-const CALENDAR_OPTIONS = [
-  { value: 'primary', label: 'Primary calendar' },
-];
+import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 
 interface ProfileFormProps {
   heading: string;
@@ -37,6 +25,28 @@ interface ProfileFormProps {
   onSubmit: () => void;
 }
 
+const getTimeZoneOptions = () => {
+  return Intl.supportedValuesOf('timeZone').map((tz) => ({ value: tz, label: tz }));
+};
+
+const getCalendarOptions = async (token: string) => {
+  try {
+    const response = await fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // TODO: cache this response in local storage.
+    // TODO: add a refresh button next to the calendar select input.
+    const data = await response.json();
+
+    return data.items.map((calendar: any) => ({ value: calendar.id, label: calendar.summary }));
+  } catch (error) {
+    console.error('Error fetching calendar list:', error);
+    return [{ value: 'primary', label: 'Primary' }];
+  }
+};
+
 const ProfileForm = ({
   heading,
   subheading,
@@ -54,13 +64,16 @@ const ProfileForm = ({
   onReminderMinutesChange,
   onSubmit,
 }: ProfileFormProps) => {
-  const timezoneOptions = TIMEZONE_OPTIONS.some(option => option.value === values.timezone)
-    ? TIMEZONE_OPTIONS
-    : [{ value: values.timezone, label: values.timezone }, ...TIMEZONE_OPTIONS];
-
-  const calendarOptions = CALENDAR_OPTIONS.some(option => option.value === values.defaultCalendarId)
-    ? CALENDAR_OPTIONS
-    : [{ value: values.defaultCalendarId, label: values.defaultCalendarId }, ...CALENDAR_OPTIONS];
+  const [calendarOptions, setCalendarOptions] = useState([{ value: 'primary', label: 'Primary' }]);
+  const timezoneOptions = getTimeZoneOptions();
+  const { getToken } = useContext(GoogleOAuthTokenContext);
+  useEffect(() => {
+    const token = getToken();
+    if (!token) {
+      return;
+    }
+    getCalendarOptions(token).then(options => setCalendarOptions(options));
+  }, [getToken]);
 
   let submitButtonLabel = submitLabel;
   if (isLoading) {
