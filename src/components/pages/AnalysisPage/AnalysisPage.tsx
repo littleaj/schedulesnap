@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import { useFirestore } from '../../../hooks/firebase';
 import { getUserProfile } from '../../../services/user-profile';
@@ -16,6 +16,7 @@ const AnalysisPage = () => {
   const [statusMessage, setStatusMessage] = useState('Reading your schedule photo and extracting shifts...');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const user = useCurrentUser();
+  const location = useLocation();
 
   useEffect(() => {
     let isActive = true;
@@ -44,6 +45,12 @@ const AnalysisPage = () => {
         const profile = await getUserProfile(firestore, uid);
         const targetName = profile?.targetName ?? user?.displayName ?? '';
 
+        if (targetName.trim() === '') {
+          setErrorMessage('No target name found for analysis.');
+          setStatusMessage('Analysis paused. Go to settings to set your target name.');
+          return;
+        }
+
         if (!isActive) {
           return;
         }
@@ -65,6 +72,12 @@ const AnalysisPage = () => {
         setStatusMessage('Analysis failed.');
       }
     };
+
+    if (location.state?.from?.pathname !== '/capture') {
+      console.warn('Analysis page accessed without coming from capture page, redirecting to capture page.');
+      navigate('/capture', { replace: true });
+      return;
+    }
 
     void runAnalysis();
 
