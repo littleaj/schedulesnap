@@ -286,7 +286,7 @@ const ConfirmPage = () => {
             <p className="confirm-card__eyebrow">Review schedule</p>
             <h1 id="confirm-title">Review your shifts</h1>
             <p className="confirm-card__intro">
-              Compare your shifts with the scanned image and make any necessary adjustments.
+              Compare your shifts with the scanned image below and make any necessary adjustments.
             </p>
           </div>
 
@@ -315,7 +315,7 @@ const ConfirmPage = () => {
 
         {shifts.length > 0 ? (
           <div className="confirm-card__summary" aria-label="Extracted shifts week view">
-            <p className="confirm-card__summary-result">{shifts.length} extracted shift{shifts.length === 1 ? '' : 's'} ready for review.</p>
+            <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
             <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed. Double click on the text to make changes.</p>
             <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
               {weekDays.map((day) => (
@@ -335,7 +335,7 @@ const ConfirmPage = () => {
                               onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
                             />
                             <span className="confirm-card__time-separator" aria-hidden="true">
-                              -
+                              –
                             </span>
                             <EditableText
                               value={shift.endTime}
