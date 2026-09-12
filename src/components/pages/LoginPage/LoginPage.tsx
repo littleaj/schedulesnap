@@ -26,6 +26,7 @@ const LoginPage = () => {
     }
   };
 
+  // FIXME: Redirect to the page the user was trying to access before login
   if (user) {
     return <Navigate to="/" replace />;
   }
