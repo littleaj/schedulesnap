@@ -185,8 +185,8 @@
 }
 
 .confirm-card__event--off {
-  background-color: var(--md-secondary-container);
-  color: var(--md-on-secondary-container);
+  background-color: var(--md-surface-container);
+  color: var(--md-on-surface);
 }
 
 .confirm-card__time-row {
