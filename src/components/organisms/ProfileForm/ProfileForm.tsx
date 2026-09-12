@@ -29,6 +29,11 @@ const getTimeZoneOptions = () => {
   return Intl.supportedValuesOf('timeZone').map((tz) => ({ value: tz, label: tz }));
 };
 
+interface CalendarOption {
+  value: string;
+  label: string;
+}
+
 const getCalendarOptions = async (token: string) => {
   try {
     const response = await fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
@@ -36,11 +41,16 @@ const getCalendarOptions = async (token: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch calendar list: ${response.statusText}`);
+    }
+
     // TODO: cache this response in local storage.
     // TODO: add a refresh button next to the calendar select input.
     const data = await response.json();
 
-    return data.items.map((calendar: any) => ({ value: calendar.id, label: calendar.summary }));
+    return data.items.map((calendar: any) => ({ value: calendar.id, label: calendar.summary })) as CalendarOption[];
   } catch (error) {
     console.error('Error fetching calendar list:', error);
     return [{ value: 'primary', label: 'Primary' }];
@@ -64,15 +74,29 @@ const ProfileForm = ({
   onReminderMinutesChange,
   onSubmit,
 }: ProfileFormProps) => {
-  const [calendarOptions, setCalendarOptions] = useState([{ value: 'primary', label: 'Primary' }]);
+  const [calendarOptions, setCalendarOptions] = useState<CalendarOption[]>([{ value: 'primary', label: 'Primary' }]);
   const timezoneOptions = getTimeZoneOptions();
   const { getToken } = useContext(GoogleOAuthTokenContext);
+  const [initializing, setInitializing] = useState(true);
+
   useEffect(() => {
     const token = getToken();
     if (!token) {
       return;
     }
-    getCalendarOptions(token).then(options => setCalendarOptions(options));
+
+    const doFetch = async () => {
+      try {
+        console.log("Fetching calendar options...");
+        const options = await getCalendarOptions(token);
+        setCalendarOptions(options);
+      } catch (error) {
+        console.error('Error fetching calendar list:', error);
+      } finally {
+        setInitializing(false);
+      }
+    };
+    doFetch()
   }, [getToken]);
 
   let submitButtonLabel = submitLabel;
@@ -80,6 +104,10 @@ const ProfileForm = ({
     submitButtonLabel = 'Loading profile...';
   } else if (isSubmitting) {
     submitButtonLabel = 'Saving...';
+  }
+
+  if (initializing) {
+    return <p>Initializing...</p>;
   }
 
   return (
@@ -95,7 +123,7 @@ const ProfileForm = ({
           label="Name on schedule"
           value={values.targetName}
           onChange={(event) => onTargetNameChange(event.target.value)}
-          hint="Used to focus extraction on the right person."
+          hint="Used to find your shifts on the schedule"
           error={errors.targetName}
         />
 
