@@ -191,7 +191,6 @@
 
 .confirm-card__time-row {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
   gap: 0.35rem;
   width: 100%;
