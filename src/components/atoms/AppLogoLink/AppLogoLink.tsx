@@ -14,7 +14,7 @@ const AppLogo = () => {
 
 const AppLogoLink = ({ to }: AppLogoLinkProps) => {
   return (
-    <Link className="app-logo-link" to={to} aria-label="ScheduleSnap">
+    <Link className="app-logo-link" to={to} aria-label="ScheduleSnap" title="ScheduleSnap Home Page">
       <AppLogo />
     </Link>
   );
