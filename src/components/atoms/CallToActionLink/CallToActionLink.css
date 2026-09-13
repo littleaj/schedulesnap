@@ -1,8 +1,8 @@
 .cta-link {
-  --_final-color: var(--md-secondary);
-  --_initial-color: var(--md-tertiary);
-  --_final-text-color: var(--md-tertiary);
-  --_initial-text-color: var(--md-on-tertiary);
+  --_final-color: var(--md-secondary-container);
+  --_initial-color: var(--md-secondary);
+  --_final-text-color: var(--md-secondary);
+  --_initial-text-color: var(--md-on-secondary);
   --_transition-duration: 0.25s;
   display: inline-flex;
   align-items: center;
@@ -25,7 +25,7 @@
   font-weight: 800;
   letter-spacing: 0.08em;
   font-size: 0.86rem;
-  box-shadow: 0 12px 28px rgba(var(--md-on-surface-rgb), 0.4);
+  box-shadow: 0 12px 28px rgba(from var(--md-secondary) r g b / 0.6);
   transition:
     background-position var(--_transition-duration) ease-in-out,
     color var(--_transition-duration) ease-in-out;

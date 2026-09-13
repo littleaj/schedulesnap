@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router';
-import './NavButtonLink.css';
+import './CallToActionLink.css';
 
 interface CallToActionLinkProps {
   to: string;
