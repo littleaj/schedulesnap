@@ -13,6 +13,7 @@ import ConfirmPage from '@/components/pages/ConfirmPage';
 import FinishedPage from '@/components/pages/FinishedPage';
 import SettingsPage from '@/components/pages/SettingsPage';
 import HelpPage from '@/components/pages/HelpPage';
+import AboutPage from '@/components/pages/AboutPage';
 import { BrowserRouter, Route, Routes, useNavigate, Outlet } from 'react-router';
 import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
 import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
@@ -87,7 +88,7 @@ const ScheduleSnap = () => {
                 onResumeHandled={() => setResumeTarget(null)} />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/about" element={<div>About page</div>} />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="/help" element={<HelpPage />} />
 
               <Route element={<ProtectedRoute />}>

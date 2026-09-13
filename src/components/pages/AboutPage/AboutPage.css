@@ -1,0 +1,117 @@
+.about-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 5rem;
+}
+
+.about-page__header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--md-primary-fixed);
+}
+
+.about-page__header h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: var(--md-on-surface);
+}
+
+.intro {
+  margin: 1rem auto 0;
+  max-width: 62ch;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: var(--md-on-surface-variant);
+}
+
+.about-page__story {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.story-card,
+.about-page__panel {
+  background: var(--md-surface);
+  border: 1px solid var(--md-outline);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+}
+
+.story-card h2,
+.about-page__panel h2,
+.tech-stack h3 {
+  margin: 0 0 0.75rem;
+  color: var(--md-on-surface);
+}
+
+.story-card p,
+.tech-stack p,
+.about-page__links a,
+.about-page__aside a {
+  margin: 0;
+  color: var(--md-on-surface-variant);
+  line-height: 1.7;
+}
+
+.about-page__panel {
+  margin-top: 1rem;
+}
+
+.tech-stack {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.tech-stack div {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--md-outline);
+  border-radius: 14px;
+}
+
+.about-page__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.about-page__links a,
+.about-page__aside a {
+  color: var(--md-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.about-page__links a:hover,
+.about-page__aside a:hover {
+  text-decoration: underline;
+}
+
+.about-page__aside {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--md-outline);
+}
+
+@media (max-width: 820px) {
+  .about-page__story,
+  .tech-stack {
+    grid-template-columns: 1fr;
+  }
+}
