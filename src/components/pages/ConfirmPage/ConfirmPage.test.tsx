@@ -89,8 +89,8 @@ describe('ConfirmPage', () => {
     );
 
     expect(screen.getByRole('heading', { name: /review your shifts/i })).toBeInTheDocument();
-    expect(screen.getByText(/1 extracted shift/i)).toBeInTheDocument();
-    expect(screen.getByRole('list', { name: /weekly schedule/i })).toBeInTheDocument();
+    expect(screen.getByText(/1 shift/i)).toBeInTheDocument();
+    expect(screen.getByRole('list', { name: /scanned weekly schedule/i })).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
     expect(screen.getByText(new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date('2026-09-05T00:00:00')))).toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /start time/i }).some((button) => button.textContent !== 'Start time')).toBe(true);

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import LoginPage from './LoginPage';
 
@@ -50,8 +51,14 @@ describe('LoginPage', () => {
     getUserProfileMock.mockReset();
   });
 
+  const renderPage = () => render(
+    <MemoryRouter>
+      <LoginPage />
+    </MemoryRouter>,
+  );
+
   it('shows the Google sign in prompt and permission explanation', () => {
-    render(<LoginPage />);
+    renderPage();
 
     expect(screen.getByRole('heading', { name: /sign in to schedule ?snap/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /continue with google/i })).toBeInTheDocument();
@@ -59,7 +66,7 @@ describe('LoginPage', () => {
   });
 
   it('requests Google Calendar access when the sign-in button is clicked', async () => {
-    render(<LoginPage />);
+    renderPage();
 
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
 
@@ -74,7 +81,7 @@ describe('LoginPage', () => {
   it('starts the redirect-based Google sign-in flow for first-time and returning users', async () => {
     signInWithPopupMock.mockResolvedValue(undefined);
 
-    render(<LoginPage />);
+    renderPage();
     fireEvent.click(screen.getByRole('button', { name: /continue with google/i }));
 
     await waitFor(() => {

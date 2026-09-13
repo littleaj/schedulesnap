@@ -1,9 +1,23 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import ProfileForm from './ProfileForm';
 
 describe('ProfileForm', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ items: [{ id: 'primary', summary: 'Primary' }] }),
+      }),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   const renderForm = (props: Partial<React.ComponentProps<typeof ProfileForm>> = {}) => render(
     <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
       <ProfileForm
@@ -33,10 +47,13 @@ describe('ProfileForm', () => {
     </GoogleOAuthTokenContext.Provider>
   );
 
-  it('renders all profile fields and submit label', () => {
+  it('renders all profile fields and submit label', async () => {
     renderForm();
 
-    expect(screen.getByRole('heading', { name: /profile setup/i })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /profile setup/i })).toBeInTheDocument();
+    });
+
     expect(screen.getByLabelText(/name on schedule/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/timezone/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/default calendar/i)).toBeInTheDocument();
@@ -44,7 +61,7 @@ describe('ProfileForm', () => {
     expect(screen.getByRole('button', { name: /save profile/i })).toBeInTheDocument();
   });
 
-  it('calls field handlers and submit handler when user interacts', () => {
+  it('calls field handlers and submit handler when user interacts', async () => {
     const onTargetNameChange = vi.fn();
     const onTimezoneChange = vi.fn();
     const onDefaultCalendarIdChange = vi.fn();
@@ -68,6 +85,10 @@ describe('ProfileForm', () => {
       onReminderEnabledChange,
       onReminderMinutesChange,
       onSubmit,
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /save profile/i })).toBeInTheDocument();
     });
 
     fireEvent.change(screen.getByLabelText(/name on schedule/i), { target: { value: 'Taylor' } });

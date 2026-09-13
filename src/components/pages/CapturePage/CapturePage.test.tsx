@@ -179,6 +179,13 @@ describe('CapturePage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Analyze Photo/i }));
 
-    expect(navigateMock).toHaveBeenCalledWith('/analyze');
+    expect(navigateMock).toHaveBeenCalledWith(
+      '/analyze',
+      expect.objectContaining({
+        state: expect.objectContaining({
+          from: expect.objectContaining({ pathname: '/capture' }),
+        }),
+      }),
+    );
   });
 });

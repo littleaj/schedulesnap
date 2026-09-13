@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import OnboardingPage from './OnboardingPage';
 
@@ -42,23 +42,43 @@ vi.mock('@/hooks/user-profile-form', () => ({
 }));
 
 describe('OnboardingPage', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ items: [{ id: 'primary', summary: 'Primary' }] }),
+      }),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   const renderPage = () => render(
     <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
       <OnboardingPage />
     </GoogleOAuthTokenContext.Provider>
   );
 
-  it('renders the onboarding heading and profile form', () => {
+  it('renders the onboarding heading and profile form', async () => {
     submitMock.mockResolvedValue(false);
     renderPage();
 
-    expect(screen.getByRole('heading', { name: /complete your profile/i })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /complete your profile/i })).toBeInTheDocument();
+    });
     expect(screen.getByRole('button', { name: /save and continue/i })).toBeInTheDocument();
   });
 
   it('navigates to capture after a successful submit', async () => {
     submitMock.mockResolvedValue(true);
     renderPage();
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /save and continue/i })).toBeInTheDocument();
+    });
 
     fireEvent.click(screen.getByRole('button', { name: /save and continue/i }));
 

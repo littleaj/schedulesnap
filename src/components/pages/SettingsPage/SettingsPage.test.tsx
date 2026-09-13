@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import SettingsPage from './SettingsPage';
 
@@ -33,16 +33,32 @@ vi.mock('@/hooks/user-profile-form', () => ({
 }));
 
 describe('SettingsPage', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ items: [{ id: 'primary', summary: 'Primary' }] }),
+      }),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   const renderPage = () => render(
     <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
       <SettingsPage />
     </GoogleOAuthTokenContext.Provider>
   );
 
-  it('renders settings heading and save action', () => {
+  it('renders settings heading and save action', async () => {
     renderPage();
 
-    expect(screen.getByRole('heading', { name: /profile settings/i })).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /profile settings/i })).toBeInTheDocument();
+    });
     expect(screen.getByRole('button', { name: /save settings/i })).toBeInTheDocument();
   });
 
@@ -50,7 +66,9 @@ describe('SettingsPage', () => {
     submitMock.mockResolvedValue(true);
     renderPage();
 
-    expect(screen.getByText(/profile saved/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/profile saved/i)).toBeInTheDocument();
+    });
 
     fireEvent.click(screen.getByRole('button', { name: /save settings/i }));
 

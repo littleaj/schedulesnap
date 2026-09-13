@@ -66,7 +66,7 @@ describe('AnalysisPage', () => {
     analyzeSchedulePhotoMock.mockResolvedValue({ warnings: [], shifts: [] });
 
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' } } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
@@ -92,13 +92,13 @@ describe('AnalysisPage', () => {
     loadCapturedSchedulePhotoMock.mockReturnValue(null);
 
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' } } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/no captured photo was found/i)).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toHaveTextContent(/no captured photo was found/i);
       expect(screen.getByRole('button', { name: /back to capture/i })).toBeInTheDocument();
     });
   });
@@ -123,7 +123,7 @@ describe('AnalysisPage', () => {
     analyzeSchedulePhotoMock.mockRejectedValue(new Error('boom'));
 
     render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' } } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
