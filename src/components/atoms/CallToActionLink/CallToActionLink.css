@@ -1,11 +1,4 @@
-@property --gradient-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 135deg;
-}
-
-.link-button {
-  --gradient-angle: 135deg;
+.cta-link {
   --final-color: var(--md-secondary);
   --initial-color: var(--md-tertiary);
   --final-text-color: var(--md-tertiary);
@@ -36,8 +29,6 @@
   transition:
     background-position var(--transition-duration) ease-in-out,
     color var(--transition-duration) ease-in-out;
-
-
 
   &:hover,
   &:focus-visible {

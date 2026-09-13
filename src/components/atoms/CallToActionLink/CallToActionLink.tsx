@@ -9,7 +9,7 @@ interface CallToActionLinkProps {
 
 const CallToActionLink = ({ to, children }: CallToActionLinkProps) => {
   return (
-    <Link className="link-button" to={to}>
+    <Link className="cta-link" to={to}>
       {children}
     </Link>
   );
