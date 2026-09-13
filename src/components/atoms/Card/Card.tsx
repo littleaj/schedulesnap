@@ -1,12 +1,11 @@
 import React from 'react';
 import './Card.css';
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
-const Card = ({ children }: CardProps) => {
-  return <article className="card">{children}</article>;
+export const ArticleCard = ({ children, className='', ...rest }: CardProps) => {
+  return <article className={`card ${className}`} {...rest}>{children}</article>;
 };
 
-export default Card;
