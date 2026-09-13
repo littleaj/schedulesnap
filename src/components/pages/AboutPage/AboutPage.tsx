@@ -65,7 +65,7 @@ const AboutPage = () => {
         <a href="https://arthurjlittle.com" target="_blank" rel="noreferrer">
           Arthur J. Little
         </a>
-        <a href="https://github.com" target="_blank" rel="noreferrer">
+        <a href="https://github.com/littleaj" target="_blank" rel="noreferrer">
           GitHub page (TBD)
         </a>
       </section>
