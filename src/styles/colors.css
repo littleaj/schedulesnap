@@ -14,7 +14,7 @@
 
   --md-tertiary: hsl(174, 74%, 14%);
   --md-on-tertiary: #ffffff;
-  --md-tertiary-container: color(from var(--md-tertiary) lightness(+90%));
+  --md-tertiary-container: hsl(172, 46%, 86%);
   --md-on-tertiary-container: #134e4a;
 
   --md-success: #166534;
