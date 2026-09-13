@@ -1,26 +1,30 @@
 import React from 'react';
-import Card from '../../atoms/Card';
+import { ArticleCard } from '@/components/atoms/Card';
 import './FeatureCard.css';
 
-interface FeatureCardProps {
-  icon: React.ReactNode;
-  heading: React.ReactNode;
+interface FeatureCardProps extends React.HTMLAttributes<HTMLElement> {
+  icon?: React.ReactNode;
+  heading?: React.ReactNode;
   children: React.ReactNode;
 }
 
-const FeatureCard = ({ icon, heading, children }: FeatureCardProps) => {
+const FeatureCard = ({ icon, heading, children, className='', ...props }: FeatureCardProps) => {
   return (
-    <Card>
+    <ArticleCard className={className} {...props}>
       <div className="feature-card">
         <hgroup className="feature-card__header">
-          <span className="feature-card__icon" aria-hidden="true">
-            {icon}
-          </span>
-          <h2>{heading}</h2>
+          {!icon ? null : (
+            <span className="feature-card__icon" aria-hidden="true">
+              {icon}
+            </span>
+          )}
+          {!heading ? null : (
+            <h2>{heading}</h2>
+          )}
         </hgroup>
         <div className="feature-card__body">{children}</div>
       </div>
-    </Card>
+    </ArticleCard>
   );
 };
 
