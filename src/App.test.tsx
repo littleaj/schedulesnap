@@ -51,6 +51,10 @@ vi.mock('@/components/pages/SettingsPage', () => ({
   default: () => <div>Settings page</div>,
 }));
 
+vi.mock('@/components/pages/HelpPage', () => ({
+  default: () => <div>Help page</div>,
+}));
+
 vi.mock('@/services/analysis-flow', () => ({
   getAnalysisFlowResumeTarget: () => ({
     route: '/confirm',

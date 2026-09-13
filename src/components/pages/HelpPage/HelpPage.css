@@ -1,0 +1,130 @@
+.help-page {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 5rem;
+}
+
+.help-page__header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--md-primary-fixed);
+}
+
+.help-page__header h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: var(--md-on-surface);
+}
+
+.intro {
+  margin: 1rem auto 0;
+  max-width: 60ch;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  color: var(--md-on-surface-variant);
+}
+
+.help-page__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.help-card {
+  background: var(--md-surface);
+  border: 1px solid var(--md-outline);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+}
+
+.help-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--md-primary-container);
+  font-size: 1.5rem;
+}
+
+.help-card h2,
+.help-page__steps h2 {
+  margin: 1rem 0 0.75rem;
+  color: var(--md-on-surface);
+}
+
+.help-card ol,
+.help-card ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--md-on-surface-variant);
+  line-height: 1.7;
+}
+
+.help-page__steps {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: var(--md-surface);
+  border: 1px solid var(--md-outline);
+  border-radius: 20px;
+}
+
+.step-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.step-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding-top: 0.75rem;
+}
+
+.step-item__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  font-weight: 700;
+}
+
+.step-item h3 {
+  margin: 0 0 0.35rem;
+  color: var(--md-on-surface);
+}
+
+.step-item p {
+  margin: 0;
+  color: var(--md-on-surface-variant);
+  line-height: 1.6;
+}
+
+.help-page__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+@media (max-width: 820px) {
+  .help-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
