@@ -1,7 +1,7 @@
 import React from 'react';
 import AppLogoLink from '@/components/atoms/AppLogoLink';
 import IconLink from '@/components/atoms/IconLink';
-import NavButtonLink from '@/components/atoms/NavButtonLink';
+import NavButtonLink from '@/components/atoms/CallToActionLink';
 import UserMenu from '@/components/molecules/UserMenu';
 import './HeaderBar.css';
 import useCurrentUser from '@/hooks/current-user';
