@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import FeatureCard from '@/components/molecules/FeatureCard';
 import ActionButton from '@/components/atoms/ActionButton';
 import './HomePage.css';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   return (
     <main className="home-page">
       <section className="hero">
@@ -12,12 +14,16 @@ const HomePage = () => {
           <h1>ScheduleSnap</h1>
           <p className="tagline">Snap. Scan. Sync.</p>
           <p className="description">
-            Turn a photo of a work schedule into clean, confirmed calendar events in a few taps.
+            Turn a photo of a work schedule into calendar events in a few taps.
           </p>
 
           <div className="hero__actions">
-            <ActionButton variant="primary">Get started</ActionButton>
-            <ActionButton variant="secondary">Learn more</ActionButton>
+            <ActionButton variant="primary" onClick={() => navigate('/capture')}>
+              Get started
+            </ActionButton>
+            <ActionButton variant="secondary" onClick={() => navigate('/about')}>
+              Learn more
+            </ActionButton>
           </div>
         </div>
 
