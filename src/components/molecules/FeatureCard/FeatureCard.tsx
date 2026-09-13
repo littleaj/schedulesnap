@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArticleCard } from '@/components/atoms/Card';
+import { Card } from '@/components/atoms/Card';
 import './FeatureCard.css';
 
 interface FeatureCardProps extends React.HTMLAttributes<HTMLElement> {
@@ -10,7 +10,7 @@ interface FeatureCardProps extends React.HTMLAttributes<HTMLElement> {
 
 const FeatureCard = ({ icon, heading, children, className='', ...props }: FeatureCardProps) => {
   return (
-    <ArticleCard className={className} {...props}>
+    <Card className={className} {...props}>
       <div className="feature-card">
         <hgroup className="feature-card__header">
           {!icon ? null : (
@@ -24,7 +24,7 @@ const FeatureCard = ({ icon, heading, children, className='', ...props }: Featur
         </hgroup>
         <div className="feature-card__body">{children}</div>
       </div>
-    </ArticleCard>
+    </Card>
   );
 };
 
