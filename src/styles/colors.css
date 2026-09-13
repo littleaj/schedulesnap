@@ -12,9 +12,9 @@
   --md-secondary-container: #ffedd5;
   --md-on-secondary-container: #9a3412;
 
-  --md-tertiary: #0f766e;
+  --md-tertiary: hsl(174, 74%, 14%);
   --md-on-tertiary: #ffffff;
-  --md-tertiary-container: #ccfbf1;
+  --md-tertiary-container: color(from var(--md-tertiary) lightness(+90%));
   --md-on-tertiary-container: #134e4a;
 
   --md-success: #166534;
