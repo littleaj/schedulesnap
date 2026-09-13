@@ -1,9 +1,9 @@
 .cta-link {
-  --final-color: var(--md-secondary);
-  --initial-color: var(--md-tertiary);
-  --final-text-color: var(--md-tertiary);
-  --initial-text-color: var(--md-on-tertiary);
-  --transition-duration: 0.25s;
+  --_final-color: var(--md-secondary);
+  --_initial-color: var(--md-tertiary);
+  --_final-text-color: var(--md-tertiary);
+  --_initial-text-color: var(--md-on-tertiary);
+  --_transition-duration: 0.25s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -14,12 +14,12 @@
   text-decoration: none;
   background-image: linear-gradient(
     90deg,
-    var(--final-color) 0%,
-    var(--final-color) 25%,
-    var(--initial-color) 75%,
-    var(--initial-color) 100%
+    var(--_final-color) 0%,
+    var(--_final-color) 25%,
+    var(--_initial-color) 75%,
+    var(--_initial-color) 100%
   );
-  color: var(--initial-text-color);
+  color: var(--_initial-text-color);
   background-size: 300% 100%;
   background-position: right;
   font-weight: 800;
@@ -27,14 +27,14 @@
   font-size: 0.86rem;
   box-shadow: 0 12px 28px rgba(var(--md-on-surface-rgb), 0.4);
   transition:
-    background-position var(--transition-duration) ease-in-out,
-    color var(--transition-duration) ease-in-out;
+    background-position var(--_transition-duration) ease-in-out,
+    color var(--_transition-duration) ease-in-out;
 
   &:hover,
   &:focus-visible {
     /* transform: translateY(-3px); */
     background-position: left;
-    color: var(--final-text-color);
+    color: var(--_final-text-color);
     /* transition: background-position 0.4s ease-in-out; */
   }
 }
