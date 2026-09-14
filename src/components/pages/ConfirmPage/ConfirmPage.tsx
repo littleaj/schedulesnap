@@ -18,31 +18,20 @@ import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
 import useCurrentUser from '@/hooks/current-user';
-import { getUserProfile } from '@/services/user-profile';
-import { useFirestore } from '@/hooks/firebase';
-import type { UserProfile } from '@/types/user-profile';
+import { useUserProfile } from '@/hooks/user-profile';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
   const { getToken } = useContext(GoogleOAuthTokenContext);
   const { authenticate } = useGoogleLogin();
   const user = useCurrentUser();
-  const firestore = useFirestore();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const profile = useUserProfile();
 
   if (!user) {
     throw new Error("User is not authenticated.");
   }
 
-
   const { uid } = user;
-
-  useEffect(() => {
-    void (async () => {
-      const settings = await getUserProfile(firestore, uid);
-      setProfile(settings);
-    })();
-  }, [firestore, uid]);
 
   const draftConfirmation = loadDraftConfirmation(uid);
   if (!draftConfirmation) {
