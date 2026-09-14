@@ -20,6 +20,7 @@ import { buildWeekDays } from './utils/weekdays';
 import useCurrentUser from '@/hooks/current-user';
 import { useUserProfile } from '@/hooks/user-profile';
 import PhotoPanel from '@/components/atoms/PhotoPanel/PhotoPanel';
+import { editableShift2GoogleCalendarEvent } from '@/utils/mappers';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ const ConfirmPage = () => {
   const capturedPhotoDataUrl = capturedPhoto ? `data:${capturedPhoto.mimeType};base64,${capturedPhoto.base64}` : null;
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
   .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
+
   const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
 
   if (shifts.length > 0) {
@@ -65,29 +67,7 @@ const ConfirmPage = () => {
     const calendarId = draftConfirmation.selectedCalendarId || 'primary';
     const eventsToCreate = weekDays.flatMap((day) => day.shifts
       .filter((shift) => !shift.isPlaceholder && shift.date && shift.startTime && shift.endTime)
-      .map((shift) => {
-        const start24Hour = convertTo24Hour(shift.startTime);
-        const end24Hour = convertTo24Hour(shift.endTime);
-        const startDateTime = new Date(`${shift.date}T${start24Hour}:00`);
-        const endDateTime = new Date(`${shift.date}T${end24Hour}:00`);
-
-        if (!start24Hour || !end24Hour || Number.isNaN(startDateTime.getTime()) || Number.isNaN(endDateTime.getTime())) {
-          return null;
-        }
-
-        return {
-          summary: shift.role || shift.location || 'Work Shift',
-          location: shift.location || undefined,
-          start: {
-            dateTime: startDateTime.toISOString(),
-            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'UTC',
-          },
-          end: {
-            dateTime: endDateTime.toISOString(),
-            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'UTC',
-          },
-        } satisfies GoogleCalendarEvent;
-      }))
+      .map(editableShift2GoogleCalendarEvent))
       .filter((event): event is NonNullable<typeof event> => event !== null);
 
     console.log('Number of events to create:', eventsToCreate.length);
