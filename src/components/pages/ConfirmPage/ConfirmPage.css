@@ -217,6 +217,11 @@
 }
 
 .confirm-card__warnings {
+  & summary {
+    font-weight: 700;
+    color: var(--md-on-surface-variant);
+    font-size: 1.1rem;
+  }
   & ul {
     list-style: none;
     padding: 0;
