@@ -45,7 +45,14 @@ const ConfirmPage = () => {
   }, [firestore, uid]);
 
   const draftConfirmation = loadDraftConfirmation(uid);
+  if (!draftConfirmation) {
+    console.log('No draft confirmation found');
+  }
   const analysisResponse = draftConfirmation ? null : loadAnalysisResponse(uid);
+  if (!draftConfirmation && !analysisResponse) {
+    console.log('No analysis response found');
+  }
+
   const capturedPhoto = useMemo(() => loadCapturedSchedulePhoto(uid), [uid]);
   const capturedPhotoDataUrl = capturedPhoto ? `data:${capturedPhoto.mimeType};base64,${capturedPhoto.base64}` : null;
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
