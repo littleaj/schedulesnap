@@ -45,6 +45,7 @@ const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: ResumeProgress
     }
 
     clearAnalysisFlowCache(user.uid);
+    navigate('/capture', { replace: true });
     onResumeHandled();
   };
 
