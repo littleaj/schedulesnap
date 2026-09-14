@@ -145,6 +145,7 @@ export const saveAnalysisResponse = (uid: string, response: ScheduleAnalysisResp
 
 export const loadAnalysisResponse = (uid: string): ScheduleAnalysisResponse | null => {
   if (!canUseLocalStorage()) {
+    console.error('Unable to access local storage for analysis response.');
     return null;
   }
 
@@ -155,8 +156,14 @@ export const loadAnalysisResponse = (uid: string): ScheduleAnalysisResponse | nu
 
   try {
     const parsedValue: unknown = JSON.parse(rawValue);
-    return isAnalysisResponse(parsedValue) ? parsedValue : null;
-  } catch {
+    if (isAnalysisResponse(parsedValue)) {
+      return parsedValue;
+    }
+
+    console.error('Invalid analysis response format:', parsedValue);
+    return null;
+  } catch (error) {
+    console.error('Failed to parse analysis response:', error);
     return null;
   }
 };
@@ -269,31 +276,31 @@ export const analyzeSchedulePhoto = async (
   const ai = getAI(getApp());
   const model = getGenerativeModel(ai, { model: 'gemini-3.5-flash-lite' });
 
-   try {
-      const result = await model.generateContent({
-        systemInstruction: buildAnalysisPrompt(targetName, todayIso),
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              {
-                inlineData: {
-                  data: photo.base64,
-                  mimeType: photo.mimeType,
-                },
+  try {
+    const result = await model.generateContent({
+      systemInstruction: buildAnalysisPrompt(targetName, todayIso),
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            {
+              inlineData: {
+                data: photo.base64,
+                mimeType: photo.mimeType,
               },
-            ],
-          },
-        ],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          responseJsonSchema: aiResponseSchema,
+            },
+          ],
         },
-      });
-      const parsedResponse = parseAnalysisResponse(result.response.text());
-      saveAnalysisResponse(uid, parsedResponse);
-      return parsedResponse;
-   } catch (error) {
-     throw new Error(`Failed to analyze schedule photo: ${error}`);
-   }
+      ],
+      generationConfig: {
+        responseMimeType: 'application/json',
+        responseJsonSchema: aiResponseSchema,
+      },
+    });
+    const parsedResponse = parseAnalysisResponse(result.response.text());
+    saveAnalysisResponse(uid, parsedResponse);
+    return parsedResponse;
+  } catch (error) {
+    throw new Error(`Failed to analyze schedule photo: ${error}`);
+  }
 };
