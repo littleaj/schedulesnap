@@ -10,7 +10,6 @@ const ProtectedRoute = () => {
   const [isChecking, setIsChecking] = useState(true);
   const user = useCurrentUser();
 
-  console.log("Rendering ProtectedRoute", { isChecking, user: !!user });
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
       setIsChecking(false);
