@@ -21,6 +21,7 @@ import useCurrentUser from '@/hooks/current-user';
 import { useUserProfile } from '@/hooks/user-profile';
 import PhotoPanel from '@/components/atoms/PhotoPanel/PhotoPanel';
 import { editableShift2GoogleCalendarEvent } from '@/utils/mappers';
+import { Card } from '@/components/atoms/Card';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -39,7 +40,8 @@ const ConfirmPage = () => {
   if (!draftConfirmation) {
     console.log('No draft confirmation found');
   }
-  const analysisResponse = draftConfirmation ? null : loadAnalysisResponse(uid);
+
+  const analysisResponse = loadAnalysisResponse(uid);
   if (!draftConfirmation && !analysisResponse) {
     console.log('No analysis response found');
   }
@@ -47,7 +49,7 @@ const ConfirmPage = () => {
   const capturedPhoto = useMemo(() => loadCapturedSchedulePhoto(uid), [uid]);
   const capturedPhotoDataUrl = capturedPhoto ? `data:${capturedPhoto.mimeType};base64,${capturedPhoto.base64}` : null;
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
-  .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
+    .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
 
   const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
 
@@ -263,6 +265,19 @@ const ConfirmPage = () => {
         ) : (
           <p className="confirm-card__intro">No saved review was found. Start over from capture to continue.</p>
         )}
+
+        {analysisResponse?.warnings && analysisResponse.warnings.length > 0 ? (
+          <Card>
+            <details className="confirm-card__warnings">
+              <summary>Warnings</summary>
+              <ul>
+                {analysisResponse.warnings.map((warning, index) => (
+                  <li key={index} className="confirm-card__warning card">{warning}</li> // NOSONAR we're not reording this array, so index is fine for a key.
+                ))}
+              </ul>
+            </details>
+          </Card>
+        ) : null}
 
         <div className="confirm-card__actions">
           <ActionButton variant="primary" onClick={() => {
