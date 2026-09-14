@@ -269,7 +269,7 @@ const ConfirmPage = () => {
         {analysisResponse?.warnings && analysisResponse.warnings.length > 0 ? (
           <Card>
             <details className="confirm-card__warnings">
-              <summary>Warnings</summary>
+              <summary>Analysis Summary</summary>
               <ul>
                 {analysisResponse.warnings.map((warning, index) => (
                   <li key={index} className="confirm-card__warning card">{warning}</li> // NOSONAR we're not reording this array, so index is fine for a key.
