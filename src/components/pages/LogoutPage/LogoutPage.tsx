@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
-import { Navigate } from 'react-router';
+import { Navigate, useLocation } from 'react-router';
 import { useAuth } from '@/hooks/firebase';
 
 const LogoutPage = () => {
   const auth = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handleLogout = async () => {
       try {
+        console.log("signing out from: ", location.state?.from);
         await signOut(auth);
       } catch (error) {
         console.warn("Unable to sign out: ", error);
@@ -46,7 +48,9 @@ const LogoutPage = () => {
     );
   }
 
-  return <Navigate to="/login" replace />;
+  const dest = location.state?.from.pathname || '/';
+  console.log("logged out. Navigating to: ", dest);
+  return <Navigate to={dest} replace />;
 };
 
 export default LogoutPage;

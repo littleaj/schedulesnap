@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import type { User } from 'firebase/auth';
 import UserIcon from '@/components/atoms/UserIcon';
 import { useGoogleLogin } from '@/hooks/google-login';
@@ -15,6 +15,7 @@ const UserMenu = ({ user }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     if (!isOpen) {
@@ -84,7 +85,7 @@ const UserMenu = ({ user }: UserMenuProps) => {
           )}
 
           {isLoggedIn ? (
-            <Link className="user-menu__item" to="/logout" role="menuitem" onClick={closeMenu}>
+            <Link className="user-menu__item" to="/logout" state={{ from: location }} role="menuitem" onClick={closeMenu}>
               LOGOUT
             </Link>
           ) : (
