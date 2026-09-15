@@ -47,13 +47,6 @@
   --md-outline: #cbd5e1;
   --md-outline-variant: #94a3b8;
 
-  /* RGB channels for consistent alpha treatments */
-  --md-primary-rgb: 37, 99, 235;
-  --md-primary-container-rgb: 224, 236, 255;
-  --md-surface-rgb: 255, 255, 255;
-  --md-outline-variant-rgb: 148, 163, 184;
-  --md-on-surface-rgb: 15, 23, 42;
-
   /* Shared visual effects */
   --md-gradient-page: linear-gradient(
     160deg,

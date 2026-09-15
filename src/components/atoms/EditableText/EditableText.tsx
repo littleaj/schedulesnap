@@ -7,6 +7,7 @@ interface EditableTextProps {
   ariaLabel: string;
   onCommit: (value: string) => void;
   className?: string;
+  inputWidth?: number;
 }
 
 const ConfirmIcon = () => (
@@ -21,7 +22,7 @@ const CancelIcon = () => (
   </svg>
 );
 
-const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' }: EditableTextProps) => {
+const EditableText = ({ value, placeholder, ariaLabel, onCommit, inputWidth, className = '' }: EditableTextProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [draftValue, setDraftValue] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -84,6 +85,7 @@ const EditableText = ({ value, placeholder, ariaLabel, onCommit, className = '' 
             placeholder={placeholder}
             onChange={(event) => setDraftValue(event.target.value)}
             onKeyDown={handleKeyDown}
+            width={inputWidth}
           />
           <span className="editable-text__actions">
             <button ref={okRef} type="button" className="editable-text__icon-button" aria-label="OK" onClick={commitValue}>

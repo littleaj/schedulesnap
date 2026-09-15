@@ -209,6 +209,7 @@ const ConfirmPage = () => {
                               placeholder="Start time"
                               ariaLabel={`${day.weekday} start time`}
                               onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
+                              inputWidth={10}
                             />
                             <span className="confirm-card__time-separator" aria-hidden="true">
                               –
@@ -218,6 +219,7 @@ const ConfirmPage = () => {
                               placeholder="End time"
                               ariaLabel={`${day.weekday} end time`}
                               onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
+                              inputWidth={10}
                             />
                           </div>
 

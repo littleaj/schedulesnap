@@ -78,9 +78,9 @@
   width: 1.75rem;
   height: 1.75rem;
   padding: 0;
-  border: 1px solid rgba(var(--md-on-surface-rgb), 0.5);
+  border: 1px solid rgba(from var(--md-on-surface) r g b / 0.5);
   border-radius: 999px;
-  background: rgba(var(--md-surface-rgb), 0.95);
+  background: rgba(from var(--md-surface) r g b / 0.95);
   color: var(--md-on-surface);
   cursor: pointer;
 }

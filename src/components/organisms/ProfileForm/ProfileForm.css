@@ -2,9 +2,9 @@
   width: min(100%, 620px);
   margin: 0 auto;
   background: var(--md-surface-overlay);
-  border: 1px solid rgba(var(--md-outline-variant-rgb), 0.28);
+  border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.28);
   border-radius: 20px;
-  box-shadow: 0 18px 48px rgba(var(--md-on-surface-rgb), 0.12);
+  box-shadow: 0 18px 48px rgba(from var(--md-on-surface) r g b / 0.12);
   padding: 1.6rem;
 }
 

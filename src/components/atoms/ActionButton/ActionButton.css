@@ -9,7 +9,7 @@ button.action-button {
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 16px 30px rgba(var(--md-primary-rgb), 0.5);
+  box-shadow: 0 16px 30px rgba(from var(--md-primary) r g b / 0.5);
   background-image: linear-gradient(
     135deg,
     var(--action-button-bg-start) 0%,
@@ -23,7 +23,7 @@ button.action-button {
 button.action-button:not(:disabled):hover,
 button.action-button:not(:disabled):active {
   transform: translateY(-3px);
-  box-shadow: 0 16px 50px rgba(var(--md-primary-rgb), 0.5);
+  box-shadow: 0 16px 50px rgba(from var(--md-primary) r g b / 0.5);
 
   animation: action-button-hover-gradient 0.9s ease-in-out infinite alternate;
 }
@@ -45,7 +45,7 @@ button.action-button.secondary {
   --action-button-bg-end: var(--md-surface);
   --action-button-hover-accent: color-mix(in srgb, var(--md-secondary-container) 75%, var(--md-surface) 25%);
   color: var(--md-on-surface);
-  border: 1px solid rgba(var(--md-on-surface-rgb), 0.25);
+  border: 1px solid rgba(from var(--md-on-surface) r g b / 0.25);
 }
 
 @keyframes action-button-hover-gradient {

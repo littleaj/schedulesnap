@@ -64,7 +64,7 @@
   display: block;
   width: min(100%, 420px);
   height: auto;
-  filter: drop-shadow(0 30px 60px rgba(var(--md-on-surface-rgb), 0.18));
+  filter: drop-shadow(0 30px 60px rgba(from var(--md-on-surface) r g b / 0.18));
 }
 
 .feature-grid {
