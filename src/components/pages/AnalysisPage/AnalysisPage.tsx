@@ -109,12 +109,6 @@ const AnalysisPage = () => {
             </p>
           )}
         </div>
-
-        <div className="analysis-card__actions">
-          <ActionButton variant="secondary" onClick={() => navigate('/capture')}>
-            Back to Capture
-          </ActionButton>
-        </div>
       </section>
     </main>
   );
