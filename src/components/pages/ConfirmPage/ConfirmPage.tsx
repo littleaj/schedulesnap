@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import EditableText from '@/components/atoms/EditableText';
 import {
@@ -162,7 +162,7 @@ const ConfirmPage = () => {
   };
 
   useEffect(() => {
-    if (draftConfirmation) {
+    if (draftConfirmation || !analysisResponse) {
       return;
     }
 
@@ -243,7 +243,9 @@ const ConfirmPage = () => {
             </ul>
           </div>
         ) : (
-          <p className="confirm-card__intro">No saved review was found. Start over from capture to continue.</p>
+          <p className="confirm-card__intro">
+            No saved review was found. Start over from <Link to="/capture" replace>capture</Link> to continue.
+          </p>
         )}
 
         {analysisResponse?.warnings && analysisResponse.warnings.length > 0 ? (
