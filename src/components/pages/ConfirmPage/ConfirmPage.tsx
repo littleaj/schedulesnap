@@ -248,19 +248,6 @@ const ConfirmPage = () => {
           </p>
         )}
 
-        {analysisResponse?.warnings && analysisResponse.warnings.length > 0 ? (
-          <Card>
-            <details className="confirm-card__warnings">
-              <summary>Analysis Summary</summary>
-              <ul>
-                {analysisResponse.warnings.map((warning, index) => (
-                  <li key={index} className="confirm-card__warning card">{warning}</li> // NOSONAR we're not reording this array, so index is fine for a key.
-                ))}
-              </ul>
-            </details>
-          </Card>
-        ) : null}
-
         <div className="confirm-card__actions">
           <ActionButton variant="primary" onClick={() => { void handleCreateEvents(); }} disabled={!hasEditableShift}>
             Create Events
@@ -276,6 +263,20 @@ const ConfirmPage = () => {
             Cancel and Delete Progress
           </ActionButton>
         </div>
+
+        {analysisResponse?.warnings && analysisResponse.warnings.length > 0 ? (
+          <Card>
+            <details className="confirm-card__warnings">
+              <summary>Analysis Summary</summary>
+              <ul>
+                {analysisResponse.warnings.map((warning, index) => (
+                  <li key={index} className="confirm-card__warning card">{warning}</li> // NOSONAR we're not reording this array, so index is fine for a key.
+                ))}
+              </ul>
+            </details>
+          </Card>
+        ) : null}
+
       </section>
     </main>
   );
