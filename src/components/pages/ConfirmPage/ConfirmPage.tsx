@@ -262,11 +262,8 @@ const ConfirmPage = () => {
         ) : null}
 
         <div className="confirm-card__actions">
-          <ActionButton variant="primary" onClick={() => {
-            void handleCreateEvents();
-          }}
-            disabled={!hasEditableShift}>
-            {'Create Events'}
+          <ActionButton variant="primary" onClick={() => { void handleCreateEvents(); }} disabled={!hasEditableShift}>
+            Create Events
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
             if (!user) {
@@ -275,8 +272,7 @@ const ConfirmPage = () => {
               clearAnalysisFlowCache(user.uid);
             }
             navigate("/");
-          }}
-            disabled={!hasEditableShift}>
+          }}>
             Cancel and Delete Progress
           </ActionButton>
         </div>
