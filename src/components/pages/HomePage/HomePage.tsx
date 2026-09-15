@@ -10,7 +10,7 @@ const HomePage = () => {
     <main className="home-page">
       <section className="hero">
         <div className="hero__content">
-          <p className="eyebrow">A smarter way to capture shifts</p>
+          <p className="eyebrow">An easy way to save your shifts</p>
           <h1>ScheduleSnap</h1>
           <p className="tagline">Snap. Scan. Sync.</p>
           <p className="description">
@@ -37,16 +37,16 @@ const HomePage = () => {
       </section>
 
       <section className="feature-grid" aria-label="Key features">
-        <FeatureCard icon="📸" heading="Photo to schedule">
-          <p>Upload a shift image and let the app read the details from the photo.</p>
+        <FeatureCard icon="📸" heading="Snap a photo">
+          <p>Upload a picture of your schedule and let the app read the details from the photo.</p>
         </FeatureCard>
 
-        <FeatureCard icon="✅" heading="Review before syncing">
-          <p>Check the extracted shifts and fix anything uncertain before saving.</p>
+        <FeatureCard icon="✅" heading="Review">
+          <p>Check the shifts it scanned and make adjustments before saving.</p>
         </FeatureCard>
 
-        <FeatureCard icon="🗓️" heading="Google Calendar ready">
-          <p>Write the approved entries directly to your chosen calendar in seconds.</p>
+        <FeatureCard icon="🗓️" heading="Sync to Google Calendar">
+          <p>Create calendar events from your schedule in seconds.</p>
         </FeatureCard>
       </section>
     </main>

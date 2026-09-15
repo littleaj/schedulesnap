@@ -70,8 +70,12 @@
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
+  gap: 2rem;
   margin-top: 3rem;
+
+  & .feature-card {
+    max-width: 15vw;
+  }
 }
 
 @media (max-width: 820px) {
