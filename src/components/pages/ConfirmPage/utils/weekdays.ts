@@ -29,8 +29,8 @@ export const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
       monthDay: formatMonthDay(dayDate),
       shifts: groupedShifts.get(isoDate)?.map((shift) => ({
         ...shift,
-        startTime: formatTime(shift.startTime),
-        endTime: formatTime(shift.endTime),
+        startTime: shift.startTime,
+        endTime: shift.endTime,
         id: formatShiftKey(shift),
         isPlaceholder: false
       })) ?? [

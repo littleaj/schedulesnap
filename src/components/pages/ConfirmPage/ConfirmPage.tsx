@@ -23,6 +23,7 @@ import { editableShift2GoogleCalendarEvent } from '@/utils/mappers';
 import { Card } from '@/components/atoms/Card';
 import gcalapi from '@/services/google-calendar';
 import { sleep } from '@/utils/misc';
+import { formatTime } from './utils/formatting';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -209,7 +210,8 @@ const ConfirmPage = () => {
                               placeholder="Start time"
                               ariaLabel={`${day.weekday} start time`}
                               onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
-                              inputWidth={10}
+                              type="time"
+                              displayValue={formatTime}
                             />
                             <span className="confirm-card__time-separator" aria-hidden="true">
                               –
@@ -219,7 +221,8 @@ const ConfirmPage = () => {
                               placeholder="End time"
                               ariaLabel={`${day.weekday} end time`}
                               onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
-                              inputWidth={10}
+                              type="time"
+                              displayValue={formatTime}
                             />
                           </div>
 
