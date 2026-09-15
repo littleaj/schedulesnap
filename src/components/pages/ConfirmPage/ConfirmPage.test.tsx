@@ -68,7 +68,6 @@ describe('ConfirmPage', () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue({
       scheduleOwnerGuess: 'Alex',
-      warnings: ['Year assumed from context'],
       shifts: [
         {
           date: '2026-09-05',
