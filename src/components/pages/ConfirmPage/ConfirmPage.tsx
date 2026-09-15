@@ -22,6 +22,8 @@ import { useUserProfile } from '@/hooks/user-profile';
 import PhotoPanel from '@/components/atoms/PhotoPanel/PhotoPanel';
 import { editableShift2GoogleCalendarEvent } from '@/utils/mappers';
 import { Card } from '@/components/atoms/Card';
+import gcalapi from '@/services/google-calendar';
+import { sleep } from '@/utils/misc';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -74,24 +76,11 @@ const ConfirmPage = () => {
 
     console.log('Number of events to create:', eventsToCreate.length);
 
-    const doFetch = async (eventBody: GoogleCalendarEvent, accessToken: string) => {
-      return await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`,
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(eventBody),
-        },
-      );
-    }
-
     let accessToken = getToken();
     if (!accessToken) {
       console.log('No access token found, initiating authentication...');
       await authenticate();
+      await sleep(250);
       accessToken = getToken();
       if (!accessToken) {
         throw new Error('Failed to obtain access token after authentication');
@@ -100,7 +89,7 @@ const ConfirmPage = () => {
 
     const createEventRequest = async (eventBody: GoogleCalendarEvent, accessToken: string) => {
       console.log(`Creating event in ${calendarId} calendar: `, eventBody.summary, eventBody.start.dateTime);
-      const response = await doFetch(eventBody, accessToken);
+      const response = await gcalapi.withAccessToken(accessToken).createEvent(calendarId, eventBody);
 
       if (response.status === 401) {
         // Unauthorized: Google OAuth token may have expired
@@ -109,7 +98,7 @@ const ConfirmPage = () => {
         if (!newToken) {
           throw new Error('Failed to obtain access token after authentication');
         }
-        return await doFetch(eventBody, newToken);
+        return await gcalapi.withAccessToken(newToken).createEvent(calendarId, eventBody);
       }
 
       return response;
@@ -120,19 +109,6 @@ const ConfirmPage = () => {
     for (const event of eventsToCreate) {
       const response = await createEventRequest(event, accessToken);
       hasSuccess = hasSuccess || response.ok;
-
-      if (response.status === 401) {
-        console.log('Unauthorized: Access token may have expired.');
-        await authenticate();
-        accessToken = getToken();
-        if (!accessToken) {
-          throw new Error('Failed to obtain access token after authentication');
-        }
-        const retryResponse = await createEventRequest(event, accessToken);
-        if (retryResponse.status === 401) {
-          throw new Error("Unauthorized: token still invalid after re-authentication");
-        }
-      }
     }
 
     // TODO: Handle the case where none of the events were successfully created.
@@ -168,12 +144,16 @@ const ConfirmPage = () => {
       });
 
       saveDraftConfirmation(uid, {
-        shifts: nextWeekDays.flatMap((day) => day.shifts.map((val) => ({
-          ...val,
-          startTime: convertTo24Hour(val.startTime),
-          endTime: convertTo24Hour(val.endTime),
-          isPlaceholder: !val.startTime && !val.endTime && !val.role && !val.location,
-        }))),
+        shifts: nextWeekDays.flatMap(
+          (day) => day.shifts.map(
+            (val) => ({
+              ...val,
+              startTime: convertTo24Hour(val.startTime),
+              endTime: convertTo24Hour(val.endTime),
+              isPlaceholder: !val.startTime && !val.endTime && !val.role && !val.location,
+            })
+          )
+        ),
         selectedCalendarId: profile?.defaultCalendarId ?? 'primary'
       });
 
