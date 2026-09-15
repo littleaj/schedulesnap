@@ -10,10 +10,9 @@ import {
   saveDraftConfirmation
 } from '@/services/schedule-analysis';
 import './ConfirmPage.css';
-import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import { useGoogleLogin } from '@/hooks/google-login';
-import type { WeekDay } from '@/types/shift-display';
+import type { EditableShift, WeekDay } from '@/types/shift-display';
 import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
@@ -60,7 +59,7 @@ const ConfirmPage = () => {
   }
 
   const hasEditableShift = useMemo(() => {
-    return weekDays.some((day) => day.shifts.some((shift) => shift.startTime || shift.endTime || shift.role || shift.location));
+    return weekDays.some((day) => day.shifts.some((shift) => shift.startTime || shift.endTime || shift.eventName || shift.location));
   }, [weekDays]);
 
   const handleCreateEvents = async () => {
@@ -71,7 +70,7 @@ const ConfirmPage = () => {
     const calendarId = draftConfirmation.selectedCalendarId || 'primary';
     const eventsToCreate = weekDays.flatMap((day) => day.shifts
       .filter((shift) => !shift.isPlaceholder && shift.date && shift.startTime && shift.endTime)
-      .map(editableShift2GoogleCalendarEvent))
+      .map((element) => editableShift2GoogleCalendarEvent(element)))
       .filter((event): event is NonNullable<typeof event> => event !== null);
 
     console.log('Number of events to create:', eventsToCreate.length);
@@ -120,7 +119,7 @@ const ConfirmPage = () => {
     }
   };
 
-  const updateShiftField = (dayIso: string, shiftId: string, field: keyof Pick<ScheduleAnalysisShift, 'startTime' | 'endTime' | 'role' | 'location'>, value: string) => {
+  const updateShiftField = (dayIso: string, shiftId: string, field: keyof Pick<EditableShift, 'startTime' | 'endTime' | 'eventName' | 'location'>, value: string) => {
     setWeekDays((currentWeekDays) => {
       const nextWeekDays = currentWeekDays.map((day) => {
         if (day.isoDate !== dayIso) {
@@ -148,9 +147,10 @@ const ConfirmPage = () => {
           (day) => day.shifts.map(
             (val) => ({
               ...val,
+              role: val.eventName,
               startTime: convertTo24Hour(val.startTime),
               endTime: convertTo24Hour(val.endTime),
-              isPlaceholder: !val.startTime && !val.endTime && !val.role && !val.location,
+              isPlaceholder: !val.startTime && !val.endTime && !val.eventName && !val.location,
             })
           )
         ),
@@ -224,10 +224,10 @@ const ConfirmPage = () => {
                           </div>
 
                           <EditableText
-                            value={shift.role ?? ''}
-                            placeholder="Role"
-                            ariaLabel={`${day.weekday} role`}
-                            onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'role', value)}
+                            value={shift.eventName ?? shift.role ?? ''}
+                            placeholder="Event name"
+                            ariaLabel={`${day.weekday} event name`}
+                            onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
                           />
 
                           <EditableText

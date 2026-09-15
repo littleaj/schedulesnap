@@ -98,7 +98,7 @@ describe('ConfirmPage', () => {
     expect(screen.getByText('Downtown')).toBeInTheDocument();
     expect(screen.getAllByPlaceholderText('Start time')).toHaveLength(6);
     expect(screen.getAllByPlaceholderText('End time')).toHaveLength(6);
-    expect(screen.getAllByPlaceholderText('Role')).toHaveLength(6);
+    expect(screen.getAllByPlaceholderText('Event name')).toHaveLength(6);
     expect(screen.getAllByPlaceholderText('Location')).toHaveLength(6);
   });
 

@@ -13,7 +13,7 @@ export const editableShift2GoogleCalendarEvent = (shift: EditableShift): GoogleC
   }
 
   return {
-    summary: shift.role || shift.location || 'Work Shift',
+    summary: shift.eventName || shift.role || shift.location || 'Work Shift',
     location: shift.location || undefined,
     start: {
       dateTime: startDateTime.toISOString(),

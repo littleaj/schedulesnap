@@ -11,7 +11,7 @@ export const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
 
   for (const shift of shifts) {
     const dayShifts = groupedShifts.get(shift.date) ?? [];
-    dayShifts.push({ ...shift, id: formatShiftKey(shift), isPlaceholder: false });
+    dayShifts.push({ ...shift, eventName: shift.role ?? '', id: formatShiftKey(shift), isPlaceholder: false });
     groupedShifts.set(shift.date, dayShifts);
   }
 
@@ -40,6 +40,7 @@ export const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
             startTime: '',
             endTime: '',
             role: '',
+            eventName: '',
             location: '',
             confidence: 0,
             rawText: '',
