@@ -62,7 +62,7 @@ const AnalysisPage = () => {
           return;
         }
 
-        navigate('/confirm', { replace: true });
+        navigate('/confirm', { replace: true, viewTransition: true });
       } catch {
         if (!isActive) {
           return;
@@ -75,7 +75,7 @@ const AnalysisPage = () => {
 
     if (location.state?.from?.pathname !== '/capture') {
       console.warn('Analysis page accessed without coming from capture page, redirecting to capture page.');
-      navigate('/capture', { replace: true });
+      navigate('/capture', { replace: true, viewTransition: true });
       return;
     }
 

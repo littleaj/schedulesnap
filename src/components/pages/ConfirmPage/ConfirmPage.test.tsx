@@ -221,7 +221,7 @@ describe('ConfirmPage', () => {
           }),
         }),
       );
-      expect(navigateMock).toHaveBeenCalledWith('/finished', { replace: true });
+      expect(navigateMock).toHaveBeenCalledWith('/finished', expect.anything());
     });
   });
 

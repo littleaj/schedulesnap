@@ -116,7 +116,7 @@ const ConfirmPage = () => {
 
     if (hasSuccess) {
       clearAnalysisFlowCache(user?.uid);
-      navigate('/finished', { replace: true });
+      navigate('/finished', { replace: true, viewTransition: true });
     }
   };
 
