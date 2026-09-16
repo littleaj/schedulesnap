@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
-import EditableText from '@/components/atoms/EditableText';
 import {
   clearAnalysisFlowCache,
   loadAnalysisResponse,
@@ -23,10 +22,12 @@ import { editableShift2GoogleCalendarEvent } from '@/utils/mappers';
 import { Card } from '@/components/atoms/Card';
 import gcalapi from '@/services/google-calendar';
 import { sleep } from '@/utils/misc';
-import { formatTime } from './utils/formatting';
+import CalendarWeekList from './CalendarWeekList';
+import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { getToken } = useContext(GoogleOAuthTokenContext);
   const { authenticate } = useGoogleLogin();
   const user = useCurrentUser();
@@ -50,9 +51,11 @@ const ConfirmPage = () => {
 
   const capturedPhoto = useMemo(() => loadCapturedSchedulePhoto(uid), [uid]);
   const capturedPhotoDataUrl = capturedPhoto ? `data:${capturedPhoto.mimeType};base64,${capturedPhoto.base64}` : null;
+
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
     .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
 
+  // FIXME: useState not needed anymore
   const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
 
   if (shifts.length > 0) {
@@ -120,47 +123,31 @@ const ConfirmPage = () => {
     }
   };
 
-  const updateShiftField = (dayIso: string, shiftId: string, field: keyof Pick<EditableShift, 'startTime' | 'endTime' | 'eventName' | 'location'>, value: string) => {
-    setWeekDays((currentWeekDays) => {
-      const nextWeekDays = currentWeekDays.map((day) => {
-        if (day.isoDate !== dayIso) {
-          return day;
-        }
-
-        return {
-          ...day,
-          shifts: day.shifts.map((shift) => {
-            if (shift.id !== shiftId) {
-              return shift;
-            }
-
-            return {
-              ...shift,
-              [field]: value,
-              isPlaceholder: false,
-            };
-          }),
-        };
-      });
-
-      saveDraftConfirmation(uid, {
-        shifts: nextWeekDays.flatMap(
-          (day) => day.shifts.map(
-            (val) => ({
-              ...val,
-              role: val.eventName,
-              startTime: convertTo24Hour(val.startTime),
-              endTime: convertTo24Hour(val.endTime),
-              isPlaceholder: !val.startTime && !val.endTime && !val.eventName && !val.location,
-            })
-          )
-        ),
-        selectedCalendarId: profile?.defaultCalendarId ?? 'primary'
-      });
-
-      return nextWeekDays;
+  const saveShifts = useCallback((shifts: ScheduleAnalysisShift[]) => {
+    saveDraftConfirmation(uid, {
+      shifts: shifts.map(val => ({
+        ...val,
+        startTime: convertTo24Hour(val.startTime),
+        endTime: convertTo24Hour(val.endTime)
+      })),
+      selectedCalendarId: profile?.defaultCalendarId ?? 'primary'
     });
-  };
+  }, [uid, profile?.defaultCalendarId]);
+
+  const saveWeekDays = useCallback((weekDays: WeekDay[]) => {
+    saveShifts(weekDays.flatMap(
+      (day) => day.shifts.map(
+        (val) => ({
+          ...val,
+          role: val.eventName,
+          startTime: convertTo24Hour(val.startTime),
+          endTime: convertTo24Hour(val.endTime),
+          // TODO: use this when we convert to EditableShift
+          // isPlaceholder: !val.startTime && !val.endTime && !val.eventName && !val.location,
+        } satisfies ScheduleAnalysisShift)
+      )
+    ));
+  }, [saveShifts]);
 
   useEffect(() => {
     if (draftConfirmation || !analysisResponse) {
@@ -194,58 +181,10 @@ const ConfirmPage = () => {
           <div className="confirm-card__summary" aria-label="Extracted shifts week view">
             <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
             <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed. Double click on the text to make changes.</p>
-            <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
-              {weekDays.map((day) => (
-                <li key={day.isoDate} className="confirm-card__day">
-                  <p className="confirm-card__day-label">{day.weekday}</p>
-                  <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
-                    <p className="confirm-card__cell-date">{day.monthDay}</p>
-
-                    <div className="confirm-card__events">
-                      {day.shifts.map((shift) => (
-                        <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}>
-                          <div className="confirm-card__time-row">
-                            <EditableText
-                              value={shift.startTime}
-                              placeholder="Start time"
-                              ariaLabel={`${day.weekday} start time`}
-                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
-                              type="time"
-                              displayValue={formatTime}
-                            />
-                            <span className="confirm-card__time-separator" aria-hidden="true">
-                              –
-                            </span>
-                            <EditableText
-                              value={shift.endTime}
-                              placeholder="End time"
-                              ariaLabel={`${day.weekday} end time`}
-                              onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
-                              type="time"
-                              displayValue={formatTime}
-                            />
-                          </div>
-
-                          <EditableText
-                            value={shift.eventName ?? shift.role ?? ''}
-                            placeholder="Event name"
-                            ariaLabel={`${day.weekday} event name`}
-                            onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
-                          />
-
-                          <EditableText
-                            value={shift.location ?? ''}
-                            placeholder="Location"
-                            ariaLabel={`${day.weekday} location`}
-                            onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </article>
-                </li>
-              ))}
-            </ul>
+            <CalendarWeekList
+              shifts={weekDays}
+              onChange={saveWeekDays}
+            />
           </div>
         ) : (
           <p className="confirm-card__intro">
