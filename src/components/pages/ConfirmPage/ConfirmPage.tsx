@@ -209,18 +209,15 @@ const ConfirmPage = () => {
         </div>
 
         {analysisResponse?.warnings && analysisResponse.warnings.length > 0 ? (
-          <Card>
-            <details className="confirm-card__warnings">
-              <summary>Analysis Summary</summary>
-              <ul>
-                {analysisResponse.warnings.map((warning, index) => (
-                  <li key={index} className="confirm-card__warning card">{warning}</li> // NOSONAR we're not reording this array, so index is fine for a key.
-                ))}
-              </ul>
-            </details>
+          <Card element={<details />} className="confirm-card__warnings">
+            <summary>Analysis Summary</summary>
+            <ul>
+              {analysisResponse.warnings.map((warning, index) => (
+                <Card key={index} element={<li />} className="confirm-card__warning">{warning}</Card> // NOSONAR we're not reording this array, so index is fine for a key.
+              ))}
+            </ul>
           </Card>
         ) : null}
-
       </section>
     </main>
   );

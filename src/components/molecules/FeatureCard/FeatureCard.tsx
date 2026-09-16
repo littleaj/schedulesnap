@@ -13,7 +13,7 @@ interface FeatureCardProps extends FeatureCardHeaderProps, React.HTMLAttributes<
 
 const FeatureCard = ({ icon, heading, children, className = '', ...props }: FeatureCardProps) => {
   return (
-    <Card className={`feature-card ${className}`} {...props}>
+    <Card element={<article />} className={`feature-card ${className}`} {...props}>
       <FeatureCardHeader icon={icon} heading={heading} />
       <div className="feature-card__body">
         {children}
