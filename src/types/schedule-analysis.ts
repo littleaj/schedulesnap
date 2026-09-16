@@ -21,6 +21,7 @@ export interface ScheduleAnalysisResponse {
 }
 
 export interface DraftConfirmation {
+  // FIXME: change this type to EditableShift[]
   shifts: ScheduleAnalysisShift[];
   selectedCalendarId: string;
 }

@@ -169,10 +169,6 @@ export const loadAnalysisResponse = (uid: string): ScheduleAnalysisResponse | nu
 };
 
 export const saveDraftConfirmation = (uid: string, draft: DraftConfirmation) => {
-  if (!canUseLocalStorage()) {
-    return;
-  }
-
   window.localStorage.setItem(getDraftConfirmationStorageKey(uid), JSON.stringify(draft));
 };
 
