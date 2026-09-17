@@ -11,7 +11,7 @@ import {
 import './ConfirmPage.css';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import { useGoogleLogin } from '@/hooks/google-login';
-import type { EditableShift, WeekDay } from '@/types/shift-display';
+import type { WeekDay } from '@/types/shift-display';
 import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
@@ -162,7 +162,7 @@ const ConfirmPage = () => {
 
   return (
     <main className="confirm-page">
-      <section className="confirm-card" aria-labelledby="confirm-title">
+      <Card element={<section/>} className="confirm-card" aria-labelledby="confirm-title">
         <div className="confirm-card__header">
           <div className="confirm-card__heading-group">
             <p className="confirm-card__eyebrow">Review schedule</p>
@@ -218,7 +218,7 @@ const ConfirmPage = () => {
             </ul>
           </Card>
         ) : null}
-      </section>
+      </Card>
     </main>
   );
 };
