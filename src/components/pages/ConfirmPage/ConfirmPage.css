@@ -129,7 +129,7 @@
   align-content: start;
   justify-items: stretch;
   gap: 0.35rem;
-  padding: 1rem 0.8rem;
+  padding: 0.5rem;
   border-radius: 18px;
   background: rgba(from var(--md-surface) r g b / 0.72);
   border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.8);
@@ -170,7 +170,7 @@
   width: 100%;
   height: 100%;
   gap: 0.25rem;
-  padding: 0.35rem 0;
+  padding: 0.35rem;
   background-color: var(--md-primary-container);
   color: var(--md-on-primary-container);
   justify-content: center;
