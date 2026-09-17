@@ -1,10 +1,9 @@
 import EditableText from "@/components/atoms/EditableText";
 import type { WeekDay } from "@/types/shift-display";
-import { formatTime } from "./utils/formatting";
 
 export interface CalendarDayCardProps {
   day: WeekDay;
-  updateShiftField: (isoDate: string, shiftId: string, field: "startTime" | "endTime" | "eventName" | "location", value: string) => void;
+  updateShiftField: (isoDate: string, shiftId: string, field: "startTime" | "endTime" | "eventName" | "location", value: React.InputHTMLAttributes<HTMLInputElement>['value']) => void;
 }
 
 const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
@@ -24,7 +23,6 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
                   ariaLabel={`${day.weekday} start time`}
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
                   type="time"
-                  displayValue={formatTime}
                 />
                 <span className="confirm-card__time-separator" aria-hidden="true">
                   –
@@ -35,7 +33,6 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
                   ariaLabel={`${day.weekday} end time`}
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
                   type="time"
-                  displayValue={formatTime}
                 />
               </div>
 

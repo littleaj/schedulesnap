@@ -10,7 +10,7 @@ interface CalendarWeekListProps {
 const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
 
-  const updateShiftField = useCallback((dayIso: string, shiftId: string, field: 'startTime' | 'endTime' | 'eventName' | 'location', value: string) => {
+  const updateShiftField = useCallback((dayIso: string, shiftId: string, field: 'startTime' | 'endTime' | 'eventName' | 'location', value: React.InputHTMLAttributes<HTMLInputElement>['value']) => {
     setWeekDays((currentWeekDays) => {
       const nextWeekDays = currentWeekDays.map((day) => {
         if (day.isoDate !== dayIso) {
