@@ -1,5 +1,4 @@
 .profile-form {
-  width: min(100%, 620px);
   margin: 0 auto;
   background: var(--md-surface-overlay);
   border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.28);
