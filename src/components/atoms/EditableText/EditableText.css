@@ -5,42 +5,9 @@
   min-width: 0;
 }
 
-.editable-text__display {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2rem;
-  max-width: 100%;
-  padding: 0.15rem 0.3rem;
-  border-radius: 10px;
-  color: var(--md-on-surface);
-  font: inherit;
-  font-weight: 600;
-  line-height: 1.25;
-  cursor: text;
-  text-align: center;
-  white-space: normal;
-}
-
-.editable-text__display--placeholder {
-  color: var(--md-on-surface-variant);
-  font-style: italic;
-  opacity: 0.8;
-}
-
-.editable-text__display:focus-visible,
-.editable-text__input:focus-visible,
-.editable-text__icon-button:focus-visible {
+.editable-text__input:focus-visible {
   outline: 2px solid var(--md-primary);
   outline-offset: 2px;
-}
-
-.editable-text__editor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  width: 100%;
 }
 
 .editable-text__input {
@@ -53,50 +20,4 @@
   color: var(--md-on-surface);
   font: inherit;
   text-align: center;
-}
-
-.editable-text__actions {
-  display: inline-flex;
-  gap: 0.35rem;
-  padding: 0.3rem;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease, max-height 0.15s ease;
-}
-
-.editable-text__editor:focus-within .editable-text__actions {
-  max-height: 2rem;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.editable-text__icon-button {
-  display: inline-grid;
-  place-items: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  padding: 0;
-  border: 1px solid rgba(from var(--md-on-surface) r g b / 0.5);
-  border-radius: 999px;
-  background: rgba(from var(--md-surface) r g b / 0.95);
-  color: var(--md-on-surface);
-  cursor: pointer;
-}
-
-.editable-text__icon-button[aria-label='OK'] {
-  background: var(--md-success-container);
-  color: var(--md-on-success-container);
-}
-
-.editable-text__icon-button[aria-label='Cancel'] {
-  background: var(--md-error-container);
-  color: var(--md-on-error-container);
-}
-
-.editable-text__icon-button svg {
-  width: 0.95rem;
-  height: 0.95rem;
-  fill: currentColor;
 }
