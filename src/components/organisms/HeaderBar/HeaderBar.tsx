@@ -19,10 +19,6 @@ const HeaderBar = () => {
           <AppLogoLink to="/" />
         </div>
 
-        <div className="header-bar__center">
-          <NavButtonLink to="/capture">SNAP SCHEDULE</NavButtonLink>
-        </div>
-
         <div className="header-bar__right">
           <IconLink to="/help" label="Help" iconSrc={HelpIcon} />
           <UserMenu user={user} />

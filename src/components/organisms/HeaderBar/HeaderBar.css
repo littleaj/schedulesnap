@@ -10,7 +10,7 @@
 
 .header-bar__nav {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 1rem;
   max-width: 80rem;
@@ -28,32 +28,12 @@
   justify-self: end;
 }
 
-.header-bar__center {
-  justify-self: center;
-}
-
 @media (max-width: 720px) {
   .header-bar {
-    padding-inline: 0.75rem;
+    padding-inline: 0.5rem;
   }
 
   .header-bar__nav {
     grid-template-columns: 1fr auto;
-    grid-template-areas:
-      'left right'
-      'center center';
-  }
-
-  .header-bar__left {
-    grid-area: left;
-  }
-
-  .header-bar__center {
-    grid-area: center;
-    justify-self: stretch;
-  }
-
-  .header-bar__right {
-    grid-area: right;
   }
 }
