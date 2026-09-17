@@ -145,13 +145,14 @@ const ProfileForm = ({
           error={errors.defaultCalendarId}
         />
 
-        <ReminderSettings
+        {/* TODO: implement reminder settings into Google Calendar POST */}
+        {/* <ReminderSettings
           enabled={values.reminder.enabled}
           minutesBefore={values.reminder.minutesBefore}
           error={errors.reminderMinutesBefore}
           onEnabledChange={onReminderEnabledChange}
           onMinutesBeforeChange={onReminderMinutesChange}
-        />
+        /> */}
       </div>
 
       {errorMessage ? <p className="profile-form__error" role="alert">{errorMessage}</p> : null}
