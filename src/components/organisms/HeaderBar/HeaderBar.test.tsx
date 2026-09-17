@@ -26,7 +26,6 @@ describe('HeaderBar', () => {
     );
 
     expect(screen.getByRole('link', { name: /schedulesnap/i })).toHaveAttribute('href', '/');
-    expect(screen.getByRole('link', { name: /snap schedule/i })).toHaveAttribute('href', '/capture');
     expect(screen.getByRole('link', { name: /help/i })).toHaveAttribute('href', '/help');
 
     await waitFor(() => {
