@@ -230,3 +230,8 @@
   color: var(--md-on-warning-container);
 }
 
+@media (max-width: 768px) {
+  .confirm-card__actions {
+    flex-direction: column;
+  }
+}
