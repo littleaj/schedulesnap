@@ -2,7 +2,7 @@ import React from "react";
 import { getAuth } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "firebase/app-check";
 
 // cSpell:disable
@@ -23,18 +23,38 @@ interface FirebaseServices {
   firestore: ReturnType<typeof getFirestore>;
 }
 
+const isDevMode = import.meta.env.MODE === 'development';
+console.log((isDevMode ? "DEVELOPMENT" : "PRODUCTION") + " MODE");
+
+if (isDevMode) {
+  // @ts-ignore
+  self.FIREBASE_APPCHECK_DEBUG_TOKEN = import.meta.env.VITE_APPCHECK_DEBUG_TOKEN;
+}
+
 // Initialize Firebase
+console.log("Initializing Firebase app...");
 const app = initializeApp(firebaseConfig);
-initializeAppCheck(app, {
-  provider: new ReCaptchaEnterpriseProvider('6Lf7L6stAAAAABN-_TqQiV3vOmxOwO7P-mt28T5j'),
+
+// @ts-ignore
+console.log("Initializing Firebase app check... (debug=" + !!self?.FIREBASE_APPCHECK_DEBUG_TOKEN + ")");
+const appCheck = initializeAppCheck(app, {
+  provider: new ReCaptchaEnterpriseProvider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
   isTokenAutoRefreshEnabled: true
 });
+console.log("Firebase app check initialized: ", !!appCheck);
+
 const firestore = getFirestore(app);
 const firebaseServices = {
   analytics: getAnalytics(app),
   auth: getAuth(app),
   firestore,
 };
+
+if (isDevMode) {
+  console.log("Development mode: connecting to Firestore emulator...");
+  connectFirestoreEmulator(firestore, "127.0.0.1", 8080);
+}
+
 const FirebaseContext = React.createContext(firebaseServices);
 
 const FirebaseProvider = ({ children }: { children: React.ReactNode }) => {

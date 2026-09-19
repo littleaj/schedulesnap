@@ -4,8 +4,6 @@ import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
 
 const srcPath = fileURLToPath(new URL('./src', import.meta.url));
-const firebaseProdPath = fileURLToPath(new URL('./src/contexts/firebase.prod.tsx', import.meta.url));
-const firebaseDevPath = fileURLToPath(new URL('./src/contexts/firebase.dev.tsx', import.meta.url));
 
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
@@ -18,10 +16,6 @@ export default defineConfig(({ mode }) => ({
   },
   resolve: {
     alias: [
-      {
-        find: '@/contexts/firebase',
-        replacement: mode === 'development' ? firebaseDevPath : firebaseProdPath,
-      },
       {
         find: '@',
         replacement: srcPath,

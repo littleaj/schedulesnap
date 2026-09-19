@@ -7,3 +7,4 @@ firestore-debug.log
 .firebaserc
 .env.local
 .firebase/
+.env
