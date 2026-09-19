@@ -269,7 +269,9 @@ export const analyzeSchedulePhoto = async (
   targetName: string,
   todayIso = new Date().toISOString().slice(0, 10),
 ) => {
-  const ai = getAI(getApp());
+  const ai = getAI(getApp(), {
+    useLimitedUseAppCheckTokens: true,
+  });
   const model = getGenerativeModel(ai, { model: 'gemini-3.5-flash-lite' });
 
   try {
