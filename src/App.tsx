@@ -62,7 +62,7 @@ const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: ResumeProgress
     </>
   );
 };
-const ScheduleSnap = () => {
+export const App = () => {
   const [resumeTarget, setResumeTarget] = useState<AnalysisFlowResumeTarget | null>(null);
 
   const user = useCurrentUser();
@@ -108,5 +108,3 @@ const ScheduleSnap = () => {
     </div>
   );
 };
-
-export default ScheduleSnap;
