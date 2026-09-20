@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  padding: 1rem 1.25rem;
+  padding: 0.25em;
   background: rgba(from var(--md-surface) r g b / 0.92);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(from var(--md-outline-variant) r g b / 0.22);
@@ -14,7 +14,6 @@
   align-items: center;
   gap: 1rem;
   max-width: 80rem;
-  margin: 0 auto;
 }
 
 .header-bar__left,
