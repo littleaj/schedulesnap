@@ -1,11 +1,9 @@
 .confirm-page {
   display: grid;
-  padding: 2rem 1.25rem 4rem;
-  background: var(--md-gradient-page);
+  padding: 0.5rem 1rem
 }
 
 .confirm-card {
-  padding: 2rem 1rem;
   min-width: 0;
 }
 
@@ -64,7 +62,7 @@
 }
 
 .confirm-card h1 {
-  margin: 0.8rem 0 0;
+  margin: 0.125rem 0 0;
   font-size: clamp(2rem, 5vw, 2.9rem);
   line-height: 1.1;
   letter-spacing: -0.05em;
@@ -72,10 +70,9 @@
 }
 
 .confirm-card__intro {
-  margin: 1rem 0 0;
+  margin: 0.25rem 0 0;
   color: var(--md-on-surface-variant);
   font-size: 1rem;
-  line-height: 1.6;
 }
 
 .confirm-card__summary {
