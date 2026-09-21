@@ -1,10 +1,11 @@
 .confirm-page {
   display: grid;
-  padding: 0.5rem 1rem
+  padding: 0.5rem;
 }
 
 .confirm-card {
   min-width: 0;
+  padding-inline: 0.5rem;
 }
 
 .confirm-card__header {
@@ -20,7 +21,7 @@
 
 .confirm-card__photo-panel {
   display: flex;
-  max-height: 12rem;
+  max-height: 10rem;
 }
 
 .confirm-card__photo-viewport {
@@ -77,7 +78,7 @@
 
 .confirm-card__summary {
   margin-top: 1rem;
-  padding: 1rem 1.1rem;
+  padding: 0.5em;
   border-radius: 16px;
   background: var(--md-surface-container);
   border: 1px solid var(--md-secondary-container);
@@ -94,23 +95,30 @@
 
 .confirm-card__grid {
   list-style: none;
-  margin-block: 1.5rem 0;
+  margin-top: 0.5rem;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(7, minmax(min-content, 1fr));
-  gap: 0.8rem;
-  overflow-x: scroll;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .confirm-card__day {
   display: grid;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
   gap: 0.45rem;
 }
 
 .confirm-card__day-label {
   margin: 0;
   color: var(--md-on-surface-variant);
-  /* font-size: 0.82rem; */
   font-weight: 800;
   letter-spacing: 0.08em;
   text-align: center;
@@ -124,7 +132,7 @@
   align-content: start;
   justify-items: stretch;
   gap: 0.35rem;
-  padding: 0.5rem;
+  padding: 0.5rem 0.2rem;
   border-radius: 18px;
   background: rgba(from var(--md-surface) r g b / 0.72);
   border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.8);
