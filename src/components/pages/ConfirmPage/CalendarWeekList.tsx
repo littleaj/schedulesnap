@@ -40,11 +40,13 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   }, []);
 
   return (
-    <ul className="confirm-card__grid" aria-label="Scanned weekly schedule">
-      {weekDays.map((day) =>
-        <CalendarDayCard key={day.isoDate} day={day} updateShiftField={updateShiftField} />)
-      }
-    </ul>
+    <>
+      <div className="confirm-card__grid" aria-label="Scanned weekly schedule">
+        {weekDays.map((day) =>
+          <CalendarDayCard key={day.isoDate} day={day} updateShiftField={updateShiftField} />)
+        }
+      </div>
+    </>
   );
 };
 

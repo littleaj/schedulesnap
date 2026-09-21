@@ -8,7 +8,7 @@ export interface CalendarDayCardProps {
 
 const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
   return (
-    <li className="confirm-card__day">
+    <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
       <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
         <p className="confirm-card__cell-date">{day.monthDay}</p>
@@ -53,7 +53,7 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
           ))}
         </div>
       </article>
-    </li>
+    </div>
   );
 };
 
