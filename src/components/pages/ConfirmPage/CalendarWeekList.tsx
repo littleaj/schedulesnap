@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import CalendarDayCard from "./CalendarDayCard";
 import type { WeekDay } from "@/types/shift-display";
 
@@ -73,23 +73,26 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     };
   }, [scroller, handleScroll]);
 
+  const panelWidth = useMemo(() => panels.item(0)?.clientWidth, [panels.item(0)]);
   const goToPanel = (index: number) => {
     if (!scroller) return;
     scroller.scrollTo({
-      left: index * scroller.clientWidth,
+      left: index * panelWidth,
       behavior: 'smooth',
     });
   };
 
   const goToPrevPanel = () => {
     if (!scroller) return;
-    const index = Math.max(0, Math.round(scroller.scrollLeft / scroller.clientWidth) - 1);
+    const currentIndex = Math.round(scroller.scrollLeft / panelWidth);
+    const index = Math.max(0, currentIndex - 1);
     goToPanel(index);
   };
 
   const goToNextPanel = () => {
     if (!scroller || !panels) return;
-    const index = Math.min(panels.length - 1, Math.round(scroller.scrollLeft / scroller.clientWidth) + 1);
+    const currentIndex = Math.round(scroller.scrollLeft / panelWidth);
+    const index = Math.min(panels.length - 1, currentIndex + 1);
     goToPanel(index);
   };
 
