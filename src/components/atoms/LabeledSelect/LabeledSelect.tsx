@@ -14,7 +14,7 @@ interface LabeledSelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
   error?: string;
 }
 
-const LabeledSelect = ({ id, label, options, hint, error, ...props }: LabeledSelectProps) => {
+const LabeledSelect = ({ id, label, options, hint, error, value, ...props }: LabeledSelectProps) => {
   const messageId = `${id}-message`;
   let message: React.ReactNode = null;
 
@@ -32,10 +32,11 @@ const LabeledSelect = ({ id, label, options, hint, error, ...props }: LabeledSel
         id={id}
         aria-invalid={Boolean(error)}
         aria-describedby={hint || error ? messageId : undefined}
+        value={value}
         {...props}
       >
         {options.map(option => (
-          <option key={option.value} value={option.value} selected={props.value === option.value}>{option.label}</option>
+          <option key={option.value} value={option.value}>{option.label}</option>
         ))}
       </select>
       {message}
