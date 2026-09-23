@@ -112,38 +112,33 @@
 
 .chevron {
   position: absolute;
-  bottom: 25%;
+  bottom: 27.5%;
   z-index: 2;
-  width: 1.5rem;
+  width: 2rem;
   height: 2rem;
-  border-radius: 50%;
   border: none;
-  background-color: rgba(from var(--md-tertiary-container) r g b / 0.7);
+  background-color: transparent;
   color: var(--md-on-tertiary-container);
-  cursor: pointer;
-  box-shadow: 2px 4px 6px rgba(from var(--md-on-surface-variant) r g b / 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.15s ease-in-out;
+  transition: opacity 0.15s;
 }
 .chevron.visible {
-  pointer-events: auto;
-  opacity: 1;
-  transition: opacity 0.15s ease-in-out;
+  opacity: 0.5;
+  transition: opacity 0.15s;
 }
 .chevron.prev {
-  left: 6px;
+  left: -4px;
 }
 .chevron.next {
-  right: 6px;
+  right: -4px;
 }
 .chevron svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .confirm-card__day {
