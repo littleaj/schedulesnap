@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.css';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import AnalysisResumeDialog from '@/components/molecules/AnalysisResumeDialog';
@@ -62,21 +62,28 @@ const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: ResumeProgress
     </>
   );
 };
+
 export const App = () => {
   const [resumeTarget, setResumeTarget] = useState<AnalysisFlowResumeTarget | null>(null);
 
   const user = useCurrentUser();
 
-  useEffect(() => {
-    console.log("Checking for analysis flow resume target", { "user.uid": user?.uid });
+  const checkResumeTarget = useCallback(() => {
     if (!user) {
       return;
     }
 
+    console.log("Checking for resume target", { "user.uid": user?.uid });
+
     const analysisFlowTarget = getAnalysisFlowResumeTarget(user.uid);
     console.log("Checkied for analysis flow resume target: ", analysisFlowTarget?.route);
     setResumeTarget(analysisFlowTarget);
+    return analysisFlowTarget;
   }, [user]);
+
+  useEffect(() => {
+    checkResumeTarget();
+  }, [checkResumeTarget]);
 
   return (
     <div className="app-shell">
