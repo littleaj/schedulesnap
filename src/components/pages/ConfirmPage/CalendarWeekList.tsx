@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CalendarDayCard from "./CalendarDayCard";
 import type { WeekDay } from "@/types/shift-display";
 
@@ -39,19 +39,19 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     });
   }, [onChange]);
 
-  const scroller = document.getElementById('confirm-card__grid');
+  const scroller = useRef<HTMLDivElement>(null);
   const panels = document.querySelectorAll('.confirm-card__day');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = useRef<HTMLButtonElement>(null);
+  const nextBtn = useRef<HTMLButtonElement>(null);
 
   const updateChevrons = useCallback(() => {
-    if (!scroller || !prevBtn || !nextBtn) return;
-    const maxScroll = scroller.scrollWidth - scroller.clientWidth;
-    const atStart = scroller.scrollLeft <= 1;
-    const atEnd = scroller.scrollLeft >= maxScroll - 1;
+    if (!scroller.current || !prevBtn.current || !nextBtn.current) return;
+    const maxScroll = scroller.current.scrollWidth - scroller.current.clientWidth;
+    const atStart = scroller.current.scrollLeft <= 1;
+    const atEnd = scroller.current.scrollLeft >= maxScroll - 1;
 
-    prevBtn.classList.toggle('visible', !atStart);
-    nextBtn.classList.toggle('visible', !atEnd);
+    prevBtn.current.classList.toggle('visible', !atStart);
+    nextBtn.current.classList.toggle('visible', !atEnd);
   }, [scroller, prevBtn, nextBtn]);
 
   const [isTicking, setIsTicking] = useState(false);
@@ -67,44 +67,45 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   }, [isTicking, updateChevrons]);
 
   useEffect(() => {
-    scroller?.addEventListener('scroll', handleScroll);
+    if (!scroller.current) return;
+    scroller.current.addEventListener('scroll', handleScroll);
     return () => {
-      scroller?.removeEventListener('scroll', handleScroll);
+      scroller.current?.removeEventListener('scroll', handleScroll);
     };
   }, [scroller, handleScroll]);
 
   const panelWidth = useMemo(() => panels.item(0)?.clientWidth, [panels.item(0)]);
   const goToPanel = (index: number) => {
-    if (!scroller) return;
-    scroller.scrollTo({
+    if (!scroller.current) return;
+    scroller.current.scrollTo({
       left: index * panelWidth,
       behavior: 'smooth',
     });
   };
 
   const goToPrevPanel = () => {
-    if (!scroller) return;
-    const currentIndex = Math.round(scroller.scrollLeft / panelWidth);
+    if (!scroller.current) return;
+    const currentIndex = Math.round(scroller.current.scrollLeft / panelWidth);
     const index = Math.max(0, currentIndex - 1);
     goToPanel(index);
   };
 
   const goToNextPanel = () => {
-    if (!scroller || !panels) return;
-    const currentIndex = Math.round(scroller.scrollLeft / panelWidth);
+    if (!scroller.current || !panels) return;
+    const currentIndex = Math.round(scroller.current.scrollLeft / panelWidth);
     const index = Math.min(panels.length - 1, currentIndex + 1);
     goToPanel(index);
   };
 
   useEffect(() => {
-    if (!prevBtn || !nextBtn) return;
-    prevBtn.addEventListener('click', goToPrevPanel);
-    nextBtn.addEventListener('click', goToNextPanel);
+    if (!prevBtn.current || !nextBtn.current) return;
+    prevBtn.current.addEventListener('click', goToPrevPanel);
+    nextBtn.current.addEventListener('click', goToNextPanel);
     return () => {
-      prevBtn.removeEventListener('click', goToPrevPanel);
-      nextBtn.removeEventListener('click', goToNextPanel);
+      prevBtn.current?.removeEventListener('click', goToPrevPanel);
+      nextBtn.current?.removeEventListener('click', goToNextPanel);
     };
-  }, [prevBtn, nextBtn, goToPrevPanel, goToNextPanel]);
+  }, [prevBtn.current, nextBtn.current, goToPrevPanel, goToNextPanel]);
 
   useEffect(() => {
     window.addEventListener('resize', updateChevrons);
@@ -116,13 +117,13 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
 
   return (
     <>
-      <button className="chevron prev" id="prevBtn" aria-label="Previous day">
+      <button ref={prevBtn} className="chevron prev" id="prevBtn" aria-label="Previous day">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
-      <button className="chevron next" id="nextBtn" aria-label="Next day">
+      <button ref={nextBtn} className="chevron next" id="nextBtn" aria-label="Next day">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </button>
-      <div id="confirm-card__grid" className="confirm-card__grid" aria-label="Scanned weekly schedule">
+      <div ref={scroller} id="confirm-card__grid" className="confirm-card__grid" aria-label="Scanned weekly schedule">
         {weekDays.map((day) =>
           <CalendarDayCard key={day.isoDate} day={day} updateShiftField={updateShiftField} />)
         }
