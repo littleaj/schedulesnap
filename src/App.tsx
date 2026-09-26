@@ -20,6 +20,8 @@ import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
 import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenProvider } from '@/contexts/google-oauth';
 import useCurrentUser from '@/hooks/current-user';
+import PrivacyPage from '@/components/pages/PrivacyPage';
+import FooterBar from '@/components/organisms/FooterBar';
 
 interface ResumeProgressWrapperProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
@@ -99,6 +101,7 @@ export const App = () => {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/help" element={<HelpPage />} />
               <Route path="/logout" element={<LogoutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/capture" element={<CapturePage />} />
@@ -110,6 +113,7 @@ export const App = () => {
               </Route>
             </Route>
           </Routes>
+          <FooterBar />
         </GoogleOAuthTokenProvider>
       </BrowserRouter>
     </div>
