@@ -1,0 +1,13 @@
+.centered {
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0;
+  padding: 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--md-primary-fixed);
+}
