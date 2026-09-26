@@ -4,6 +4,4 @@ ScheduleSnap is a web application for creating events for their work shifts on t
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
 TBD
