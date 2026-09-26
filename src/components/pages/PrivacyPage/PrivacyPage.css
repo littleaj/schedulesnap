@@ -1,0 +1,43 @@
+.privacy-page {
+  margin: 0.5em 1em;
+}
+
+.privacy-page__header {
+  margin-bottom: 1.75rem;
+}
+
+.privacy-page__header h1 {
+  margin: 0;
+  font-size: 2.25rem;
+  color: var(--md-on-surface);
+}
+
+.intro {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--md-on-surface-variant);
+}
+
+.panel {
+  background: var(--md-surface);
+  border: 1px solid var(--md-outline);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.privacy-page__aside {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--md-outline);
+}
+
+.privacy-page__aside a {
+  color: var(--md-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.privacy-page__aside a:hover {
+  text-decoration: underline;
+}
