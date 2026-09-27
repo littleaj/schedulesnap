@@ -4,7 +4,7 @@
   --md-on-primary: var(--clr-primary-50);
   --md-primary-container: var(--clr-primary-100);
   --md-on-primary-container: var(--clr-primary-800);
-  --md-primary-fixed: var(--clr-primary-300);
+  --md-primary-fixed: var(--clr-primary-400);
   --md-on-primary-fixed: var(--clr-primary-900);
 
   --md-secondary: var(--clr-secondary-500);
@@ -37,7 +37,7 @@
   --md-background-alt: hsl(175, 15%, 75%); /* deprecated */
   --md-background-soft: var(--md-background); /* deprecated */
 
-  --md-surface: hsl(from var(--clr-neutral-variant-50) h s l / 0.8);
+  --md-surface: var(--clr-neutral-variant-50);
   --md-surface-variant: hsl(from var(--clr-neutral-variant-100) calc(h - 60) s l / 0.8);
   --md-surface-container: hsl(355, 29%, 95%, 0.85); /* deprecated */
   --md-surface-container-high: hsl(355, 42%, 97%, 0.9); /* deprecated */
@@ -47,7 +47,7 @@
   --md-on-surface-muted: hsl(222, 37%, 21%); /* deprecated */
   --md-on-surface-overlay: hsl(222, 37%, 21%); /* deprecated */
 
-  --md-shadow: hsl(from var(--clr-neutral-900) h s l / 0.5);
+  --md-shadow: var(--clr-neutral-900);
   --md-scrim: hsl(from var(--clr-neutral-variant-600) h s l / 0.4);
 
   --md-outline: hsl(211, 15%, 45%);
