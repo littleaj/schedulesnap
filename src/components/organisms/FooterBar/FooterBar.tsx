@@ -6,6 +6,7 @@ const FooterBar = () => {
   return (
     <footer className="footer-bar">
       <ul className="footer-bar__links">
+        <li><Link to="/help">Help</Link></li>
         <li><Link to="/about">About</Link></li>
         <li><Link to="/privacy">Privacy</Link></li>
         <li><Link to="/terms">Terms</Link></li>
