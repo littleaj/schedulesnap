@@ -1,6 +1,6 @@
 .profile-form {
   margin: 0 auto;
-  background: var(--md-surface-overlay);
+  background: var(--md-surface);
   border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.28);
   border-radius: 20px;
   box-shadow: 0 18px 48px rgba(from var(--md-on-surface) r g b / 0.12);
