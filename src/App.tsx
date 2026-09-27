@@ -22,6 +22,7 @@ import { GoogleOAuthTokenProvider } from '@/contexts/google-oauth';
 import useCurrentUser from '@/hooks/current-user';
 import PrivacyPage from '@/components/pages/PrivacyPage';
 import FooterBar from '@/components/organisms/FooterBar';
+import TermsPage from '@/components/pages/TermsPage';
 
 interface ResumeProgressWrapperProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
@@ -102,6 +103,7 @@ export const App = () => {
               <Route path="/help" element={<HelpPage />} />
               <Route path="/logout" element={<LogoutPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/capture" element={<CapturePage />} />
