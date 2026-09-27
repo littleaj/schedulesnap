@@ -5,23 +5,23 @@
   display: grid;
   place-items: center;
   place-content: center;
-  padding: 1.5rem;
-  background: rgba(from var(--md-on-surface) r g b / 0.48);
-  backdrop-filter: blur(8px);
+  padding-inline: 2rem;
+  background-color: var(--md-scrim);
+  backdrop-filter: blur(5px);
 }
 
 .analysis-resume-dialog {
   position: relative;
-  background: rgba(from var(--md-surface) r g b / 0.98);
-  border: 3px outset rgba(from var(--md-outline-variant) r g b / 0.5);
+  background: var(--md-surface);
+  border: 3px outset var(--md-outline-variant);
   border-radius: 24px;
   padding: 2rem 1.5rem;
-  box-shadow: 0 28px 72px rgba(from var(--md-on-surface) r g b / 0.18);
+  box-shadow: 0 14px 20px rgba(from var(--md-shadow) r g b / 0.8);
 }
 
 .analysis-resume-dialog__eyebrow {
   margin: 0;
-  color: var(--md-primary);
+  color: var(--md-primary-fixed);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -30,9 +30,9 @@
 
 .analysis-resume-dialog h1 {
   margin: 0.8rem 0 0;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-size: clamp(1.5rem, 4vw, 2.75rem);
   line-height: 1.1;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.025em;
   color: var(--md-on-surface);
 }
 
