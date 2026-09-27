@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { FirebaseProvider } from '@/contexts/firebase';
 import { App } from './App';
+import '@/styles/palette.css';
 import '@/styles/colors.css';
 import '@/styles/utils.css';
 import './index.css';
