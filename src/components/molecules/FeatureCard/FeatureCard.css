@@ -4,11 +4,13 @@
 .feature-card__header {
   display: flex;
   align-items: center;
+  justify-content: start;
   gap: 0.75rem;
   margin-block: 0 0.625rem;
 }
 
 .feature-card__icon {
+  --_clr-bg: var(--feature-card-icon-bg-clr, var(--md-surface-variant));
   display: inline-grid;
   place-items: center;
   place-content: center;
@@ -17,8 +19,8 @@
   width: 50px;
   height: 50px;
   border-radius: 16px;
-  background-color: var(--md-primary-container);
-  font-size: 1.8rem;
+  background-color: var(--_clr-bg);
+  font-size: 2rem;
 }
 
 .feature-card h2 {
