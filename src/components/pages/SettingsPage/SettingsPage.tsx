@@ -2,6 +2,7 @@ import React from 'react';
 import ProfileForm from '@/components/organisms/ProfileForm';
 import { useUserProfileForm } from '@/hooks/user-profile-form';
 import './SettingsPage.css';
+import PageContent from '@/components/templates/PageContent';
 
 const SettingsPage = () => {
   const form = useUserProfileForm({
@@ -9,7 +10,7 @@ const SettingsPage = () => {
   });
 
   return (
-    <main className="settings-page">
+    <PageContent className="settings-page">
       <ProfileForm
         heading="Profile settings"
         subheading="Update your schedule profile at any time."
@@ -29,7 +30,7 @@ const SettingsPage = () => {
           void form.submit();
         }}
       />
-    </main>
+    </PageContent>
   );
 };
 
