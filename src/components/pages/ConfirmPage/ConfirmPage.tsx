@@ -114,6 +114,7 @@ const ConfirmPage = () => {
       hasSuccess = hasSuccess || response.ok;
     }
 
+    // TODO: Show loading indicator while creating events
     // TODO: Handle the case where none of the events were successfully created.
     // TODO: Handle the case where some events failed to be created.
 
