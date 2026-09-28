@@ -172,10 +172,6 @@ const ConfirmPage = () => {
               Compare your shifts with the scanned image below and make any necessary adjustments.
             </p>
           </div>
-
-          {capturedPhotoDataUrl ? (
-            <PhotoPanel src={capturedPhotoDataUrl} />
-          ) : null}
         </div>
 
         {shifts.length > 0 ? (
