@@ -1,6 +1,6 @@
 .about-page__header {
   text-align: center;
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .about-page__header h1 {
@@ -11,92 +11,60 @@
   color: var(--md-on-surface);
 }
 
-.intro {
-  margin: 1rem auto 0;
-  max-width: 62ch;
-  font-size: 1.08rem;
-  line-height: 1.7;
-  color: var(--md-on-surface-variant);
+.about-page p {
+  line-height: 1.4;
 }
 
-.about-page__story {
+.about-page__intro {
+  margin: 1rem auto 0;
+  max-width: 50ch;
+  font-size: 1.1rem;
+}
+
+.about-page__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 2rem;
 }
 
-.story-card,
-.about-page__panel {
-  background: var(--md-surface);
-  border: 1px solid var(--md-outline);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
+.about-page__story,
+.about-page__links {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
 }
 
-.story-card h2,
-.about-page__panel h2,
-.tech-stack h3 {
+.story-card {
+  margin-block: 0.5rem;
+  margin-inline: 0.5rem;
+}
+
+.story-card h2 {
   margin: 0 0 0.75rem;
-  color: var(--md-on-surface);
+  text-align: center;
+  color: var(--md-primary);
+}
+
+.story-card.secondary h2 {
+  color: var(--md-secondary);
 }
 
 .story-card p,
-.tech-stack p,
-.about-page__links a,
-.about-page__aside a {
+.about-page__links a
+{
   margin: 0;
-  color: var(--md-on-surface-variant);
   line-height: 1.7;
 }
 
-.about-page__panel {
-  margin-top: 1rem;
-}
-
-.tech-stack {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 1.25rem;
-}
-
-.tech-stack div {
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.02);
-  border: 1px solid var(--md-outline);
-  border-radius: 14px;
-}
-
 .about-page__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 2rem;
+  text-align: center;
 }
 
-.about-page__links a,
-.about-page__aside a {
-  color: var(--md-primary);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.about-page__links a:hover,
-.about-page__aside a:hover {
-  text-decoration: underline;
-}
-
-.about-page__aside {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--md-outline);
-}
-
-@media (max-width: 820px) {
-  .about-page__story,
-  .tech-stack {
+@media (max-width: 625px) {
+  .about-page__grid {
     grid-template-columns: 1fr;
+  }
+
+  .story-card {
+    margin-inline: 0;
   }
 }
