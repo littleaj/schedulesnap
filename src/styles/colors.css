@@ -2,20 +2,20 @@
   /* Material role colors */
   --md-primary: var(--clr-primary-500);
   --md-on-primary: var(--clr-primary-50);
-  --md-primary-container: var(--clr-primary-200);
-  --md-on-primary-container: var(--clr-primary-900);
+  --md-primary-container: var(--clr-primary-100);
+  --md-on-primary-container: var(--clr-primary-800);
   --md-primary-fixed: var(--clr-primary-400);
   --md-on-primary-fixed: var(--clr-primary-900);
 
   --md-secondary: var(--clr-secondary-500);
   --md-on-secondary: var(--clr-secondary-50);
-  --md-secondary-container: var(--clr-secondary-200);
-  --md-on-secondary-container: var(--clr-secondary-900);
+  --md-secondary-container: var(--clr-secondary-100);
+  --md-on-secondary-container: var(--clr-secondary-800);
 
   --md-tertiary: var(--clr-tertiary-500);
   --md-on-tertiary: var(--clr-tertiary-50);
-  --md-tertiary-container: var(--clr-tertiary-200);
-  --md-on-tertiary-container: var(--clr-tertiary-900);
+  --md-tertiary-container: var(--clr-tertiary-100);
+  --md-on-tertiary-container: var(--clr-tertiary-800);
 
   --md-success: var(--clr-success-500);
   --md-on-success: var(--clr-success-50);
