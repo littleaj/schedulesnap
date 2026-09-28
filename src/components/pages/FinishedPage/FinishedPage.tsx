@@ -9,7 +9,7 @@ const FinishedPage = () => {
   return (
     <main className="finished-page">
       <section className="finished-card" aria-labelledby="finished-title">
-        <p className="finished-card__eyebrow">Schedule Synced</p>
+        <p className="eyebrow">Schedule Synced</p>
         <h1 id="finished-title">All set!</h1>
         <p className="finished-card__intro">
           Your shifts were created in Google Calendar and are ready to view.

@@ -51,7 +51,7 @@ const CapturePage = () => {
   return (
     <main className="capture-page">
       <section className="capture-card" aria-labelledby="capture-title">
-        <p className="capture-card__eyebrow">Capture your schedule</p>
+        <p className="eyebrow">Capture your schedule</p>
         <h1 id="capture-title">Upload your schedule photo</h1>
         <p className="capture-card__intro">
           Take a photo or upload a saved image to extract your shifts and review them before saving to Google Calendar.

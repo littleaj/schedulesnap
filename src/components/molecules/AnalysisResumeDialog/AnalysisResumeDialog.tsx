@@ -18,7 +18,7 @@ const AnalysisResumeDialog = ({ resumeTarget, onContinue, onDiscard }: AnalysisR
         aria-labelledby="analysis-resume-title"
         open
       >
-        <p className="analysis-resume-dialog__eyebrow">Continue your workflow</p>
+        <p className="eyebrow">Continue your workflow</p>
         <h1 id="analysis-resume-title">Continue where you left off?</h1>
         <p className="analysis-resume-dialog__intro">
           We found {resumeTarget.description}. You can pick up from there or clear the saved data and start fresh.

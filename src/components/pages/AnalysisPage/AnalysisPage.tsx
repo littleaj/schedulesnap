@@ -89,7 +89,7 @@ const AnalysisPage = () => {
   return (
     <main className="analysis-page">
       <section className="analysis-card" aria-labelledby="analysis-title" aria-live="polite">
-        <p className="analysis-card__eyebrow">AI Analysis</p>
+        <p className="eyebrow">AI Analysis</p>
         <h1 id="analysis-title">Analyzing your schedule</h1>
 
         <div className="analysis-card__status" role="status" aria-live="polite">

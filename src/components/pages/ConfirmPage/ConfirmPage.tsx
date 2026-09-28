@@ -165,7 +165,7 @@ const ConfirmPage = () => {
       <Card element={<section/>} className="confirm-card" aria-labelledby="confirm-title">
         <div className="confirm-card__header">
           <div className="confirm-card__heading-group">
-            <p className="confirm-card__eyebrow">Review schedule</p>
+            <p className="eyebrow">Review schedule</p>
             <h1 id="confirm-title">Review your shifts</h1>
             <p className="confirm-card__intro">
               Compare your shifts with the scanned image below and make any necessary adjustments.
