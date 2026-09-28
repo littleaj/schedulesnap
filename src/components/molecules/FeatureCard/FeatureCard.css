@@ -1,4 +1,6 @@
 .feature-card {
+  --_clr-bg: var(--feature-card-bg-clr, var(--md-surface));
+  background-color: var(--_clr-bg);
 }
 
 .feature-card__header {
@@ -24,9 +26,10 @@
 }
 
 .feature-card h2 {
+  --_text-clr: var(--feature-card-heading-text-clr, var(--md-on-surface));
   margin: 0;
   font-size: 1.35rem;
-  color: var(--md-on-surface);
+  color: var(--_text-clr);
 }
 
 .feature-card__body {
