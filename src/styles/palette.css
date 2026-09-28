@@ -71,17 +71,17 @@
   --clr-error-100: hsl(0, 74%, 84%);
   --clr-error-50: hsl(0, 74%, 95%);
 
-  --clr-neutral-950: hsl(175, 15%, 2%);
-  --clr-neutral-900: hsl(175, 15%, 9%);
-  --clr-neutral-800: hsl(175, 15%, 16%);
-  --clr-neutral-700: hsl(175, 15%, 23%);
-  --clr-neutral-600: hsl(175, 15%, 30%);
-  --clr-neutral-500: hsl(175, 15%, 37%);
-  --clr-neutral-400: hsl(175, 15%, 49%);
-  --clr-neutral-300: hsl(175, 18%, 61%);
-  --clr-neutral-200: hsl(175, 18%, 73%);
-  --clr-neutral-100: hsl(175, 18%, 85%);
-  --clr-neutral-50: hsl(175, 18%, 92%);
+  --clr-neutral-950: hsl(175, 5%, 2%);
+  --clr-neutral-900: hsl(175, 5%, 9%);
+  --clr-neutral-800: hsl(175, 5%, 16%);
+  --clr-neutral-700: hsl(175, 5%, 23%);
+  --clr-neutral-600: hsl(175, 5%, 30%);
+  --clr-neutral-500: hsl(175, 5%, 37%);
+  --clr-neutral-400: hsl(175, 5%, 49%);
+  --clr-neutral-300: hsl(175, 5%, 61%);
+  --clr-neutral-200: hsl(175, 5%, 73%);
+  --clr-neutral-100: hsl(175, 5%, 85%);
+  --clr-neutral-50: hsl(175, 5%, 92%);
 
   --clr-neutral-variant-950: hsl(355, 15%, 2%);
   --clr-neutral-variant-900: hsl(355, 15%, 9%);
