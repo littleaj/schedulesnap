@@ -1,302 +1,216 @@
 import React from 'react';
-import { Link } from 'react-router';
 import PageContent from '@/components/templates/PageContent';
 import './PrivacyPage.css';
 
 const PrivacyPage = () => {
+  const effectiveDate = new Date(2026, 8, 26);
   return (
     <PageContent className="privacy-page">
-      <section className="privacy-page__header">
+      <section className="privacy-page__intro">
         <hgroup className="centered">
           <p className="eyebrow">Privacy</p>
           <h1>Privacy Policy</h1>
+          <p>
+            <strong>Effective date:</strong> <em>{effectiveDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</em>
+          </p>
         </hgroup>
-        <p className="centered">
-          <strong>Effective date:</strong> <em>September 26, 2026</em>
-        </p>
-        <p className="intro">
-          This Privacy Policy explains how ScheduleSnap ("the app," "we," "us")
-          collects, uses, and shares information when you use the app. ScheduleSnap
-          is an independently developed application; it is not operated by a
-          registered company.
-        </p>
-        <p>If you have questions about this policy or your data, contact us at:</p>
-        <p className="centered">
-          <strong>schedulesnap@googlegroups.com</strong>
+        <p>
+          This privacy policy applies to the <strong>ScheduleSnap</strong> app for web browsers, together with any related services operated by Arthur J. Little (collectively, the "Application").
+          Arthur J. Little is hereby referred to as the "Service Provider".
         </p>
       </section>
-
-      <hr />
-
-      <section aria-label="Information we collect">
-        <h2>Information We Collect</h2>
-
-        <h3>Account information</h3>
+      <section>
+        <h2>Information Collection and Use</h2>
         <p>
-          When you sign in with your Google account, we receive your Google
-          account ID, name, and email address via Firebase Authentication. This
-          is used solely to identify your account within the app.
+          The Application collects information when you download and use it.
+          This information may include information such as
         </p>
-
-        <h3>Profile information</h3>
-        <p>You provide the following, which is stored in our database (Firestore), tied to your account:</p>
         <ul>
-          <li>Timezone</li>
-          <li>Reminder preferences</li>
-          <li>Default calendar selection</li>
-          <li>Default shift name and optional name prefix</li>
-        </ul>
-
-        <h3>Schedule photos</h3>
-        <p>
-          When you photograph a work schedule, the image is sent directly from
-          your device to Google's Gemini AI model (via Firebase AI Logic) to
-          extract shift details. The image itself is not stored on our servers
-          before or after this process — it exists only transiently to perform
-          the extraction and is not retained by us.
-        </p>
-
-        <h3>Google Calendar access</h3>
-        <p>
-          With your permission (granted via Google OAuth), the app reads your
-          calendar list and creates calendar events on your behalf. We do not
-          read the content of your existing calendar events beyond what's needed
-          to check for scheduling conflicts, and we do not store your calendar
-          data outside your own Google Calendar.
-        </p>
-
-        <h3>Locally stored data</h3>
-        <p>
-          The app temporarily caches in-progress shift review data in your
-          browser's local storage, so an interrupted session isn't lost. This
-          data stays on your device and is cleared automatically once you finish
-          adding shifts to your calendar.
-        </p>
-
-        <h3>Analytics</h3>
-        <p>
-          We use Google Analytics to understand how the app is used (e.g., which
-          features are used, general usage patterns). Google Analytics may use
-          cookies and collect information such as your device type, browser,
-          and general usage behavior. This data is aggregated and not used to
-          identify you personally by us.
-        </p>
-
-        <h3>Advertising</h3>
-        <p>
-          The app displays ads served through Google AdSense. AdSense may use
-          cookies and similar technologies to serve ads, which may include
-          personalized advertising depending on your consent choices. If you are
-          in the UK/EEA, you will be shown a consent prompt (via Google's
-          consent management platform) before any non-essential cookies are set,
-          where you can manage your preferences.
-        </p>
-      </section>
-
-      <hr />
-
-      <section aria-label="How we use information">
-        <h2>How We Use Information</h2>
-        <p>We use the information described above only to:</p>
-        <ul>
-          <li>Authenticate you and maintain your session</li>
-          <li>Extract shift data from photos you provide</li>
-          <li>Create calendar events you've approved</li>
-          <li>Apply your saved preferences (timezone, reminders, default calendar, naming)</li>
-          <li>Understand aggregate app usage (via Google Analytics)</li>
-          <li>Serve ads (via Google AdSense)</li>
-        </ul>
-        <p>
-          We do not sell your personal information, and we do not use your
-          schedule photos or calendar data for any purpose beyond providing the
-          app's core functionality.
-        </p>
-      </section>
-
-      <hr />
-
-      <section aria-label="Third-party services">
-        <h2>Third-Party Services</h2>
-        <p>
-          ScheduleSnap is built on the following third-party services, each of
-          which processes data according to its own privacy policy:
-        </p>
-
-        <table className="third-party-table">
-          <thead>
-            <tr>
-              <th>Service</th>
-              <th>Purpose</th>
-              <th>Privacy Policy</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Firebase Authentication</td>
-              <td>Sign-in</td>
-              <td>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                  Google Privacy Policy
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Firebase Firestore</td>
-              <td>Profile data storage</td>
-              <td>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                  Google Privacy Policy
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Firebase AI Logic / Gemini</td>
-              <td>Schedule photo extraction</td>
-              <td>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                  Google Privacy Policy
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Firebase App Check / reCAPTCHA</td>
-              <td>Bot/abuse protection</td>
-              <td>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                  Google Privacy Policy
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Google Calendar API</td>
-              <td>Reading/writing calendar events</td>
-              <td>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                  Google Privacy Policy
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Google Analytics</td>
-              <td>Usage analytics</td>
-              <td>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                  Google Privacy Policy
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td>Google AdSense</td>
-              <td>Advertising</td>
-              <td>
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">
-                  Google Privacy Policy
-                </a>
-                {" "}
-                &middot;
-                {" "}
-                <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noreferrer">
-                  How Google uses data
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-          ScheduleSnap has no custom backend server — all of the above are
-          Google-operated services accessed directly from your browser.
-        </p>
-      </section>
-
-      <hr />
-
-      <section aria-label="Data retention">
-        <h2>Data Retention</h2>
-        <ul>
-          <li>
-            <strong>Profile data</strong> is retained until you delete your
-            account or request deletion (see below).
-          </li>
-          <li>
-            <strong>Schedule photos</strong> are not retained by us; they pass
-            through to Gemini for processing and are not stored.
-          </li>
-          <li>
-            <strong>Local draft data</strong> is cleared automatically on
-            successful calendar submission, or treated as stale and discarded
-            after roughly 24 hours.
-          </li>
-          <li>
-            <strong>Calendar events</strong> you create live in your own Google
-            Calendar and are governed by your Google account settings, not by
-            us.
-          </li>
+          <li>Your device's Internet Protocol address</li>
+          <li>The pages of the Application that you visit, the time and date of your visit, the time spent on those pages</li>
+          <li>The time spent on the Application</li>
+          <li>your operating system you use</li>
         </ul>
       </section>
-
-      <hr />
-
-      <section aria-label="Your rights and choices">
-        <h2>Your Rights and Choices</h2>
+      <section>
+        <h2>Cookies and tracking technologies</h2>
+        <p>
+          The Application or its third-party SDKs may use cookies, SDKs, pixels, and similar technologies to support functionality, analytics, or service delivery.
+          Where required by applicable law, the Service Provider will obtain consent before using non-essential tracking technologies.
+        </p>
+      </section>
+      <section>
+        <h2>Location Information</h2>
+        <p>
+          The Application collects your device's location to provide location-based features, improve the Application, and support related services.
+        </p>
         <ul>
-          <li>
-            <strong>Revoke Calendar access:</strong> You can revoke ScheduleSnap's
-            access to your Google Calendar at any time via your{' '}
-            <a href="https://myaccount.google.com/permissions" target="_blank" rel="noreferrer">Google Account permissions page</a>.
-          </li>
-          <li>
-            <strong>Delete your data:</strong> Contact us at the email above to
-            request deletion of your stored profile data.
-          </li>
-          <li>
-            <strong>Cookie/ad consent:</strong> If you're in the UK/EEA, you can
-            manage advertising consent through the consent prompt shown in the
-            app.
-          </li>
-          <li>
-            <strong>Access/correction:</strong> You can view and edit your stored
-            profile information at any time in the app's Settings screen.
-          </li>
+          <li>Geolocation Services: The Service Provider may use location data to provide location-based features or content.</li>
+          <li>Analytics and Improvements: Aggregated location data may help the Service Provider understand usage patterns and improve performance.</li>
+          <li>Third-Party Services: Location data may be shared with third-party services used to support Application functionality, subject to this privacy policy and applicable law.</li>
         </ul>
       </section>
-
-      <hr />
-
-      <section aria-label="Childrens privacy">
-        <h2>Children's Privacy</h2>
+      <section>
+        <h2>Your Rights</h2>
         <p>
-          ScheduleSnap is not directed at children under 13, and we do not
-          knowingly collect information from children under 13.
+          You may request access to, correction of, or deletion of your personal data held by the Service Provider.
+          To exercise these rights, or to withdraw consent where processing is based on consent, contact the Service Provider at <a href="mailto:schedulesnap@googlegroups.com">schedulesnap@googlegroups.com</a>.
+        </p>
+      </section>
+      <section>
+        <h2>Your California privacy rights (CCPA/CPRA)</h2>
+        <p>
+          If you are a California resident, you have the right to know what personal information is collected, the right to delete personal information, the right to opt out of the sale or sharing of personal information, and the right to non-discrimination for exercising these rights.
+          To exercise your CCPA/CPRA rights, contact the Service Provider at <a href="mailto:schedulesnap@googlegroups.com">schedulesnap@googlegroups.com</a>.
+        </p>
+      </section>
+      <section>
+        <h2>Artificial Intelligence</h2>
+        <p>
+          The Application uses Artificial Intelligence (AI) technologies to enhance user experience and provide certain features.
+          The AI components may process user data to deliver personalized content, recommendations, or automated functionalities.
+          All AI processing is performed in accordance with this privacy policy and applicable laws.
+          If you have questions about the AI features or data processing, please contact the Service Provider.
+        </p>
+        <p>
+          The Service Provider may use the information you provide to send important information, required notices, and, where permitted by law, marketing communications.
+        </p>
+        <p>
+          For a better experience while using the Application, the Service Provider may require you to provide certain personally identifiable information, including but not limited to Email, Name.
+          The information the Service Provider requests will be retained and used as described in this privacy policy.
+        </p>
+      </section>
+      <section>
+        <h2>Third Party Access</h2>
+        <p>
+          Only aggregated, anonymized data is periodically transmitted to external services to aid the Service Provider in improving the Application and their service.
+          The Service Provider may share your information with third parties in the ways that are described in this privacy statement.
+        </p>
+      </section>
+      <section>
+        <h2>International Data Transfers</h2>
+        <p>
+          The Service Provider or its third-party service providers may transfer personal data to countries outside your country of residence, including outside the European Economic Area (EEA).
+          Where applicable law requires safeguards for international transfers, the Service Provider will use appropriate mechanisms.
+        </p>
+        <ul>
+          <li>Standard Contractual Clauses (SCCs) approved by the European Commission</li>
+          <li>Adequacy decisions or other legally recognized transfer mechanisms</li>
+          <li>Your consent, where required and legally permitted</li>
+        </ul>
+        <p>
+          Data protection laws in other countries may differ from those in your jurisdiction.
+          Where required by law, the
+          Service Provider will apply appropriate safeguards and obtain any consent required for the transfer.
         </p>
       </section>
 
-      <hr />
-
-      <section aria-label="Changes to this policy">
-        <h2>Changes to This Policy</h2>
+      <section>
         <p>
-          We may update this policy from time to time. Changes will be posted on
-          this page with an updated effective date.
+          Please note that the Application utilizes third-party services that have their own Privacy Policy about handling data.
+          Below are the links to the Privacy Policy of the third-party service providers used by the Application:</p>
+        <ul>
+          <li><a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">Google
+            Analytics for Firebase</a></li>
+          <li><a href="https://firebase.google.com/support/privacy/" target="_blank" rel="noopener noreferrer">Firebase
+            Crashlytics</a></li>
+        </ul>
+      </section>
+      <section>
+        <p>
+          The Service Provider may disclose User Provided and Automatically Collected Information:
+        </p>
+        <ul>
+          <li>as required by law, such as to comply with a subpoena, or similar legal process;</li>
+          <li>when they believe in good faith that disclosure is necessary to protect their rights, protect your safety or the safety of others, investigate fraud, or respond to a government request;</li>
+          <li>with their trusted services providers who work on their behalf, do not have an independent use of the information the Service Provider discloses to them, and have agreed to adhere to the rules set forth in this privacy statement.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Opt-Out Rights</h2>
+        <p>
+          You can stop further collection of information from your device by ceasing to use the website.
+          Ceasing to use will stop the website from collecting data from your device, but it does not automatically delete information that has already been transmitted to the Service Provider or to third parties.
+        </p>
+        <p>
+          To request deletion of your personal data, to withdraw consent, or to exercise any of your rights, contact the Service Provider at <a href="mailto:schedulesnap@googlegroups.com">schedulesnap@googlegroups.com</a>.
         </p>
       </section>
-
-      <hr />
-
-      <section aria-label="Contact">
-        <h2>Contact</h2>
+      <section>
+        <h2>Data Retention Policy</h2>
         <p>
-          Questions or requests regarding this policy or your data can be sent
-          to:
-        </p>
-        <p className="centered">
-          <strong>schedulesnap@googlegroups.com</strong>
+          The Service Provider retains personal data based on its necessity for the stated purposes:</p>
+        <ul>
+          <li>User Provided Data: Retained for the duration of your use of the Application plus 12 months thereafter, unless longer retention is required by law</li>
+          <li>Automatically Collected Data: Retained for up to 24 months from collection, unless longer retention is required for legal compliance</li>
+          <li>Aggregated and Anonymized Data: Retained indefinitely as it no longer identifies you</li>
+          <li>Data required for legal compliance: Retained as long as required by applicable law</li>
+        </ul>
+        <p>
+          You may request deletion of your personal data, subject to any legal obligation to retain it.
+          If you want the Service Provider to delete User Provided Data submitted through the Application, please contact them at <a href="mailto:schedulesnap@googlegroups.com">schedulesnap@googlegroups.com</a>.
+          Please note that some User Provided Data may be required for the Application to function properly.
         </p>
       </section>
-
-      <aside className="privacy-page__aside centered">
-        <Link to="/help">Need help?</Link>
-      </aside>
+      <section>
+        <h2>Children</h2>
+        <p>
+          The Application is not intended for children under 16 years of age, or such higher age as required by applicable law.
+          The Service Provider does not knowingly solicit data from children or market the Application to them.
+        </p>
+        <p>
+          Where parental or guardian consent is required under applicable law, the Application is not intended for use without that consent.
+          The Service Provider does not knowingly collect personally identifiable information from children under 16 years of age in violation of applicable law.
+          In the event the Service Provider discovers that a child has provided personal information, the Service Provider will immediately delete this from their servers.
+          If you are a parent or guardian and you are aware that your child has provided the Service Provider with personal information, please contact the Service Provider (<a href="mailto:schedulesnap@googlegroups.com">schedulesnap@googlegroups.com</a>) so that they will be able to take the necessary actions.
+        </p>
+      </section>
+      <section>
+        <h2>Security</h2>
+        <p>
+          The Service Provider is concerned about safeguarding the confidentiality of your information.
+          The Service Provider provides physical, electronic, and procedural safeguards to protect information the Service Provider processes and maintains.
+        </p>
+      </section>
+      <section>
+        <h2>Data Breach Notification</h2>
+        <p>
+          If a data breach occurs that affects your personal data, the Service Provider will notify you in accordance with applicable legal requirements, including, where required, providing information about the nature of the breach and the steps being taken to address it.
+        </p>
+      </section>
+      <section>
+        <h2>Changes</h2>
+        <p>
+          The Service Provider may update this Privacy Policy from time to time.
+          The Service Provider will notify you of material changes by posting the updated Privacy Policy with an effective date.
+          Where required by law, the Service Provider will seek your consent to material changes before they take effect.
+        </p>
+        <p>
+          Previous versions of this Privacy Policy will be maintained and made available upon request by contacting the Service Provider at <a href="mailto:schedulesnap@googlegroups.com">schedulesnap@googlegroups.com</a>.
+        </p>
+        <p>This privacy policy is effective as of <em>{effectiveDate.toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' })}</em></p>
+      </section>
+      <section>
+        <h2>Your Consent</h2>
+        <p>
+          Where processing is based on consent, you provide that consent by affirmatively opting in to the relevant feature or action.
+          You may withdraw consent at any time without affecting processing carried out before withdrawal.
+          Processing based on other lawful bases is carried out as described above.
+        </p>
+      </section>
+      <section>
+        <h2>Contact Us</h2>
+        <p>
+          If you have any questions regarding privacy while using the Application, or have questions about the practices, please contact the Service Provider via email at <a href="mailto:schedulesnap@googlegroups.com">schedulesnap@googlegroups.com</a>.
+        </p>
+      </section>
+      <hr />
+      <section>
+        <p>
+          <span>This privacy policy page was generated by </span>
+          <a href="https://app-privacy-policy-generator.nisrulz.com/" target="_blank" rel="noopener noreferrer">App Privacy Policy Generator</a>.
+        </p>
+      </section>
     </PageContent>
   );
 };
