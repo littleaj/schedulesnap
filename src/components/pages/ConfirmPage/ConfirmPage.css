@@ -1,11 +1,9 @@
 .confirm-page {
   display: grid;
-  padding: 0.5rem;
 }
 
 .confirm-card {
   min-width: 0;
-  padding-inline: 0.5rem;
 }
 
 .confirm-card__header {

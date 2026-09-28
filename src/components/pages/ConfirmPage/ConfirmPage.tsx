@@ -24,6 +24,7 @@ import gcalapi from '@/services/google-calendar';
 import { sleep } from '@/utils/misc';
 import CalendarWeekList from './CalendarWeekList';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
+import PageContent from '@/components/templates/PageContent';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -161,7 +162,7 @@ const ConfirmPage = () => {
   }, [shifts]);
 
   return (
-    <main className="confirm-page">
+    <PageContent className="confirm-page">
       <Card element={<section/>} className="confirm-card" aria-labelledby="confirm-title">
         <div className="confirm-card__header">
           <div className="confirm-card__heading-group">
@@ -219,7 +220,7 @@ const ConfirmPage = () => {
           </Card>
         ) : null}
       </Card>
-    </main>
+    </PageContent>
   );
 };
 
