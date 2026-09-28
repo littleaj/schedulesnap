@@ -1,16 +1,10 @@
 .finished-page {
   display: grid;
   place-items: center;
-  padding: 2rem 1.25rem 4rem;
 }
 
 .finished-card {
   width: min(100%, 560px);
-  background: rgba(from var(--md-surface) r g b / 0.96);
-  border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.2);
-  border-radius: 24px;
-  padding: 2rem 1.5rem;
-  box-shadow: 0 24px 60px rgba(from var(--md-on-surface) r g b / 0.08);
 }
 
 .finished-card h1 {

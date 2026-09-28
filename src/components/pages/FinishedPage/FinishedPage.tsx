@@ -2,13 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import './FinishedPage.css';
+import PageContent from '@/components/templates/PageContent';
+import { Card } from '@/components/atoms/Card';
 
 const FinishedPage = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="finished-page">
-      <section className="finished-card" aria-labelledby="finished-title">
+    <PageContent className="finished-page">
+      <Card className="finished-card" aria-labelledby="finished-title">
         <p className="eyebrow">Schedule Synced</p>
         <h1 id="finished-title">All set!</h1>
         <p className="finished-card__intro">
@@ -23,8 +25,8 @@ const FinishedPage = () => {
             Back Home
           </ActionButton>
         </div>
-      </section>
-    </main>
+      </Card>
+    </PageContent>
   );
 };
 
