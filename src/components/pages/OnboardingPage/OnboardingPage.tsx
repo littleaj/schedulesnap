@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import ProfileForm from '@/components/organisms/ProfileForm';
 import { useUserProfileForm } from '@/hooks/user-profile-form';
 import './OnboardingPage.css';
+import PageContent from '@/components/templates/PageContent';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <main className="onboarding-page">
+    <PageContent className="onboarding-page">
       <ProfileForm
         heading="Complete your profile"
         subheading="Set your name, timezone, and reminder preferences before importing shifts."
@@ -41,7 +42,7 @@ const OnboardingPage = () => {
           void handleSubmit();
         }}
       />
-    </main>
+    </PageContent>
   );
 };
 
