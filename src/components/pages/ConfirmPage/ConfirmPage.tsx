@@ -56,8 +56,7 @@ const ConfirmPage = () => {
   const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
     .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
 
-  // FIXME: useState not needed anymore
-  const [weekDays, setWeekDays] = useState<WeekDay[]>(() => (shifts.length > 0 ? buildWeekDays(shifts) : []));
+  const weekDays = useMemo(() => (shifts.length > 0 ? buildWeekDays(shifts) : []), [shifts]);
 
   if (shifts.length > 0) {
     console.log("Loaded shifts from", draftConfirmation ? "draft confirmation" : "analysis response");
