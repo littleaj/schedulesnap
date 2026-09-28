@@ -14,7 +14,7 @@ a {
   text-decoration: none;
   font-weight: 600;
   color: var(--_link-color);
-  text-underline-offset: 5px;
+  text-underline-offset: 3px;
 
   &:hover,
   &:focus {
