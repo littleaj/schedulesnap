@@ -40,8 +40,6 @@
 
   --md-on-surface: var(--clr-neutral-variant-800);
   --md-on-surface-variant: hsl(from var(--clr-neutral-variant-800) calc(h - 60) s l);
-  --md-on-surface-muted: hsl(222, 37%, 21%); /* deprecated */
-  --md-on-surface-overlay: hsl(222, 37%, 21%); /* deprecated */
 
   --md-shadow: var(--clr-neutral-900);
   --md-scrim: hsl(from var(--clr-neutral-variant-600) h s l / 0.4);
