@@ -1,5 +1,7 @@
 .home-page {
   margin: 0 auto;
+  max-width: min(100%, 900px);
+  justify-self: center;
 }
 
 .hero {
@@ -45,12 +47,12 @@
 .hero__visual {
   display: flex;
   justify-content: center;
-  width: min(100%, 420px);
+  max-width: min(100%, 420px);
 }
 
 .hero-illustration {
   display: block;
-  width: min(100%, 420px);
+  max-width: min(100%, 420px);
   height: auto;
   filter: drop-shadow(0 30px 60px rgba(from var(--md-on-surface) r g b / 0.18));
 }
