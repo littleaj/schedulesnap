@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import './HelpPage.css';
+import { Card } from '@/components/atoms/Card/Card';
 
 const HelpPage = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const HelpPage = () => {
       </section>
 
       <section className="help-page__grid" aria-label="How it works">
-        <div className="help-card">
+        <Card className="help-card">
           <span className="help-card__icon" aria-hidden="true">📸</span>
           <h2>How it works</h2>
           <ol>
@@ -26,9 +27,9 @@ const HelpPage = () => {
             <li>Review the detected shifts before saving anything.</li>
             <li>Approve the entries and send them to Google Calendar.</li>
           </ol>
-        </div>
+        </Card>
 
-        <div className="help-card">
+        <Card className="help-card">
           <span className="help-card__icon" aria-hidden="true">💡</span>
           <h2>Best results</h2>
           <ul>
@@ -36,9 +37,9 @@ const HelpPage = () => {
             <li>Make sure the text is easy to read and not cut off.</li>
             <li>Check the extracted times and names before confirming.</li>
           </ul>
-        </div>
+        </Card>
 
-        <div className="help-card">
+        <Card className="help-card">
           <span className="help-card__icon" aria-hidden="true">🧭</span>
           <h2>Common fixes</h2>
           <ul>
@@ -46,7 +47,7 @@ const HelpPage = () => {
             <li>Edit any incorrect values on the review screen.</li>
             <li>Use Settings to update your default calendar and reminder preferences.</li>
           </ul>
-        </div>
+        </Card>
       </section>
 
       <section className="help-page__steps" aria-label="Quick start steps">

@@ -31,14 +31,6 @@
   gap: 1.25rem;
 }
 
-.help-card {
-  background: var(--md-surface);
-  border: 1px solid var(--md-outline);
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
-}
-
 .help-card__icon {
   display: inline-flex;
   align-items: center;
