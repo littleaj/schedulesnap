@@ -4,6 +4,8 @@ import { useGoogleLogin } from '@/hooks/google-login';
 import './LoginPage.css';
 import useCurrentUser from '@/hooks/current-user';
 import { Navigate, useLocation } from 'react-router';
+import PageContent from '@/components/templates/PageContent';
+import { Card } from '@/components/atoms/Card';
 
 const LoginPage = () => {
   const user = useCurrentUser();
@@ -32,8 +34,8 @@ const LoginPage = () => {
   }
 
   return (
-    <main className="login-page">
-      <section className="login-card" aria-labelledby="login-title">
+    <PageContent className="login-page">
+      <Card className="login-card" aria-labelledby="login-title">
         <div className="login-card__badge">Google access required</div>
         <h1 id="login-title">Sign in to ScheduleSnap</h1>
 
@@ -67,8 +69,8 @@ const LoginPage = () => {
         <p className="login-card__footnote">
           ScheduleSnap needs access to your Google Calendar to create events. If you decline access, the app will stay locked until permission is granted.
         </p>
-      </section>
-    </main>
+      </Card>
+    </PageContent>
   );
 };
 
