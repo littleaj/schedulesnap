@@ -9,3 +9,4 @@ firestore-debug.log
 .firebase/
 .env
 *.BAK
+.scratch/
