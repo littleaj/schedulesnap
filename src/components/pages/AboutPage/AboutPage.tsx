@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router';
+import PageContent from '@/components/templates/PageContent';
 import './AboutPage.css';
 
 const AboutPage = () => {
   return (
-    <main className="about-page">
+    <PageContent className="about-page">
       <section className="about-page__header">
         <p className="eyebrow">About</p>
         <h1>About Schedule Snap</h1>
@@ -73,7 +74,7 @@ const AboutPage = () => {
       <aside className="about-page__aside">
         <Link to="/help">Looking for help?</Link>
       </aside>
-    </main>
+    </PageContent>
   );
 };
 
