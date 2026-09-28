@@ -1,12 +1,12 @@
 import React from 'react';
 import PageContent from '@/components/templates/PageContent';
-import './PrivacyPage.css';
+import '../legal.css';
 
 const PrivacyPage = () => {
   const effectiveDate = new Date(2026, 8, 26);
   return (
-    <PageContent className="privacy-page">
-      <section className="privacy-page__intro">
+    <PageContent className="privacy-page legal">
+      <section className="intro">
         <hgroup className="centered">
           <p className="eyebrow">Privacy</p>
           <h1>Privacy Policy</h1>

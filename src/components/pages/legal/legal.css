@@ -1,4 +1,4 @@
-.privacy-page {
+.legal {
   h1, h2, p {
     margin-block-start: 0;
   }
@@ -13,7 +13,7 @@
   }
 }
 
-.privacy-page__intro p:not([class]) {
+.legal .intro p:not([class]) {
   font-size: 1.1rem;
   line-height: 1.4;
 }
