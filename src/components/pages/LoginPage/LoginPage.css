@@ -82,7 +82,7 @@
 
 .login-card__footnote {
   margin: 1rem 0 0;
-  color: var(--md-on-surface-muted);
+  color: var(--md-on-surface);
   font-size: 0.9rem;
   line-height: 1.5;
 }
