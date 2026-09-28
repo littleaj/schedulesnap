@@ -34,8 +34,6 @@
 
   --md-background: var(--clr-neutral-50);
   --md-on-background: var(--clr-neutral-900);
-  --md-background-alt: hsl(175, 15%, 75%); /* deprecated */
-  --md-background-soft: var(--md-background); /* deprecated */
 
   --md-surface: var(--clr-neutral-variant-50);
   --md-surface-variant: hsl(from var(--clr-neutral-variant-100) calc(h - 60) s l / 0.8);
