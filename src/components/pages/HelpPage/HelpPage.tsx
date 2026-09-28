@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import './HelpPage.css';
 import { Card } from '@/components/atoms/Card/Card';
+import PageContent from '@/components/templates/PageContent/PageContent';
 
 const HelpPage = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="help-page">
+    <PageContent className="help-page">
       <section className="help-page__header">
         <p className="eyebrow">Support</p>
         <h1>Help & FAQs</h1>
@@ -84,7 +85,7 @@ const HelpPage = () => {
           Get started
         </ActionButton>
       </section>
-    </main>
+    </PageContent>
   );
 };
 
