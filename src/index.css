@@ -8,3 +8,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+a {
+  --_link-color: var(--link-color, var(--md-primary));
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--_link-color);
+  text-underline-offset: 5px;
+
+  &:hover,
+  &:focus {
+    text-decoration: underline dotted;
+    color: color-mix(in srgb, var(--_link-color) 30%, black 70%);
+  }
+
+}
