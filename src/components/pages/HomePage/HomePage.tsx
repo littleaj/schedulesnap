@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router';
 import FeatureCard from '@/components/molecules/FeatureCard';
 import ActionButton from '@/components/atoms/ActionButton';
 import './HomePage.css';
+import PageContent from '@/components/templates/PageContent';
 
 const HomePage = () => {
   const navigate = useNavigate();
   return (
-    <main className="home-page">
+    <PageContent className="home-page">
       <section className="hero">
         <div className="hero__content">
           <p className="eyebrow">An easy way to save your shifts</p>
@@ -49,7 +50,7 @@ const HomePage = () => {
           <p>Create calendar events from your schedule in seconds.</p>
         </FeatureCard>
       </section>
-    </main>
+    </PageContent>
   );
 };
 

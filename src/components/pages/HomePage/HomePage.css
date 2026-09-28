@@ -1,5 +1,4 @@
 .home-page {
-  max-width: 75dvw;
   margin: 0 auto;
 }
 
@@ -63,12 +62,6 @@
   margin-top: 3rem;
 }
 
-@media (max-width: 1024px) {
-  .home-page {
-    max-width: 90svw;
-  }
-}
-
 @media (max-width: 824px) {
   .hero {
     grid-template-columns: 1fr;
@@ -85,9 +78,5 @@
 
   .feature-grid {
     grid-template-columns: 1fr;
-  }
-
-  .home-page {
-    max-width: 95svw;
   }
 }
