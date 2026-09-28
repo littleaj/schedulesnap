@@ -14,7 +14,7 @@ import FinishedPage from '@/components/pages/FinishedPage';
 import SettingsPage from '@/components/pages/SettingsPage';
 import HelpPage from '@/components/pages/HelpPage';
 import AboutPage from '@/components/pages/AboutPage';
-import { BrowserRouter, Route, Routes, useNavigate, Outlet } from 'react-router';
+import { BrowserRouter, Route, Routes, useNavigate, Outlet, useLocation } from 'react-router';
 import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
 import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
 import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
@@ -88,9 +88,20 @@ export const App = () => {
     checkResumeTarget();
   }, [checkResumeTarget]);
 
+  const ScrollToTop = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+  };
+
   return (
     <div className="app-shell">
       <BrowserRouter>
+        <ScrollToTop />
         <GoogleOAuthTokenProvider>
           <HeaderBar />
           <Routes>
