@@ -4,7 +4,7 @@
 }
 
 .finished-card {
-  width: min(100%, 560px);
+  max-width: min(100%, 560px);
 }
 
 .finished-card h1 {
