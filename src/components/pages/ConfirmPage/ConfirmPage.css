@@ -69,10 +69,8 @@
   position: relative;
   margin-top: 1rem;
   padding: 0.5em;
-  border-radius: 16px;
-  background: var(--md-surface);
-  border: 1px solid var(--md-secondary-container);
-  color: var(--md-on-surface);
+  box-shadow: none;
+  border: 3px inset alpha(from var(--md-secondary) / 0.4);
 }
 
 .confirm-card__summary p {
