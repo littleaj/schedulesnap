@@ -2,8 +2,8 @@
   /* Material role colors */
   --md-primary: var(--clr-primary-500);
   --md-on-primary: var(--clr-primary-50);
-  --md-primary-container: var(--clr-primary-100);
-  --md-on-primary-container: var(--clr-primary-800);
+  --md-primary-container: var(--clr-primary-200);
+  --md-on-primary-container: var(--clr-primary-900);
   --md-primary-fixed: var(--clr-primary-400);
   --md-on-primary-fixed: var(--clr-primary-900);
 
