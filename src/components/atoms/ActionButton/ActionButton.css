@@ -4,8 +4,9 @@ button.action-button {
   --_action-button-bg-end: var(--action-button-bg-end, var(--md-primary-fixed));
   border: 1px solid var(--md-outline);
   border-radius: 999px;
-  padding: 0.9rem 1.5rem;
+  padding: 0.75em 1.25em;
   font-weight: 700;
+  font-size: 1rem;
   cursor: pointer;
   transition:
     transform 0.15s ease,
