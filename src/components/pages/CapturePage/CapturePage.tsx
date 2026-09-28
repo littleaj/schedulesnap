@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router';
 import { resizeSchedulePhoto, saveCapturedSchedulePhoto } from '@/services/schedule-analysis';
 import useCurrentUser from '@/hooks/current-user';
 import { useUserOnboardingStatus } from '@/hooks/user-onboarding';
+import PageContent from '@/components/templates/PageContent';
+import { Card } from '@/components/atoms/Card';
 
 const CapturePage = () => {
   const navigate = useNavigate();
@@ -49,8 +51,8 @@ const CapturePage = () => {
   };
 
   return (
-    <main className="capture-page">
-      <section className="capture-card" aria-labelledby="capture-title">
+    <PageContent className="capture-page">
+      <Card className="capture-card" aria-labelledby="capture-title">
         <p className="eyebrow">Capture your schedule</p>
         <h1 id="capture-title">Upload your schedule photo</h1>
         <p className="capture-card__intro">
@@ -91,8 +93,8 @@ const CapturePage = () => {
             {errorMessage}
           </p>
         ) : null}
-      </section>
-    </main>
+      </Card>
+    </PageContent>
   );
 };
 
