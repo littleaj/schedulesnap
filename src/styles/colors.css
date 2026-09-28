@@ -32,7 +32,7 @@
   --md-error-container: var(--clr-error-100);
   --md-on-error-container: var(--clr-error-800);
 
-  --md-background: var(--clr-neutral-100);
+  --md-background: var(--clr-neutral-50);
   --md-on-background: var(--clr-neutral-900);
   --md-background-alt: hsl(175, 15%, 75%); /* deprecated */
   --md-background-soft: var(--md-background); /* deprecated */
