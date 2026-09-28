@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { Navigate, useLocation } from 'react-router';
 import { useAuth } from '@/hooks/firebase';
+import PageContent from '@/components/templates/PageContent';
+import { Card } from '@/components/atoms/Card';
 
 const LogoutPage = () => {
   const auth = useAuth();
@@ -39,12 +41,12 @@ const LogoutPage = () => {
 
   if (isSigningOut) {
     return (
-      <main className="login-page">
-        <section className="login-card" aria-live="polite">
+      <PageContent className="login-page">
+        <Card className="login-card" aria-live="polite" element={<section/>}>
           <h1>Signing out</h1>
           <p className="login-card__intro">Please wait while we sign you out of ScheduleSnap.</p>
-        </section>
-      </main>
+        </Card>
+      </PageContent>
     );
   }
 
