@@ -9,8 +9,8 @@
 
   --md-secondary: var(--clr-secondary-500);
   --md-on-secondary: var(--clr-secondary-50);
-  --md-secondary-container: var(--clr-secondary-100);
-  --md-on-secondary-container: var(--clr-secondary-800);
+  --md-secondary-container: var(--clr-secondary-200);
+  --md-on-secondary-container: var(--clr-secondary-900);
 
   --md-tertiary: var(--clr-tertiary-500);
   --md-on-tertiary: var(--clr-tertiary-50);
