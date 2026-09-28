@@ -22,7 +22,7 @@ import { GoogleOAuthTokenProvider } from '@/contexts/google-oauth';
 import useCurrentUser from '@/hooks/current-user';
 import PrivacyPage from '@/components/pages/legal/PrivacyPage';
 import FooterBar from '@/components/organisms/FooterBar';
-import TermsPage from '@/components/pages/TermsPage';
+import TermsPage from '@/components/pages/legal/TermsPage';
 
 interface ResumeProgressWrapperProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
