@@ -5,6 +5,6 @@
   background: linear-gradient(
     160deg,
     var(--md-surface) 0%,
-    var(--md-background-soft) 100%
+    var(--md-surface-variant) 100%
   );
 }
