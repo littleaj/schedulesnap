@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import ActionButton from '@/components/atoms/ActionButton';
-import { useFirestore } from '../../../hooks/firebase';
-import { getUserProfile } from '../../../services/user-profile';
+import { useFirestore } from '@/hooks/firebase';
+import { getUserProfile } from '@/services/user-profile';
 import {
   analyzeSchedulePhoto,
   loadCapturedSchedulePhoto,
-} from '../../../services/schedule-analysis';
+} from '@/services/schedule-analysis';
 import './AnalysisPage.css';
 import useCurrentUser from '@/hooks/current-user';
+import PageContent from '@/components/templates/PageContent';
+import { Card } from '@/components/atoms/Card';
 
 const AnalysisPage = () => {
   const navigate = useNavigate();
@@ -87,8 +88,8 @@ const AnalysisPage = () => {
   }, [user, firestore, navigate]);
 
   return (
-    <main className="analysis-page">
-      <section className="analysis-card" aria-labelledby="analysis-title" aria-live="polite">
+    <PageContent className="analysis-page">
+      <Card className="analysis-card" aria-labelledby="analysis-title" aria-live="polite">
         <p className="eyebrow">AI Analysis</p>
         <h1 id="analysis-title">Analyzing your schedule</h1>
 
@@ -109,8 +110,8 @@ const AnalysisPage = () => {
             </p>
           )}
         </div>
-      </section>
-    </main>
+      </Card>
+    </PageContent>
   );
 };
 
