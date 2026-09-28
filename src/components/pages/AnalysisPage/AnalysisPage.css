@@ -27,7 +27,7 @@
   gap: 1rem;
   padding: 1rem 1.1rem;
   border-radius: 16px;
-  background: var(--md-surface-container);
+  background: var(--md-surface);
   border: 1px solid var(--md-secondary-container);
 }
 

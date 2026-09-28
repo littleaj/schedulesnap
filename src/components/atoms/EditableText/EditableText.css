@@ -16,7 +16,7 @@
   padding: 0.45rem 0.6rem;
   border: 1px solid var(--md-outline);
   border-radius: 12px;
-  background: var(--md-surface-container-low);
+  background: var(--md-surface);
   color: var(--md-on-surface);
   font: inherit;
   text-align: center;

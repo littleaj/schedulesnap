@@ -72,7 +72,7 @@
   margin-top: 1rem;
   padding: 0.5em;
   border-radius: 16px;
-  background: var(--md-surface-container);
+  background: var(--md-surface);
   border: 1px solid var(--md-secondary-container);
   color: var(--md-on-surface);
 }
@@ -205,7 +205,7 @@
 }
 
 .confirm-card__event--off {
-  background-color: var(--md-surface-container);
+  background-color: var(--md-surface);
   color: var(--md-on-surface);
 }
 
