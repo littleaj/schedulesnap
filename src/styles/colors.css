@@ -49,10 +49,4 @@
   --md-outline: hsl(211, 15%, 45%);
   --md-outline-variant: hsl(211, 45%, 65%);
 
-  /* Shared visual effects */
-  --md-gradient-page: linear-gradient(
-    160deg,
-    var(--md-background) 0%,
-    var(--md-background-alt) 100%
-  ); /* deprecated */
 }
