@@ -20,7 +20,7 @@ import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
 import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
 import { GoogleOAuthTokenProvider } from '@/contexts/google-oauth';
 import useCurrentUser from '@/hooks/current-user';
-import PrivacyPage from '@/components/pages/PrivacyPage';
+import PrivacyPage from '@/components/pages/legal/PrivacyPage';
 import FooterBar from '@/components/organisms/FooterBar';
 import TermsPage from '@/components/pages/TermsPage';
 
