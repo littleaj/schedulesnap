@@ -53,15 +53,15 @@ const CapturePage = () => {
   return (
     <PageContent className="capture-page">
       <Card className="capture-card" aria-labelledby="capture-title">
-        <p className="eyebrow">Capture your schedule</p>
-        <h1 id="capture-title">Upload your schedule photo</h1>
+        <p className="eyebrow">Snap</p>
+        <h1 id="capture-title">Upload a picture of your schedule</h1>
         <p className="capture-card__intro">
-          Take a photo or upload a saved image to extract your shifts and review them before saving to Google Calendar.
+          Take a photo or upload a saved image. After analysis, you will get the chance to review the shifts that were detected before saving to Google Calendar.
         </p>
 
         <div className="capture-card__uploader">
           <label htmlFor="schedule-photo" className="capture-card__label">
-            Choose a schedule photo
+            Choose a picture
           </label>
           <input
             id="schedule-photo"
@@ -74,19 +74,13 @@ const CapturePage = () => {
           <div className="capture-card__actions">
             <ActionButton
               variant="primary"
-              onClick={() => navigate('/analyze', {  viewTransition: true, state: { from: location } })}
+              onClick={() => navigate('/analyze', { viewTransition: true, state: { from: location } })}
               disabled={!selectedFile || isProcessing || !isReady}
             >
-              {isProcessing ? 'Preparing photo...' : 'Analyze Photo'}
+              {isProcessing ? 'Preparing Image...' : 'Analyze Image'}
             </ActionButton>
           </div>
         </div>
-
-        {selectedFile ? (
-          <p className="capture-card__file" aria-live="polite">
-            Selected file: <strong>{selectedFile.name}</strong>
-          </p>
-        ) : null}
 
         {errorMessage ? (
           <p className="capture-card__file" role="alert">
