@@ -4,7 +4,7 @@
 }
 
 .capture-card {
-  max-width: min(100%, 560px);
+  max-width: min(80svw, 560px);
 }
 
 .capture-card h1 {
@@ -24,38 +24,75 @@
 
 .capture-card__uploader {
   margin-top: 1.6rem;
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .capture-card__label {
   font-weight: 600;
-  color: var(--md-on-surface);
+  color: var(--md-on-surface-variant);
+  font-size: 0.85rem;
+  margin-inline: 10px;
+  margin-block: 2px;
 }
 
 .capture-card__input {
   padding: 0.85rem 1rem;
   border: 1px solid var(--md-outline);
-  border-radius: 12px;
-  background: var(--md-surface);
-  color: var(--md-on-surface);
+  border-radius: 20px;
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  max-width: 100%;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+input[type="file"].capture-card__input {
+  cursor: pointer;
+
+  &::file-selector-button {
+    --_browse-button-bg-start: var(--browse-button-bg-start, var(--md-primary));
+    --_browse-button-bg-end: var(--browse-button-bg-end, var(--md-primary-fixed));
+    background: var(--md-primary);
+    color: var(--md-on-primary);
+    border: 2px solid var(--md-outline);
+    border-radius: 999px;
+    padding: 0.75em 1.25em;
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: inherit;
+    box-shadow: 2px 2px 2px var(--md-shadow);
+    background-image: linear-gradient(
+      135deg,
+      var(--_browse-button-bg-start) 0%,
+      var(--_browse-button-bg-end) 100%
+    );
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    will-change: transform, box-shadow;
+    margin-inline: 10px;
+  }
+
+  &::file-selector-button:hover {
+    --_elevation: 2px;
+    --_shadow-elevation: calc(2 * var(--_elevation));
+    background-image: linear-gradient(
+      135deg,
+      var(--_browse-button-bg-end) 0%,
+      var(--_browse-button-bg-start) 100%
+    );
+    box-shadow:
+      var(--_shadow-elevation)
+      var(--_shadow-elevation)
+      calc(var(--_shadow-elevation) + 2px)
+      rgba(from var(--md-shadow) r g b / 0.5);
+    transform: translateY(calc(-1 * var(--_elevation)));
+  }
 }
 
 .capture-card__actions {
-  flex-direction: column;
+  margin-top: 1.6rem;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   gap: 0.8rem;
-}
-
-.capture-card__file {
-  margin: 1rem 0 0;
-  color: var(--md-on-surface);
-  font-size: 0.96rem;
-}
-
-@media (max-width: 640px) {
-  .capture-card {
-    padding: 1.5rem 1.1rem;
-  }
 }
