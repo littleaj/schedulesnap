@@ -63,19 +63,19 @@
   gap: 1rem;
   margin-block-start: 2rem;
 
-  .feature-card:nth-child(1) {
+  .feature-card.primary {
     --feature-card-bg-clr: var(--md-primary-container);
     --feature-card-icon-bg-clr: var(--md-on-primary-container);
     --feature-card-heading-text-clr: var(--md-on-primary-container);
   }
 
-  .feature-card:nth-child(2) {
+  .feature-card.secondary {
     --feature-card-bg-clr: var(--md-secondary-container);
     --feature-card-icon-bg-clr: var(--md-on-secondary-container);
     --feature-card-heading-text-clr: var(--md-on-secondary-container);
   }
 
-  .feature-card:nth-child(3) {
+  .feature-card.tertiary {
     --feature-card-bg-clr: var(--md-tertiary-container);
     --feature-card-icon-bg-clr: var(--md-on-tertiary-container);
     --feature-card-heading-text-clr: var(--md-on-tertiary-container);
