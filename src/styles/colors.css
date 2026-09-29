@@ -1,31 +1,31 @@
 :root {
   /* Material role colors */
-  --md-primary: var(--clr-primary-500);
-  --md-on-primary: var(--clr-primary-50);
+  --md-primary: var(--clr-primary-400);
+  --md-on-primary: var(--clr-primary-950);
   --md-primary-container: var(--clr-primary-100);
-  --md-on-primary-container: var(--clr-primary-800);
-  --md-primary-fixed: var(--clr-primary-400);
+  --md-on-primary-container: var(--clr-primary-900);
+  --md-primary-fixed: var(--clr-primary-500);
   --md-on-primary-fixed: var(--clr-primary-900);
 
-  --md-secondary: var(--clr-secondary-500);
-  --md-on-secondary: var(--clr-secondary-50);
+  --md-secondary: var(--clr-secondary-400);
+  --md-on-secondary: var(--clr-secondary-950);
   --md-secondary-container: var(--clr-secondary-100);
-  --md-on-secondary-container: var(--clr-secondary-800);
+  --md-on-secondary-container: var(--clr-secondary-900);
 
-  --md-tertiary: var(--clr-tertiary-500);
-  --md-on-tertiary: var(--clr-tertiary-50);
+  --md-tertiary: var(--clr-tertiary-400);
+  --md-on-tertiary: var(--clr-tertiary-950);
   --md-tertiary-container: var(--clr-tertiary-100);
-  --md-on-tertiary-container: var(--clr-tertiary-800);
+  --md-on-tertiary-container: var(--clr-tertiary-900);
 
   --md-success: var(--clr-success-500);
-  --md-on-success: var(--clr-success-50);
+  --md-on-success: var(--clr-success-900);
   --md-success-container: var(--clr-success-100);
   --md-on-success-container: var(--clr-success-800);
 
   --md-warning: var(--clr-warning-500);
-  --md-on-warning: var(--clr-warning-900);
-  --md-warning-container: var(--clr-warning-100);
-  --md-on-warning-container: var(--clr-warning-800);
+  --md-on-warning: var(--clr-warning-950);
+  --md-warning-container: var(--clr-warning-200);
+  --md-on-warning-container: var(--clr-warning-900);
 
   --md-error: var(--clr-error-500);
   --md-on-error: var(--clr-error-50);
