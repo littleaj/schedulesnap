@@ -43,25 +43,28 @@
   background: var(--md-primary-container);
   color: var(--md-on-primary-container);
   max-width: 100%;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-family: inherit;
 }
 
 input[type="file"].capture-card__input {
   cursor: pointer;
+  text-box: trim-both ex alphabetic;
+  padding: 1.5rem 0;
 
   &::file-selector-button {
     --_browse-button-bg-start: var(--browse-button-bg-start, var(--md-primary));
     --_browse-button-bg-end: var(--browse-button-bg-end, var(--md-primary-fixed));
+    text-box: trim-both cap alphabetic;
     background: var(--md-primary);
     color: var(--md-on-primary);
-    border: 2px solid var(--md-outline);
+    border: 1px solid var(--md-outline);
     border-radius: 999px;
     padding: 0.75em 1.25em;
     font-weight: 700;
     font-size: 1rem;
     font-family: inherit;
-    box-shadow: 2px 2px 2px var(--md-shadow);
+    box-shadow: 2px 2px 4px var(--md-shadow);
     background-image: linear-gradient(
       135deg,
       var(--_browse-button-bg-start) 0%,
@@ -83,7 +86,7 @@ input[type="file"].capture-card__input {
     box-shadow:
       var(--_shadow-elevation)
       var(--_shadow-elevation)
-      calc(var(--_shadow-elevation) + 2px)
+      calc(var(--_shadow-elevation) + 4px)
       rgba(from var(--md-shadow) r g b / 0.5);
     transform: translateY(calc(-1 * var(--_elevation)));
   }
