@@ -74,7 +74,7 @@ const CapturePage = () => {
           <div className="capture-card__actions">
             <ActionButton
               variant="primary"
-              onClick={() => navigate('/analyze', { viewTransition: true, state: { from: location } })}
+              onClick={() => navigate('/analyze', { viewTransition: true, state: { from: location, analyze: true } })}
               disabled={!selectedFile || isProcessing || !isReady}
             >
               {isProcessing ? 'Preparing Image...' : 'Analyze Image'}
