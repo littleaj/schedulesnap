@@ -15,18 +15,23 @@
   max-width: 560px;
 }
 
-.hero h1 {
+.hero .title {
   margin: 0;
   font-size: clamp(2.8rem, 5vw, 5rem);
   line-height: 0.95;
   letter-spacing: -0.08em;
   color: var(--md-on-surface);
+  font-weight: 500;
+
+  .bold {
+    font-weight: 700;
+  }
 }
 
 .tagline {
   margin: 16px 0 0;
   font-size: clamp(1.2rem, 2vw, 1.8rem);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--md-primary-fixed);
 }
 
