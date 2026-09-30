@@ -1,14 +1,14 @@
 .home-page {
-  margin: 0 auto;
-  max-width: min(100%, 900px);
   justify-self: center;
 }
 
 .hero {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 32px;
+  text-align: center;
+  gap: 2rem;
+  margin-block: 1rem;
 }
 
 .hero__content {
@@ -31,7 +31,7 @@
 .tagline {
   margin: 16px 0 0;
   font-size: clamp(1.2rem, 2vw, 1.8rem);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--md-primary-fixed);
 }
 
@@ -50,9 +50,14 @@
 }
 
 .hero__visual {
-  display: flex;
-  justify-content: center;
-  max-width: min(100%, 420px);
+  position: absolute;
+  inset: 0;
+  top: -10%;
+  z-index: -1;
+  background-image: url('/assets/ScheduleSnap-Hero2.png');
+  background-size: cover;
+  background-position: 20%;
+  opacity: 0.25;
 }
 
 .hero-illustration {
@@ -87,6 +92,13 @@
   }
 }
 
+@media (min-width: 825px) {
+  .home-page.page {
+    padding: 0;
+    margin: 0 15vw;
+  }
+}
+
 @media (max-width: 824px) {
   .hero {
     grid-template-columns: 1fr;
@@ -95,10 +107,6 @@
 
   .hero__actions {
     justify-content: center;
-  }
-
-  .hero__visual {
-    display: none;
   }
 
   .feature-grid {
