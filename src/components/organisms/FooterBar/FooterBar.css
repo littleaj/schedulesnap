@@ -1,7 +1,9 @@
 .footer-bar {
-  background-color: #f8f8f8;
-  margin-block: 0.5em;
-  border-top: 1px solid #666;
+  --_clr-bg: alpha(from var(--md-surface) / 0.6);
+  --_clr-border: alpha(from var(--md-on-background) / 0.4);
+  background-color: var(--_clr-bg);
+  margin-block-start: 0.5em;
+  border-top: 1px solid var(--_clr-border);
   padding: 0.5em 1em;
 }
 
