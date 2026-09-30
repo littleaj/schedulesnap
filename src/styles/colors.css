@@ -40,16 +40,16 @@
   --md-background: var(--clr-neutral-50);
   --md-on-background: var(--clr-neutral-900);
 
-  --md-surface: var(--clr-neutral-variant-50);
-  --md-surface-variant: hsl(from var(--clr-neutral-variant-100) calc(h - 60) s l / 0.8);
+  --md-surface: var(--clr-neutral-variant-100);
+  --md-surface-variant: var(--clr-neutral-100);
 
   --md-on-surface: var(--clr-neutral-variant-800);
-  --md-on-surface-variant: hsl(from var(--clr-neutral-variant-800) calc(h - 60) s l);
+  --md-on-surface-variant: var(--clr-neutral-800);
 
-  --md-shadow: var(--clr-neutral-900);
+  --md-shadow: var(--clr-neutral-800);
   --md-scrim: hsl(from var(--clr-neutral-variant-600) h s l / 0.4);
 
-  --md-outline: hsl(211, 15%, 45%);
-  --md-outline-variant: hsl(211, 45%, 65%);
+  --md-outline: color-mix(in oklch, var(--clr-neutral-200) 50%, var(--clr-primary-600) 50%);
+  --md-outline-variant: color-mix(in oklch, var(--clr-neutral-200) 50%, var(--clr-tertiary-600) 50%);
 
 }
