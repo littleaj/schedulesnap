@@ -10,20 +10,31 @@
 .footer-bar__copyright {
   margin: 0;
   font-size: 0.75rem;
-  color: #666;
+  color: var(--md-on-surface-variant);
+  text-align: right;
 }
 
 .footer-bar__links {
   list-style: none;
   padding: 0;
-  margin: 0 0 0.5em 0;
+  margin: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
+
+  li {
+    display: flex;
+    align-items: center;
+  }
+
+  li, li::before {
+    text-box: trim-both cap alphabetic;
+  }
 
   li + li::before {
     content: "•";
     margin-inline: 0.5em;
-    color: #666;
-    font-weight: 800;
+    color: var(--md-on-surface);
+    font-weight: 600;
   }
 }
