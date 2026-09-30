@@ -56,7 +56,7 @@
   z-index: -1;
   background-image: url('/assets/ScheduleSnap-Hero2.png');
   background-size: cover;
-  background-position: 20%;
+  background-position: center right 50%;
   opacity: 0.25;
 }
 
@@ -111,5 +111,10 @@
 
   .feature-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero__visual {
+    top: -5%;
+    background-position: center right 60%;
   }
 }
