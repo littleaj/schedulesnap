@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router';
 import { useFirestore } from '@/hooks/firebase';
 import { getUserProfile } from '@/services/user-profile';
 import {
@@ -10,6 +10,7 @@ import './AnalysisPage.css';
 import useCurrentUser from '@/hooks/current-user';
 import PageContent from '@/components/templates/PageContent';
 import { Card } from '@/components/atoms/Card';
+import ActionButton from '@/components/atoms/ActionButton';
 
 const AnalysisPage = () => {
   const navigate = useNavigate();
@@ -18,32 +19,26 @@ const AnalysisPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const user = useCurrentUser();
   const location = useLocation();
+  const [isReady, setIsReady] = useState(location.state?.analyze ?? false);
 
-  useEffect(() => {
-    let isActive = true;
+  if (!user) {
+    console.error('User is not authenticated. Redirecting to login page.');
+    return <Navigate to="/login" replace />;
+  }
 
-    if (!user) {
-      setErrorMessage('Your sign-in expired before analysis could start. Please sign in again.');
-      setStatusMessage('Analysis paused.');
-      throw new Error("User is not authenticated.");
-    }
+  const capturedPhoto = loadCapturedSchedulePhoto(user.uid);
 
-    const { uid } = user;
+  const doAnalysis = useCallback(() => {
 
     const runAnalysis = async () => {
-      const capturedPhoto = loadCapturedSchedulePhoto(uid);
       if (!capturedPhoto) {
-        if (!isActive) {
-          return;
-        }
-
         setErrorMessage('No captured photo was found. Go back and upload a schedule image first.');
         setStatusMessage('Waiting for a captured schedule photo.');
         return;
       }
 
       try {
-        const profile = await getUserProfile(firestore, uid);
+        const profile = await getUserProfile(firestore, user.uid);
         const targetName = profile?.targetName ?? user?.displayName ?? '';
 
         if (targetName.trim() === '') {
@@ -51,56 +46,64 @@ const AnalysisPage = () => {
           setStatusMessage('Analysis paused. Go to settings to set your target name.');
           return;
         }
+        console.log("Target name for analysis:", targetName);
 
-        if (!isActive) {
-          return;
-        }
+        console.info("Starting analysis....");
+        setStatusMessage('Analyzing the image...');
+        const response = await analyzeSchedulePhoto(user.uid, capturedPhoto, targetName);
 
-        setStatusMessage('Analyzing your schedule photo...');
-        await analyzeSchedulePhoto(uid, capturedPhoto, targetName);
-
-        if (!isActive) {
-          return;
-        }
+        console.log("Analysis response:", response);
 
         navigate('/confirm', { replace: true, viewTransition: true });
-      } catch {
-        if (!isActive) {
-          return;
-        }
+      } catch (e) {
+        console.error("Error during analysis:", e);
 
-        setErrorMessage('Something went wrong reading your photo. Check your connection and try again.');
+        setErrorMessage('Something went wrong reading your photo. Refresh the page and try again.');
         setStatusMessage('Analysis failed.');
       }
     };
 
-    if (location.state?.from?.pathname !== '/capture') {
-      console.warn('Analysis page accessed without coming from capture page, redirecting to capture page.');
-      navigate('/capture', { replace: true, viewTransition: true });
-      return;
-    }
-
-    void runAnalysis();
-
-    return () => {
-      isActive = false;
-    };
+    runAnalysis().finally(() => {
+      console.info("Analysis finished.");
+    });
   }, [user, firestore, navigate]);
+
+  useEffect(() => {
+    if (isReady) {
+      doAnalysis();
+    }
+  }, [doAnalysis, isReady]);
+
+
+  const AnalysisContent = (
+    <>
+      <h1 id="analysis-title">Analyzing your schedule</h1>
+
+      <div className="analysis-card__status" role="status" aria-live="polite">
+        <div
+          className={'analysis-card__icon ' + (errorMessage ? 'analysis-card__icon--error' : 'analysis-card__spinner')}
+          aria-hidden="true"
+        />
+        <p>{statusMessage}</p>
+      </div>
+    </>
+  );
+
+  const ButtonContent = (
+    <ActionButton
+      variant="primary"
+      onClick={() => setIsReady(true)}
+      className="analysis-card__action"
+    >
+      Start Analysis
+    </ActionButton>
+  )
 
   return (
     <PageContent className="analysis-page">
       <Card className="analysis-card" aria-labelledby="analysis-title" aria-live="polite">
         <p className="eyebrow">AI Analysis</p>
-        <h1 id="analysis-title">Analyzing your schedule</h1>
-
-        <div className="analysis-card__status" role="status" aria-live="polite">
-          <div
-            className={errorMessage ? 'analysis-card__icon analysis-card__icon--error' : 'analysis-card__spinner'}
-            aria-hidden="true"
-          />
-          <p>{statusMessage}</p>
-        </div>
-
+        {isReady ? AnalysisContent : ButtonContent}
         <div className="analysis-card__details">
           {errorMessage ? (
             <p role="alert">{errorMessage}</p>
