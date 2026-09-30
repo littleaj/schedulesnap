@@ -12,10 +12,10 @@ const HomePage = () => {
       <section className="hero">
         <div className="hero__content">
           <p className="eyebrow">An easy way to save your shifts</p>
-          <h1>ScheduleSnap</h1>
+          <h1 className="title">Schedule<span className="bold">Snap</span></h1>
           <p className="tagline">Snap. Scan. Sync.</p>
           <p className="description">
-            Turn a photo of a work schedule into calendar events in a few taps.
+            Turn a picture of your work schedule into calendar events in a few taps.
           </p>
 
           <div className="hero__actions">
