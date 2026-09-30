@@ -38,3 +38,9 @@
     font-weight: 600;
   }
 }
+
+@media (max-width: 800px) {
+  .footer-bar__copyright {
+    text-align: center;
+  }
+}
