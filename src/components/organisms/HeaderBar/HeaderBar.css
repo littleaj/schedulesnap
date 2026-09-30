@@ -1,6 +1,6 @@
 .header-bar {
   --_clr-bg: alpha(from var(--md-surface) / 0.5);
-  --_clr-border: alpha(from var(--md-on-background) / 0.3);
+  --_clr-border: alpha(from var(--md-on-surface) / 0.3);
   position: sticky;
   top: 0;
   z-index: 10;
