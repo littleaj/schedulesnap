@@ -19,17 +19,7 @@ const HelpPage = () => {
         </p>
       </section>
 
-      <section className="help-page__grid" aria-label="How it works">
-        <Card className="help-card">
-          <span className="help-card__icon" aria-hidden="true">📸</span>
-          <h2>How it works</h2>
-          <ol>
-            <li>Capture a clear image of your schedule.</li>
-            <li>Review the detected shifts before saving anything.</li>
-            <li>Approve the entries and send them to Google Calendar.</li>
-          </ol>
-        </Card>
-
+      <section className="help-page__grid">
         <Card className="help-card">
           <span className="help-card__icon" aria-hidden="true">💡</span>
           <h2>Best results</h2>
