@@ -46,7 +46,7 @@
   --md-on-surface: var(--clr-neutral-variant-800);
   --md-on-surface-variant: var(--clr-neutral-800);
 
-  --md-shadow: var(--clr-neutral-800);
+  --md-shadow: alpha(from var(--clr-neutral-800) / 0.7);
   --md-scrim: hsl(from var(--clr-neutral-variant-600) h s l / 0.4);
 
   --md-outline: color-mix(in oklch, var(--clr-neutral-200) 50%, var(--clr-primary-600) 50%);
