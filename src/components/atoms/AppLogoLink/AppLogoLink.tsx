@@ -6,7 +6,7 @@ interface AppLogoLinkProps {
   to: string;
 }
 
-const scheduleSnapLogo = '/assets/ScheduleSnap-Logo_380x380.png';
+const scheduleSnapLogo = '/assets/ScheduleSnap-Logo_380x297.png';
 
 // TODO: embed svg and update color to primary
 const AppLogo = () => {
