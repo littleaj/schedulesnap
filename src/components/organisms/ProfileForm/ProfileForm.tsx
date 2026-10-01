@@ -96,7 +96,7 @@ const ProfileForm = ({
         setInitializing(false);
       }
     };
-    doFetch()
+    void doFetch();
   }, [getToken]);
 
   let submitButtonLabel = submitLabel;
