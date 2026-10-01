@@ -48,6 +48,10 @@
   gap: 14px;
   margin-top: 28px;
   justify-content: center;
+
+  > * {
+    flex-grow: 1;
+  }
 }
 
 .hero__visual {
