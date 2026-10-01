@@ -13,7 +13,7 @@ const HomePage = () => {
       <PageContent className="home-page">
         <section className="hero">
           <div className="hero__content">
-            <p className="eyebrow">An easy way to save your shifts</p>
+            <p className="eyebrow">An easy way to save your schedule</p>
             <h1 className="title">Schedule<span className="bold">Snap</span></h1>
             <p className="tagline">Snap. Scan. Sync.</p>
             <p className="description">
