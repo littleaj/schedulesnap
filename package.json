@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev-storage": "firebase emulators:start --only firestore",
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "vitest run",
