@@ -10,6 +10,7 @@ interface IconLinkProps {
   className?: string;
 }
 
+// TODO: update to allow embedded SVGs so I can control their color via CSS
 const IconLink = ({ to, label, iconSrc, iconAlt = '', className = '' }: IconLinkProps) => {
   return (
     <Link className={`icon-link ${className}`.trim()} to={to} aria-label={label}>
