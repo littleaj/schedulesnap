@@ -109,10 +109,13 @@ const ConfirmPage = () => {
 
 
     let hasSuccess = false;
+    const eventRequests = [];
     for (const event of eventsToCreate) {
-      const response = await createEventRequest(event, accessToken);
-      hasSuccess = hasSuccess || response.ok;
+      const request = createEventRequest(event, accessToken);
+      eventRequests.push(request);
     }
+    const responses = await Promise.all(eventRequests);
+    hasSuccess = responses.some(response => response.ok);
 
     // TODO: Show loading indicator while creating events
     // TODO: Handle the case where none of the events were successfully created.
@@ -120,7 +123,7 @@ const ConfirmPage = () => {
 
     if (hasSuccess) {
       clearAnalysisFlowCache(user?.uid);
-      navigate('/finished', { replace: true, viewTransition: true });
+      void navigate('/finished', { replace: true, viewTransition: true });
     }
   };
 
