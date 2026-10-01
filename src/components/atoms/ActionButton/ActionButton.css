@@ -2,7 +2,10 @@
 button.action-button {
   --_action-button-bg-start: var(--action-button-bg-start, var(--md-primary-fixed));
   --_action-button-bg-end: var(--action-button-bg-end, hsl(from var(--md-primary-fixed) h s calc(l - 10)));
-  border: 1px solid var(--md-outline);
+  --_action-button-border-color: var(--action-button-border-color, var(--md-outline));
+  --_action-button-text-color: var(--action-button-text-color, var(--md-on-primary-fixed));
+
+  border: 1px solid var(--_action-button-border-color);
   border-radius: 999px;
   padding: 0.75em 1.25em;
   font-weight: 600;
@@ -18,10 +21,13 @@ button.action-button {
     var(--_action-button-bg-start) 0%,
     var(--_action-button-bg-start) 100%
   );
+  color: var(--_action-button-text-color);
 }
 
 button.action-button:not(:disabled):hover,
 button.action-button:not(:disabled):active {
+  --_action-button-text-color-hover: var(--action-button-text-color-hover, var(--_action-button-text-color));
+  color: var(--_action-button-text-color-hover);
   transform: translateY(-3px);
   box-shadow: 10px 10px 15px rgba(from var(--md-shadow) r g b / 0.5);
   background-image: linear-gradient(
@@ -39,11 +45,15 @@ button.action-button:disabled {
 button.action-button.primary {
   --action-button-bg-start: var(--md-primary);
   --action-button-bg-end: oklch(from var(--md-primary) calc(l * 0.65) c h);
-  color: var(--md-on-primary);
+  --action-button-border-color: var(--md-primary);
+  --action-button-text-color: var(--md-on-primary);
+  --action-button-text-color-hover: oklch(from var(--action-button-text-color) calc(l + 65) c h);
 }
 
 button.action-button.secondary {
-  --action-button-bg-start: var(--md-secondary);
-  --action-button-bg-end: oklch(from var(--md-secondary) calc(l * 0.65) c h);
-  color: var(--md-on-secondary);
+  --action-button-bg-start: var(--md-secondary-container);
+  --action-button-bg-end: oklch(from var(--md-secondary-container) calc(l * 0.65) c h);
+  --action-button-border-color: var(--md-secondary);
+  --action-button-text-color: var(--md-on-secondary-container);
+  --action-button-text-color-hover: oklch(from var(--action-button-text-color) calc(l + 65) c h);
 }
