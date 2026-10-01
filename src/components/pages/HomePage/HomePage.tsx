@@ -33,15 +33,15 @@ const HomePage = () => {
         </section>
 
         <section className="feature-grid" aria-label="Key features">
-          <FeatureCard icon="📸" heading="Snap a Picture" className="tertiary">
+          <FeatureCard icon="📸" heading="Snap a Picture">
             <p>First, take a picture of your schedule and upload it to the app.</p>
           </FeatureCard>
 
-          <FeatureCard icon="✅" heading="Scan & Review" className="secondary">
+          <FeatureCard icon="✅" heading="Scan & Review">
             <p>Then, let the AI scan your schedule and extract the details for your review.</p>
           </FeatureCard>
 
-          <FeatureCard icon="🗓️" heading="Sync to Google Calendar" className="primary">
+          <FeatureCard icon="🗓️" heading="Sync to Google Calendar">
             <p>Finally, sync the reviewed shifts to your calendar in seconds.</p>
           </FeatureCard>
         </section>
