@@ -9,7 +9,7 @@ const AboutPage = () => {
     <PageContent className="about-page">
       <section className="about-page__header">
         <p className="eyebrow">About</p>
-        <h1>About Schedule Snap</h1>
+        <h1>About ScheduleSnap</h1>
         <p className="about-page__intro">
           I was tired of taking a picture of my schedule and entering it into Google Calendar every week. I knew this could be done automatically, so
           I made this app.
@@ -23,13 +23,13 @@ const AboutPage = () => {
             <p>
               I wanted a faster, less tedious way to turn my weekly schedules into
               calendar events. The workflow was repetitive and consistent:
-              <ol>
-                <li>Take a photo</li>
-                <li>Scan the picture for my shifts</li>
-                <li>Enter each one into Google Calendar</li>
-                <li>Finally, double-check everything</li>
-              </ol>
             </p>
+            <ol>
+              <li>Take a photo</li>
+              <li>Scan the picture for my shifts</li>
+              <li>Enter each one into Google Calendar</li>
+              <li>Finally, double-check everything</li>
+            </ol>
           </Card>
 
           <Card className="story-card">
@@ -42,7 +42,7 @@ const AboutPage = () => {
 
         <section className="about-page__links" aria-label="External links">
           <Card className="story-card secondary">
-            <h2>More About Me</h2>
+            <h2>About the Developer</h2>
             <p>
               <a href="https://arthurjlittle.com" target="_blank" rel="noreferrer">
                 ArthurJLittle.com
