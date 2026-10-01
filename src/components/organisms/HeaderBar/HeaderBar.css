@@ -13,6 +13,7 @@
 .header-bar__nav {
   display: flex;
   gap: 1rem;
+  margin-inline: 2vw;
 }
 
 .header-bar__left {
@@ -24,8 +25,6 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-inline: 1.5%;
-  padding-inline: 0.5rem;
 }
 
 .header-bar__right {
