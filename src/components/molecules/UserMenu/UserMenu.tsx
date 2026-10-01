@@ -53,6 +53,7 @@ const UserMenu = ({ user }: UserMenuProps) => {
 
   return (
     <div className="user-menu" ref={menuRef}>
+      {/* TODO: change hover behavior to change color or add glow or something */}
       <button
         className="user-menu__trigger"
         type="button"
