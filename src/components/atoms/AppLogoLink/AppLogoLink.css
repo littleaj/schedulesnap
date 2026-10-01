@@ -4,17 +4,30 @@
   justify-content: center;
   border: 0;
   text-decoration: none;
-  border-radius: 999px;
+  border-radius: 8px;
   transition: transform 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
 }
 
 .app-logo-link:hover,
 .app-logo-link:focus-visible {
   transform: translateY(-1px);
+
+  .app-logo-link__image {
+    --_shadow-x: 1px;
+    --_shadow-y: 2px;
+    --_shadow-blur: 1px;
+    --_brightness: 105%;
+  }
 }
 
 .app-logo-link__image {
+  --_shadow-x: 0px;
+  --_shadow-y: 1px;
+  --_shadow-blur: 0px;
+  --_brightness: 100%;
   display: block;
-  width: 4rem;
-  height: 4rem;
+  aspect-ratio: 380 / 297;
+  height: 3rem;
+  filter: brightness(var(--_brightness)) drop-shadow(var(--_shadow-x) var(--_shadow-y) var(--_shadow-blur) var(--md-secondary));
+  transition: transform 0.16s ease-in-out;
 }
