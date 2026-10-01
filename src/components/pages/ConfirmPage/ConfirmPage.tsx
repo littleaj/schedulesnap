@@ -199,7 +199,7 @@ const ConfirmPage = () => {
             } else {
               clearAnalysisFlowCache(user.uid);
             }
-            navigate("/");
+            void navigate("/");
           }}>
             Cancel and Delete Progress
           </ActionButton>
