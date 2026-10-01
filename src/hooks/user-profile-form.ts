@@ -73,7 +73,7 @@ const useUserProfileForm = ({ successMessage }: UseUserProfileFormOptions): UseU
 
       try {
         const existingProfile = await getUserProfile(firestore, uid);
-        const defaultProfile = buildDefaultUserProfile('UTC', user?.displayName ?? null);
+        const defaultProfile = buildDefaultUserProfile(Intl.DateTimeFormat().resolvedOptions().timeZone, user?.displayName ?? null, user?.email ?? 'primary');
         setValues(existingProfile ?? defaultProfile);
       } catch (error) {
         console.error('Unable to load user profile: ', error);
