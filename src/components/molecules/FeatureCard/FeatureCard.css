@@ -12,7 +12,7 @@
 }
 
 .feature-card__icon {
-  --_clr-bg: var(--feature-card-icon-bg-clr, var(--md-surface-variant));
+  --_clr-bg: var(--feature-card-icon-bg-clr, color-mix(in oklch, var(--md-surface) 85%, black 15%));
   display: inline-grid;
   place-items: center;
   place-content: center;
@@ -23,6 +23,7 @@
   border-radius: 16px;
   background-color: var(--_clr-bg);
   font-size: 2rem;
+  box-shadow: 0px 1px 3px var(--md-shadow);
 }
 
 .feature-card h2 {
