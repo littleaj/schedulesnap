@@ -1,4 +1,6 @@
 .page {
   margin: 0 0.25rem;
   padding: 0.5rem;
+  max-width: 800px;
+  justify-self: center;
 }
