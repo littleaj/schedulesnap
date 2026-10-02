@@ -17,6 +17,11 @@
   font-size: 0.95rem;
   color: var(--md-on-surface);
   background-color: var(--md-surface);
+
+  &:disabled {
+    filter: grayscale(100%);
+    cursor: not-allowed;
+  }
 }
 
 .labeled-select__control:focus {
