@@ -54,7 +54,7 @@ const AnalysisPage = () => {
 
         console.log("Analysis response:", response);
 
-        navigate('/confirm', { replace: true, viewTransition: true });
+        void navigate('/confirm', { replace: true, viewTransition: true });
       } catch (e) {
         console.error("Error during analysis:", e);
 
@@ -63,7 +63,7 @@ const AnalysisPage = () => {
       }
     };
 
-    runAnalysis().finally(() => {
+    void runAnalysis().finally(() => {
       console.info("Analysis finished.");
     });
   }, [user, firestore, navigate]);
