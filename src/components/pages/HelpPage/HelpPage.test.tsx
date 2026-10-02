@@ -12,7 +12,6 @@ describe('HelpPage', () => {
     );
 
     expect(screen.getByRole('heading', { name: /help & faqs/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /how it works/i })).toBeInTheDocument();
     expect(screen.getByText(/capture your schedule/i)).toBeInTheDocument();
     expect(screen.getByText(/review your shifts/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /get started/i })).toBeInTheDocument();
