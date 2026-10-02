@@ -1,0 +1,15 @@
+.loading-spinner {
+  /* TODO: add properties for customization */
+  min-width: 1.4rem;
+  min-height: 1.4rem;
+  border-radius: 50%;
+  border: 5px solid var(--md-primary-container);
+  border-top-color: var(--md-primary);
+  animation: loading-spinner__spin 0.9s linear infinite;
+}
+
+@keyframes loading-spinner__spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
