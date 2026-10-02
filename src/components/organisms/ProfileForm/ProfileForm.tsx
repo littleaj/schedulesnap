@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
 import LabeledInput from '@/components/atoms/LabeledInput';
 import LabeledSelect from '@/components/atoms/LabeledSelect';
-import ReminderSettings from '@/components/molecules/ReminderSettings';
 import type { UserProfile, UserProfileValidationErrors } from '@/types/user-profile';
 import './ProfileForm.css';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
