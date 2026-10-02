@@ -1,7 +1,7 @@
 import React from 'react';
 import './LabeledSelect.css';
 
-interface SelectOption {
+export interface SelectOption {
   value: string;
   label: string;
 }
