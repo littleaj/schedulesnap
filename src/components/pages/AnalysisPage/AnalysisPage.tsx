@@ -80,6 +80,7 @@ const AnalysisPage = () => {
       <h1 id="analysis-title">Analyzing your schedule</h1>
 
       <div className="analysis-card__status" role="status" aria-live="polite">
+        {/* TODO: use LoadingSpinner component */}
         <div
           className={'analysis-card__icon ' + (errorMessage ? 'analysis-card__icon--error' : 'analysis-card__spinner')}
           aria-hidden="true"
