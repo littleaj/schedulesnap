@@ -156,28 +156,6 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
     setValues((current) => ({ ...current, defaultCalendarId: value }));
   };
 
-  const setReminderEnabled = (value: boolean) => {
-    setSuccessMessage(null);
-    setValues((current) => ({
-      ...current,
-      reminder: {
-        ...current.reminder,
-        enabled: value,
-      },
-    }));
-  };
-
-  const setReminderMinutesBefore = (value: number) => {
-    setSuccessMessage(null);
-    setValues((current) => ({
-      ...current,
-      reminder: {
-        ...current.reminder,
-        minutesBefore: Number.isFinite(value) ? value : 0,
-      },
-    }));
-  };
-
   const submit = async () => {
     const validationErrors = validateProfile(values);
     setErrors(validationErrors);
