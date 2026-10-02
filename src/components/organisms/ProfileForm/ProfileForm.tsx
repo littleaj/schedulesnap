@@ -13,6 +13,7 @@ import {
   getUserProfile,
   saveUserProfile,
 } from '@/services/user-profile';
+import { Card } from '@/components/atoms/Card';
 
 interface ProfileFormProps {
   heading: string;
@@ -220,7 +221,7 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
   }
 
   return (
-    <section className="profile-form" aria-labelledby="profile-form-heading">
+    <Card element={<section />} className="profile-form" aria-labelledby="profile-form-heading">
       <header className="profile-form__header">
         <h1 id="profile-form-heading">{heading}</h1>
         <p>{subheading}</p>
@@ -275,7 +276,7 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
       >
         {submitButtonLabel}
       </ActionButton>
-    </section>
+    </Card>
   );
 };
 
