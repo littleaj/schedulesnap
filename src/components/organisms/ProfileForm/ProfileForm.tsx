@@ -6,23 +6,19 @@ import ReminderSettings from '@/components/molecules/ReminderSettings';
 import type { UserProfile, UserProfileValidationErrors } from '@/types/user-profile';
 import './ProfileForm.css';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
+import { useFirestore } from '@/hooks/firebase';
+import useCurrentUser from '@/hooks/current-user';
+import {
+  buildDefaultUserProfile,
+  getUserProfile,
+  saveUserProfile,
+} from '@/services/user-profile';
 
 interface ProfileFormProps {
   heading: string;
   subheading: string;
-  values: UserProfile;
-  errors: UserProfileValidationErrors;
-  isLoading: boolean;
-  isSubmitting: boolean;
   submitLabel: string;
-  errorMessage?: string | null;
-  successMessage?: string | null;
-  onTargetNameChange: (value: string) => void;
-  onTimezoneChange: (value: string) => void;
-  onDefaultCalendarIdChange: (value: string) => void;
-  onReminderEnabledChange: (value: boolean) => void;
-  onReminderMinutesChange: (value: number) => void;
-  onSubmit: () => void;
+  onSubmit?: () => void;
 }
 
 const getTimeZoneOptions = () => {
@@ -57,37 +53,54 @@ const getCalendarOptions = async (token: string) => {
   }
 };
 
-const ProfileForm = ({
-  heading,
-  subheading,
-  values,
-  errors,
-  isLoading,
-  isSubmitting,
-  submitLabel,
-  errorMessage,
-  successMessage,
-  onTargetNameChange,
-  onTimezoneChange,
-  onDefaultCalendarIdChange,
-  onReminderEnabledChange,
-  onReminderMinutesChange,
-  onSubmit,
-}: ProfileFormProps) => {
+const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileFormProps) => {
+  const firestore = useFirestore();
+  const user = useCurrentUser();
   const [calendarOptions, setCalendarOptions] = useState<CalendarOption[]>([{ value: 'primary', label: 'Primary' }]);
   const timezoneOptions = getTimeZoneOptions();
   const { getToken } = useContext(GoogleOAuthTokenContext);
   const [initializing, setInitializing] = useState(true);
 
+  const [values, setValues] = useState<UserProfile>(() =>
+    buildDefaultUserProfile(Intl.DateTimeFormat().resolvedOptions().timeZone, user?.displayName ?? null),
+  );
+  const [errors, setErrors] = useState<UserProfileValidationErrors>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const validateProfile = (profile: UserProfile): UserProfileValidationErrors => {
+    const errs: UserProfileValidationErrors = {};
+
+    if (!profile.targetName.trim()) {
+      errs.targetName = 'Name is required.';
+    }
+
+    if (!profile.timezone.trim()) {
+      errs.timezone = 'Timezone is required.';
+    }
+
+    if (!profile.defaultCalendarId.trim()) {
+      errs.defaultCalendarId = 'Default calendar is required.';
+    }
+
+    if (profile.reminder.enabled && profile.reminder.minutesBefore <= 0) {
+      errs.reminderMinutesBefore = 'Reminder minutes must be greater than zero.';
+    }
+
+    return errs;
+  };
+
   useEffect(() => {
     const token = getToken();
     if (!token) {
+      setInitializing(false);
       return;
     }
 
     const doFetch = async () => {
       try {
-        console.log("Fetching calendar options...");
         const options = await getCalendarOptions(token);
         setCalendarOptions(options);
       } catch (error) {
@@ -96,8 +109,104 @@ const ProfileForm = ({
         setInitializing(false);
       }
     };
+
     void doFetch();
   }, [getToken]);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      const uid = user?.uid;
+      if (!uid) {
+        setIsLoading(false);
+        setErrorMessage('Unable to load profile because no user is signed in.');
+        return;
+      }
+
+      try {
+        const existingProfile = await getUserProfile(firestore, uid);
+        const defaultProfile = buildDefaultUserProfile(
+          Intl.DateTimeFormat().resolvedOptions().timeZone,
+          user?.displayName ?? null,
+          user?.email ?? 'primary',
+        );
+        setValues(existingProfile ?? defaultProfile);
+      } catch (error) {
+        console.error('Unable to load user profile: ', error);
+        setErrorMessage('Unable to load your profile right now. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    void loadProfile();
+  }, [user, firestore]);
+
+  const setTargetName = (value: string) => {
+    setSuccessMessage(null);
+    setValues((current) => ({ ...current, targetName: value }));
+  };
+
+  const setTimezone = (value: string) => {
+    setSuccessMessage(null);
+    setValues((current) => ({ ...current, timezone: value }));
+  };
+
+  const setDefaultCalendarId = (value: string) => {
+    setSuccessMessage(null);
+    setValues((current) => ({ ...current, defaultCalendarId: value }));
+  };
+
+  const setReminderEnabled = (value: boolean) => {
+    setSuccessMessage(null);
+    setValues((current) => ({
+      ...current,
+      reminder: {
+        ...current.reminder,
+        enabled: value,
+      },
+    }));
+  };
+
+  const setReminderMinutesBefore = (value: number) => {
+    setSuccessMessage(null);
+    setValues((current) => ({
+      ...current,
+      reminder: {
+        ...current.reminder,
+        minutesBefore: Number.isFinite(value) ? value : 0,
+      },
+    }));
+  };
+
+  const submit = async () => {
+    const validationErrors = validateProfile(values);
+    setErrors(validationErrors);
+    setErrorMessage(null);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return false;
+    }
+
+    const uid = user?.uid;
+    if (!uid) {
+      setErrorMessage('Unable to save profile because no user is signed in.');
+      return false;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await saveUserProfile(firestore, uid, values);
+      setSuccessMessage('Profile saved');
+      onSubmit?.();
+      return true;
+    } catch (error) {
+      console.error('Unable to save profile: ', error);
+      setErrorMessage('Unable to save your profile right now. Please try again.');
+      return false;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   let submitButtonLabel = submitLabel;
   if (isLoading) {
@@ -122,7 +231,7 @@ const ProfileForm = ({
           id="target-name"
           label="Name on schedule"
           value={values.targetName}
-          onChange={(event) => onTargetNameChange(event.target.value)}
+          onChange={(event) => setTargetName(event.target.value)}
           hint="Used to find your shifts on the schedule"
           error={errors.targetName}
         />
@@ -132,7 +241,7 @@ const ProfileForm = ({
           label="Timezone"
           value={values.timezone}
           options={timezoneOptions}
-          onChange={(event) => onTimezoneChange(event.target.value)}
+          onChange={(event) => setTimezone(event.target.value)}
           error={errors.timezone}
         />
 
@@ -141,7 +250,7 @@ const ProfileForm = ({
           label="Default calendar"
           value={values.defaultCalendarId}
           options={calendarOptions}
-          onChange={(event) => onDefaultCalendarIdChange(event.target.value)}
+          onChange={(event) => setDefaultCalendarId(event.target.value)}
           error={errors.defaultCalendarId}
         />
 
@@ -161,7 +270,7 @@ const ProfileForm = ({
       <ActionButton
         variant="primary"
         className="profile-form__submit"
-        onClick={onSubmit}
+        onClick={() => void submit()}
         disabled={isLoading || isSubmitting}
       >
         {submitButtonLabel}

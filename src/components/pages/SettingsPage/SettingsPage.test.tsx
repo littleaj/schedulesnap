@@ -7,29 +7,15 @@ const { submitMock } = vi.hoisted(() => ({
   submitMock: vi.fn(),
 }));
 
-vi.mock('@/hooks/user-profile-form', () => ({
-  useUserProfileForm: () => ({
-    values: {
-      targetName: 'Alex',
-      timezone: 'UTC',
-      defaultCalendarId: 'primary',
-      reminder: {
-        enabled: true,
-        minutesBefore: 60,
-      },
-    },
-    errors: {},
-    isLoading: false,
-    isSubmitting: false,
-    errorMessage: null,
-    successMessage: 'Profile saved',
-    setTargetName: vi.fn(),
-    setTimezone: vi.fn(),
-    setDefaultCalendarId: vi.fn(),
-    setReminderEnabled: vi.fn(),
-    setReminderMinutesBefore: vi.fn(),
-    submit: submitMock,
-  }),
+vi.mock('@/components/organisms/ProfileForm', () => ({
+  default: (props: any) => {
+    return (
+      <div>
+        <p>Profile saved</p>
+        <button onClick={() => props.onSubmit?.()}>{props.submitLabel}</button>
+      </div>
+    );
+  },
 }));
 
 describe('SettingsPage', () => {
