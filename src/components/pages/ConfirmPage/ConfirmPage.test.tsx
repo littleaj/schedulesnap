@@ -2,12 +2,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ConfirmPage from './ConfirmPage';
-import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 
-const { loadAnalysisResponseMock, loadDraftConfirmationMock, loadCapturedSchedulePhotoMock, saveDraftConfirmationMock, getUserProfileMock, useCurrentUserMock, useFirestoreMock, navigateMock } = vi.hoisted(() => ({
+const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock, getUserProfileMock, useCurrentUserMock, useFirestoreMock, navigateMock } = vi.hoisted(() => ({
   loadAnalysisResponseMock: vi.fn(),
   loadDraftConfirmationMock: vi.fn(),
-  loadCapturedSchedulePhotoMock: vi.fn(),
   saveDraftConfirmationMock: vi.fn(),
   getUserProfileMock: vi.fn(),
   useCurrentUserMock: vi.fn(),
@@ -39,7 +37,6 @@ vi.mock('@/services/schedule-analysis', () => ({
   clearAnalysisFlowCache: vi.fn(),
   loadAnalysisResponse: loadAnalysisResponseMock,
   loadDraftConfirmation: loadDraftConfirmationMock,
-  loadCapturedSchedulePhoto: loadCapturedSchedulePhotoMock,
   saveDraftConfirmation: saveDraftConfirmationMock,
 }));
 
@@ -139,7 +136,7 @@ describe('ConfirmPage', () => {
     });
   });
 
-  it('redirects to the finished page after creating Google Calendar events', async () => {
+  it('forwards to creating page when create events is clicked', async () => {
     loadDraftConfirmationMock.mockReturnValue({
       shifts: [
         {
@@ -156,34 +153,19 @@ describe('ConfirmPage', () => {
     });
     loadAnalysisResponseMock.mockReturnValue(null);
 
-    const getToken = vi.fn(() => 'google-access-token');
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      status: 200,
-      ok: true,
-      text: vi.fn().mockResolvedValue('ok'),
-    }));
-
     render(
-      <GoogleOAuthTokenContext.Provider value={{ getToken, setToken: vi.fn(), getTokenExpiresAt: vi.fn(), setTokenExpiresAt: vi.fn() }}>
-        <MemoryRouter>
-          <ConfirmPage />
-        </MemoryRouter>
-      </GoogleOAuthTokenContext.Provider>,
+      <MemoryRouter>
+        <ConfirmPage />
+      </MemoryRouter>,
     );
 
     fireEvent.click(screen.getByRole('button', { name: /create events/i }));
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith(
-        'https://www.googleapis.com/calendar/v3/calendars/primary/events',
-        expect.objectContaining({
-          method: 'POST',
-          headers: expect.objectContaining({
-            Authorization: 'Bearer google-access-token',
-          }),
-        }),
-      );
-      expect(navigateMock).toHaveBeenCalledWith('/finished', expect.anything());
+      expect(navigateMock).toHaveBeenCalledWith('/creating', expect.objectContaining({
+        replace: true,
+        state: expect.objectContaining({ create: true, createRunId: expect.any(String) }),
+      }));
     });
   });
 
