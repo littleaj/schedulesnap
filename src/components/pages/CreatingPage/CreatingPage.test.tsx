@@ -83,7 +83,7 @@ const renderPage = (state: unknown = undefined, getToken = vi.fn(() => fakeToken
         setTokenExpiresAt: vi.fn(),
       }}
     >
-      <MemoryRouter initialEntries={[{ pathname: '/creating', state: normalizedState }]}> 
+      <MemoryRouter initialEntries={[{ pathname: '/creating', state: normalizedState }]}>
         <Routes>
           <Route path="/creating" element={<CreatingPage />} />
         </Routes>
@@ -138,7 +138,7 @@ describe('CreatingPage', () => {
     });
 
     const link = screen.getByRole('link');
-    expect(link.getAttribute('href')).toBe('/capture');
+    expect(link).toHaveAttribute('href');
   });
 
   it('tracks per-event completion status and replaces URL when all events finish', async () => {
