@@ -23,6 +23,7 @@ import useCurrentUser from '@/hooks/current-user';
 import PrivacyPage from '@/components/pages/legal/PrivacyPage';
 import FooterBar from '@/components/organisms/FooterBar';
 import TermsPage from '@/components/pages/legal/TermsPage';
+import CreatingPage from './components/pages/CreatingPage';
 
 interface ResumeProgressWrapperProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
@@ -120,6 +121,7 @@ export const App = () => {
                 <Route path="/capture" element={<CapturePage />} />
                 <Route path="/analyze" element={<AnalysisPage />} />
                 <Route path="/confirm" element={<ConfirmPage />} />
+                <Route path="/creating" element={<CreatingPage />} />
                 <Route path="/finished" element={<FinishedPage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/onboarding" element={<OnboardingPage />} />
