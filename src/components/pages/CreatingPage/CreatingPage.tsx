@@ -142,7 +142,7 @@ const CreatingPage = () => {
         break;
       }
 
-      if (!response || !response.ok) {
+      if (!response?.ok) {
         hadNonAuthFailure = true;
       }
     }
@@ -223,7 +223,7 @@ const CreatingPage = () => {
             break;
           }
 
-          if (!response || !response.ok) {
+          if (!response?.ok) {
             hadFailure = true;
           }
         }
