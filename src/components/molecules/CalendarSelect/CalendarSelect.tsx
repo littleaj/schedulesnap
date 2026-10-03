@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import LabeledSelect, { type SelectOption } from "@/components/atoms/LabeledSelect";
 import { GoogleOAuthTokenContext } from "@/contexts/google-oauth";
 import { useGoogleLogin } from "@/hooks/google-login";
@@ -18,7 +18,7 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
   const { getToken } = useContext(GoogleOAuthTokenContext);
   const [isLoading, setIsLoading] = useState(false);
   const { authenticate } = useGoogleLogin();
-
+  const isFetching = useRef(false);
   const fetchCalendarOptions = useCallback(async () => {
 
     console.log('fetching calendarList...');
@@ -69,6 +69,8 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
   }, [authenticate, getToken]);
 
   const loadCalendarOptions = useCallback(() => {
+    if (isFetching.current) return;
+    isFetching.current = true;
     setIsLoading(true);
 
     const doLoadOptions = async () => {
@@ -76,9 +78,8 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
         const options = await fetchCalendarOptions();
         console.log(`Loaded ${options.length} calendar options. refreshing list...`);
         setCalendarOptions(options);
-      } catch (error) {
-        console.error('Error fetching calendar list:', error);
       } finally {
+        isFetching.current = false;
         setIsLoading(false);
       }
     };
@@ -87,7 +88,6 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
   }, [fetchCalendarOptions]);
 
   useEffect(() => {
-    if (isLoading) return;
     if (calendarOptions.length > 0) return;
     loadCalendarOptions();
   }, [loadCalendarOptions]);
