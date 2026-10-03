@@ -10,7 +10,6 @@ import OnboardingPage from '@/components/pages/OnboardingPage';
 import CapturePage from '@/components/pages/CapturePage';
 import AnalysisPage from '@/components/pages/AnalysisPage';
 import ConfirmPage from '@/components/pages/ConfirmPage';
-import FinishedPage from '@/components/pages/FinishedPage';
 import SettingsPage from '@/components/pages/SettingsPage';
 import HelpPage from '@/components/pages/HelpPage';
 import AboutPage from '@/components/pages/AboutPage';
