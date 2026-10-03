@@ -19,8 +19,8 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
   const [isLoading, setIsLoading] = useState(false);
   const { authenticate } = useGoogleLogin();
 
-  const getCalendarOptions = useCallback(async () => {
-    
+  const fetchCalendarOptions = useCallback(async () => {
+
     console.log('fetching calendarList...');
     const doFetch = async (token: string) => fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
       headers: {
@@ -73,7 +73,7 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
 
     const doLoadOptions = async () => {
       try {
-        const options = await getCalendarOptions();
+        const options = await fetchCalendarOptions();
         console.log(`Loaded ${options.length} calendar options. refreshing list...`);
         setCalendarOptions(options);
       } catch (error) {
@@ -84,9 +84,10 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
     };
 
     void doLoadOptions();
-  }, [getCalendarOptions]);
+  }, [fetchCalendarOptions]);
 
   useEffect(() => {
+    if (isLoading) return;
     if (calendarOptions.length > 0) return;
     loadCalendarOptions();
   }, [loadCalendarOptions]);
