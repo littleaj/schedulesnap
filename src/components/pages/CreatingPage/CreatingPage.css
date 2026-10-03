@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:FILL@1');
+
+.creating-page {
+	display: grid;
+	place-items: center;
+	padding: 0.5rem 1rem;
+}
+
+.creating-card {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.creating-card h1 {
+	margin: 0.8rem 0 0;
+	font-size: clamp(2rem, 5vw, 2.9rem);
+	line-height: 1.1;
+	letter-spacing: -0.05em;
+	color: var(--md-on-surface);
+}
+
+.creating-card__progress {
+	margin-top: 1.5rem;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 0.8rem;
+	align-items: center;
+}
+
+.creating-card__progress progress {
+	width: 100%;
+	height: 0.85rem;
+}
+
+.creating-card__success {
+	margin: 1.4rem 0 0;
+	color: var(--md-primary);
+	font-weight: 700;
+}
+
+.creating-card__event-list {
+	margin: 1rem 0 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 0.65rem;
+}
+
+.creating-card__event {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+	color: var(--md-on-surface);
+}
+
+.creating-card__event-icon {
+	font-family: 'Material Symbols Rounded', sans-serif;
+	font-size: 1.2rem;
+	line-height: 1;
+}
+
+.creating-card__event--success .creating-card__event-icon {
+	color: var(--md-success);
+}
+
+.creating-card__event--failed .creating-card__event-icon {
+	color: var(--md-error);
+}
+
+.creating-card__actions {
+	margin-top: 1.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.8rem;
+}
+
+.creating-card__empty {
+  display: grid;
+	margin-top: 1.5rem;
+}
