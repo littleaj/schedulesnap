@@ -14,7 +14,7 @@ import FinishedPage from '@/components/pages/FinishedPage';
 import SettingsPage from '@/components/pages/SettingsPage';
 import HelpPage from '@/components/pages/HelpPage';
 import AboutPage from '@/components/pages/AboutPage';
-import { BrowserRouter, Route, Routes, useNavigate, Outlet, useLocation } from 'react-router';
+import { BrowserRouter, Route, Routes, useNavigate, Outlet, useLocation, Navigate } from 'react-router';
 import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
 import { getAnalysisFlowResumeTarget } from '@/services/analysis-flow';
 import type { AnalysisFlowResumeTarget } from '@/types/schedule-analysis';
@@ -39,7 +39,7 @@ const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: ResumeProgress
       return;
     }
 
-    navigate(resumeTarget.route, { replace: true });
+    void navigate(resumeTarget.route, { replace: true });
     onResumeHandled();
   };
 
@@ -49,7 +49,7 @@ const ResumeProgressWrapper = ({ resumeTarget, onResumeHandled }: ResumeProgress
     }
 
     clearAnalysisFlowCache(user.uid);
-    navigate('/capture', { replace: true });
+    void navigate('/capture', { replace: true });
     onResumeHandled();
   };
 
@@ -122,7 +122,7 @@ export const App = () => {
                 <Route path="/analyze" element={<AnalysisPage />} />
                 <Route path="/confirm" element={<ConfirmPage />} />
                 <Route path="/creating" element={<CreatingPage />} />
-                <Route path="/finished" element={<FinishedPage />} />
+                <Route path="/finished" element={<Navigate to="/capture" replace />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/onboarding" element={<OnboardingPage />} />
               </Route>
