@@ -13,6 +13,7 @@ import {
   saveUserProfile,
 } from '@/services/user-profile';
 import { Card } from '@/components/atoms/Card';
+import CalendarSelect from '@/components/molecules/CalendarSelect';
 
 interface ProfileFormProps {
   heading: string;
@@ -25,41 +26,10 @@ const getTimeZoneOptions = () => {
   return Intl.supportedValuesOf('timeZone').map((tz) => ({ value: tz, label: tz }));
 };
 
-interface CalendarOption {
-  value: string;
-  label: string;
-}
-
-const getCalendarOptions = async (token: string) => {
-  try {
-    const response = await fetch('https://www.googleapis.com/calendar/v3/users/me/calendarList', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch calendar list: ${response.statusText}`);
-    }
-
-    // TODO: cache this response in local storage.
-    // TODO: add a refresh button next to the calendar select input.
-    const data = await response.json();
-
-    return data.items.map((calendar: any) => ({ value: calendar.id, label: calendar.summary })) as CalendarOption[];
-  } catch (error) {
-    console.error('Error fetching calendar list:', error);
-    return [{ value: 'primary', label: 'Primary' }];
-  }
-};
-
 const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileFormProps) => {
   const firestore = useFirestore();
   const user = useCurrentUser();
-  const [calendarOptions, setCalendarOptions] = useState<CalendarOption[]>([{ value: 'primary', label: 'Primary' }]);
   const timezoneOptions = getTimeZoneOptions();
-  const { getToken } = useContext(GoogleOAuthTokenContext);
-  const [initializing, setInitializing] = useState(true);
 
   const [values, setValues] = useState<UserProfile>(() =>
     buildDefaultUserProfile(Intl.DateTimeFormat().resolvedOptions().timeZone, user?.displayName ?? null),
@@ -93,27 +63,6 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
   };
 
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      setInitializing(false);
-      return;
-    }
-
-    const doFetch = async () => {
-      try {
-        const options = await getCalendarOptions(token);
-        setCalendarOptions(options);
-      } catch (error) {
-        console.error('Error fetching calendar list:', error);
-      } finally {
-        setInitializing(false);
-      }
-    };
-
-    void doFetch();
-  }, [getToken]);
-
-  useEffect(() => {
     const loadProfile = async () => {
       const uid = user?.uid;
       if (!uid) {
@@ -124,6 +73,7 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
 
       try {
         const existingProfile = await getUserProfile(firestore, uid);
+        // TODO: this is probably redundant since the default profile is also built in the state initializer.
         const defaultProfile = buildDefaultUserProfile(
           Intl.DateTimeFormat().resolvedOptions().timeZone,
           user?.displayName ?? null,
@@ -193,10 +143,6 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
     submitButtonLabel = 'Saving...';
   }
 
-  if (initializing) {
-    return <p>Initializing...</p>;
-  }
-
   return (
     <Card element={<section />} className="profile-form" aria-labelledby="profile-form-heading">
       <header className="profile-form__header">
@@ -223,12 +169,10 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
           error={errors.timezone}
         />
 
-        <LabeledSelect
+        <CalendarSelect
           id="default-calendar"
-          label="Default calendar"
-          value={values.defaultCalendarId}
-          options={calendarOptions}
-          onChange={(event) => setDefaultCalendarId(event.target.value)}
+          defaultValue={values.defaultCalendarId}
+          onChange={(value) => setDefaultCalendarId(value)}
           error={errors.defaultCalendarId}
         />
       </div>
