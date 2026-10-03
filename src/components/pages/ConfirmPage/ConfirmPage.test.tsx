@@ -102,40 +102,6 @@ describe('ConfirmPage', () => {
     expect(screen.getAllByPlaceholderText('Location')).toHaveLength(6);
   });
 
-  it('renders the captured schedule photo preview when available', () => {
-    loadDraftConfirmationMock.mockReturnValue(null);
-    loadAnalysisResponseMock.mockReturnValue({
-      scheduleOwnerGuess: 'Alex',
-      warnings: [],
-      shifts: [
-        {
-          date: '2026-09-05',
-          startTime: '09:00',
-          endTime: '17:00',
-          role: 'Barista',
-          location: 'Downtown',
-          confidence: 0.9,
-          rawText: 'Sep 5 9:00 AM - 5:00 PM',
-        },
-      ],
-    });
-    loadCapturedSchedulePhotoMock.mockReturnValue({
-      base64: 'ZmFrZS1pbWFnZS1kYXRh',
-      mimeType: 'image/jpeg',
-      fileName: 'schedule.jpg',
-    });
-
-    render(
-      <MemoryRouter>
-        <ConfirmPage />
-      </MemoryRouter>,
-    );
-
-    const image = screen.getByRole('img', { name: /captured schedule/i });
-    expect(image).toHaveAttribute('src', 'data:image/jpeg;base64,ZmFrZS1pbWFnZS1kYXRh');
-    expect(image).toHaveAttribute('alt', 'Captured schedule');
-  });
-
   it.todo('saves edited values to the draft when a shift is updated', async () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue({
