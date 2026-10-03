@@ -14,7 +14,7 @@ import {
 import { Card } from '@/components/atoms/Card';
 import CalendarSelect from '@/components/molecules/CalendarSelect';
 
-interface ProfileFormProps {
+export interface ProfileFormProps {
   heading: string;
   subheading: string;
   submitLabel: string;
