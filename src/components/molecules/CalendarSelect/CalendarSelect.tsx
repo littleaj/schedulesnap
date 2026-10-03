@@ -5,8 +5,6 @@ import { useGoogleLogin } from "@/hooks/google-login";
 import { sleep } from "@/utils/misc";
 import RefreshIcon from "@/icons/RefreshIcon";
 import "./CalendarSelect.css";
-import LoadingSpinner from "@/components/atoms/LoadingSpinner";
-
 interface CalendarSelectProps {
   id: string;
   defaultValue: string;
