@@ -1,3 +1,4 @@
+import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import CalendarSelect from './CalendarSelect';
@@ -82,6 +83,39 @@ describe('CalendarSelect', () => {
 
 		await waitFor(() => {
 			expect(screen.getByRole('option', { name: 'Primary' })).toBeInTheDocument();
+		});
+	});
+
+	it('does not issue duplicate requests while one is already in flight', async () => {
+		const fetchMock = vi.fn(async () => ({
+			ok: true,
+			status: 200,
+			statusText: 'OK',
+			json: async () => ({
+				items: [{ id: 'primary', summary: 'Primary' }],
+			}),
+		}));
+		const token = 'valid-token';
+
+		vi.stubGlobal('fetch', fetchMock);
+
+		render(
+			<React.StrictMode>
+				<GoogleOAuthTokenContext.Provider
+					value={{
+						getToken: () => token,
+						getTokenExpiresAt: () => null,
+						setToken: () => undefined,
+						setTokenExpiresAt: () => undefined,
+					}}
+				>
+					<CalendarSelect id="default-calendar" defaultValue="" onChange={() => undefined} />
+				</GoogleOAuthTokenContext.Provider>
+			</React.StrictMode>
+		);
+
+		await waitFor(() => {
+			expect(fetchMock).toHaveBeenCalledTimes(1);
 		});
 	});
 });
