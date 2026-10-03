@@ -1,4 +1,9 @@
 /* This file is intentionally left blank. */
+:root {
+  /* TODO: create light-dark themes */
+  color-scheme: only light;
+}
+
 body {
   min-height: 100svh;
   margin: 0;
