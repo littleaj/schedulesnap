@@ -174,6 +174,7 @@ export const saveDraftConfirmation = (uid: string, draft: DraftConfirmation) => 
 
 export const loadDraftConfirmation = (uid: string): DraftConfirmation | null => {
   if (!canUseLocalStorage()) {
+    // TODO: this should be an error
     return null;
   }
 
@@ -192,6 +193,7 @@ export const loadDraftConfirmation = (uid: string): DraftConfirmation | null => 
 
 export const clearAnalysisFlowCache = (uid: string) => {
   if (!canUseLocalStorage()) {
+    // TODO: this should be an error
     return;
   }
 
