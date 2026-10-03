@@ -58,7 +58,7 @@ const ConfirmPage = () => {
       viewTransition: true,
       state: {
         create: true,
-        createRunId: crypto?.randomUUID() ?? `${Date.now()}`,
+        createRunId: crypto?.randomUUID?.() ?? `${Date.now()}`,
       },
     });
   };
