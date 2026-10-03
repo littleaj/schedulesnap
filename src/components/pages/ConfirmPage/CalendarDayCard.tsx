@@ -17,38 +17,51 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
           {day.shifts.map((shift) => (
             <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}>
               <div className="confirm-card__time-row">
+                <label htmlFor={`start-time-${shift.id}`}>Start</label>
                 <EditableText
+                  id={`start-time-${shift.id}`}
                   value={shift.startTime}
                   placeholder="Start time"
                   ariaLabel={`${day.weekday} start time`}
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
                   type="time"
                 />
-                <span className="confirm-card__time-separator" aria-hidden="true">
-                  –
-                </span>
+
+              </div>
+              <div className="confirm-card__time-row">
+                <label htmlFor={`end-time-${shift.id}`}>End</label>
                 <EditableText
+                  id={`end-time-${shift.id}`}
                   value={shift.endTime}
                   placeholder="End time"
                   ariaLabel={`${day.weekday} end time`}
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
                   type="time"
                 />
+
               </div>
 
-              <EditableText
-                value={shift.eventName ?? shift.role ?? ''}
-                placeholder="Event name"
-                ariaLabel={`${day.weekday} event name`}
-                onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
-              />
+              <div>
+                <label htmlFor={`event-name-${shift.id}`}>Event Name</label>
+                <EditableText
+                  id={`event-name-${shift.id}`}
+                  value={shift.eventName ?? shift.role ?? ''}
+                  placeholder="Event name"
+                  ariaLabel={`${day.weekday} event name`}
+                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
+                />
+              </div>
 
-              <EditableText
-                value={shift.location ?? ''}
-                placeholder="Location"
-                ariaLabel={`${day.weekday} location`}
-                onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
-              />
+              <div>
+                <label htmlFor={`location-${shift.id}`}>Location</label>
+                <EditableText
+                  id={`location-${shift.id}`}
+                  value={shift.location ?? ''}
+                  placeholder="Location"
+                  ariaLabel={`${day.weekday} location`}
+                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
+                />
+              </div>
             </div>
           ))}
         </div>
