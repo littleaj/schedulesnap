@@ -1,0 +1,48 @@
+.error-boundary {
+  display: grid;
+  place-items: center;
+  min-block-size: 100svh;
+
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin-inline: auto;
+    padding: 2rem;
+    border-radius: 24px;
+    box-shadow: 2px 4px 6px var(--md-shadow);
+    background-color: var(--md-error-container);
+    color: var(--md-on-error-container);
+  }
+
+  h1 {
+    place-self: center;
+    text-align: center;
+  }
+
+  h1, p {
+    margin-bottom: 1em;
+  }
+
+  button {
+    --_bg-color: var(--md-primary);
+    background-color: var(--_bg-color);
+    color: var(--md-on-primary);
+    border-radius: 100vmax;
+    padding-inline: 1rem;
+    padding-block: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: 0.0625em;
+
+    place-self: center;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      --_hover-bg-color: color-mix(in oklab, var(--_bg-color) 50%, black 50%);
+      background-color: var(--_hover-bg-color);
+    }
+  }
+}
