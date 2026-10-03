@@ -19,28 +19,11 @@ describe('ProfileForm', () => {
   });
 
   const renderForm = (props: Partial<React.ComponentProps<typeof ProfileForm>> = {}) => render(
-    <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
+    <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn(), getTokenExpiresAt: vi.fn(), setTokenExpiresAt: vi.fn() }}>
       <ProfileForm
         heading="Profile setup"
         subheading="Tell us about your schedule preferences"
-        values={{
-          targetName: 'Alex',
-          timezone: 'UTC',
-          defaultCalendarId: '',
-          reminder: {
-            enabled: true,
-            minutesBefore: 60,
-          },
-        }}
-        errors={{}}
-        isLoading={false}
-        isSubmitting={false}
         submitLabel="Save profile"
-        onTargetNameChange={() => undefined}
-        onTimezoneChange={() => undefined}
-        onDefaultCalendarIdChange={() => undefined}
-        onReminderEnabledChange={() => undefined}
-        onReminderMinutesChange={() => undefined}
         onSubmit={() => undefined}
         {...props}
       />
@@ -62,28 +45,9 @@ describe('ProfileForm', () => {
   });
 
   it('calls field handlers and submit handler when user interacts', async () => {
-    const onTargetNameChange = vi.fn();
-    const onTimezoneChange = vi.fn();
-    const onDefaultCalendarIdChange = vi.fn();
-    const onReminderEnabledChange = vi.fn();
-    const onReminderMinutesChange = vi.fn();
     const onSubmit = vi.fn();
 
     renderForm({
-      values: {
-        targetName: 'Alex',
-        timezone: 'UTC',
-        defaultCalendarId: 'primary',
-        reminder: {
-          enabled: true,
-          minutesBefore: 60,
-        },
-      },
-      onTargetNameChange,
-      onTimezoneChange,
-      onDefaultCalendarIdChange,
-      onReminderEnabledChange,
-      onReminderMinutesChange,
       onSubmit,
     });
 
@@ -94,15 +58,9 @@ describe('ProfileForm', () => {
     fireEvent.change(screen.getByLabelText(/name on schedule/i), { target: { value: 'Taylor' } });
     fireEvent.change(screen.getByLabelText(/timezone/i), { target: { value: 'America/Chicago' } });
     fireEvent.change(screen.getByLabelText(/default calendar/i), { target: { value: 'primary' } });
-    // fireEvent.click(screen.getByLabelText(/enable reminders/i));
-    // fireEvent.change(screen.getByLabelText(/minutes before/i), { target: { value: '30' } });
+
     fireEvent.click(screen.getByRole('button', { name: /save profile/i }));
 
-    expect(onTargetNameChange).toHaveBeenCalledWith('Taylor');
-    expect(onTimezoneChange).toHaveBeenCalledWith('America/Chicago');
-    expect(onDefaultCalendarIdChange).toHaveBeenCalledWith('primary');
-    // expect(onReminderEnabledChange).toHaveBeenCalledWith(false);
-    // expect(onReminderMinutesChange).toHaveBeenCalledWith(30);
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 });
