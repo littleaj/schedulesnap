@@ -198,7 +198,7 @@ describe('ConfirmPage', () => {
     }));
 
     render(
-      <GoogleOAuthTokenContext.Provider value={{ getToken, setToken: vi.fn() }}>
+      <GoogleOAuthTokenContext.Provider value={{ getToken, setToken: vi.fn(), getTokenExpiresAt: vi.fn(), setTokenExpiresAt: vi.fn() }}>
         <MemoryRouter>
           <ConfirmPage />
         </MemoryRouter>

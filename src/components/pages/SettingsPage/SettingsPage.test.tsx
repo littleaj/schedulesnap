@@ -34,7 +34,7 @@ describe('SettingsPage', () => {
   });
 
   const renderPage = () => render(
-    <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn() }}>
+    <GoogleOAuthTokenContext.Provider value={{ getToken: () => 'fake-token', setToken: vi.fn(), getTokenExpiresAt: vi.fn(), setTokenExpiresAt: vi.fn() }}>
       <SettingsPage />
     </GoogleOAuthTokenContext.Provider>
   );
