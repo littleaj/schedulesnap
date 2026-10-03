@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
 import LabeledInput from '@/components/atoms/LabeledInput';
 import LabeledSelect from '@/components/atoms/LabeledSelect';
 import type { UserProfile, UserProfileValidationErrors } from '@/types/user-profile';
 import './ProfileForm.css';
-import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import { useFirestore } from '@/hooks/firebase';
 import useCurrentUser from '@/hooks/current-user';
 import {
