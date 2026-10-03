@@ -38,3 +38,7 @@ select option:checked {
 select option:checked {
   font-weight: 700;
 }
+
+input {
+  font-size: 1rem;
+}
