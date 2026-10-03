@@ -219,11 +219,6 @@
   color: var(--md-on-surface);
 }
 
-.confirm-card__time-separator {
-  color: var(--md-on-surface-variant);
-  font-weight: 700;
-}
-
 .confirm-card__cell-role,
 .confirm-card__cell-location {
   margin: 0;
