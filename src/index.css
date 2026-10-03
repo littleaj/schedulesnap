@@ -28,3 +28,13 @@ a {
   }
 
 }
+
+input::selection,
+select option:checked {
+  background-color: var(--md-primary-fixed);
+  color: var(--md-on-primary-fixed);
+}
+
+select option:checked {
+  font-weight: 700;
+}
