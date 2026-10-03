@@ -53,8 +53,8 @@ const ConfirmPage = () => {
   const capturedPhoto = useMemo(() => loadCapturedSchedulePhoto(uid), [uid]);
   const capturedPhotoDataUrl = capturedPhoto ? `data:${capturedPhoto.mimeType};base64,${capturedPhoto.base64}` : null;
 
-  const shifts = (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
-    .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location);
+  const shifts = useMemo(() => (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
+    .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location), [draftConfirmation, analysisResponse]);
 
   const weekDays = useMemo(() => (shifts.length > 0 ? buildWeekDays(shifts) : []), [shifts]);
 
@@ -67,12 +67,14 @@ const ConfirmPage = () => {
   }, [weekDays]);
 
   const handleCreateEvents = async () => {
-    if (!draftConfirmation) {
+    const confirmedDraft = loadDraftConfirmation(uid);
+    if (!confirmedDraft) {
       console.error("No draft confirmation available, cannot create events.");
       return;
     }
-    const calendarId = draftConfirmation.selectedCalendarId || 'primary';
-    const eventsToCreate = weekDays.flatMap((day) => day.shifts
+    const calendarId = confirmedDraft.selectedCalendarId || 'primary';
+    const confirmedWeekDays = buildWeekDays(confirmedDraft.shifts);
+    const eventsToCreate = confirmedWeekDays.flatMap((day) => day.shifts
       .filter((shift) => !shift.isPlaceholder && shift.date && shift.startTime && shift.endTime)
       .map((element) => editableShift2GoogleCalendarEvent(element)))
       .filter((event): event is NonNullable<typeof event> => event !== null);
