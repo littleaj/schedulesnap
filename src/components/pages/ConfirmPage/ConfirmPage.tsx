@@ -1,36 +1,25 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import {
   clearAnalysisFlowCache,
   loadAnalysisResponse,
-  loadCapturedSchedulePhoto,
   loadDraftConfirmation,
   saveDraftConfirmation
 } from '@/services/schedule-analysis';
 import './ConfirmPage.css';
-import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
-import { useGoogleLogin } from '@/hooks/google-login';
 import type { WeekDay } from '@/types/shift-display';
-import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import { convertTo24Hour } from '@/utils/time-utils';
 import { buildWeekDays } from './utils/weekdays';
 import useCurrentUser from '@/hooks/current-user';
 import { useUserProfile } from '@/hooks/user-profile';
-import PhotoPanel from '@/components/atoms/PhotoPanel/PhotoPanel';
-import { editableShift2GoogleCalendarEvent } from '@/utils/mappers';
 import { Card } from '@/components/atoms/Card';
-import gcalapi from '@/services/google-calendar';
-import { sleep } from '@/utils/misc';
 import CalendarWeekList from './CalendarWeekList';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import PageContent from '@/components/templates/PageContent';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { getToken } = useContext(GoogleOAuthTokenContext);
-  const { authenticate } = useGoogleLogin();
   const user = useCurrentUser();
   const profile = useUserProfile();
 
@@ -50,9 +39,6 @@ const ConfirmPage = () => {
     console.log('No analysis response found');
   }
 
-  const capturedPhoto = useMemo(() => loadCapturedSchedulePhoto(uid), [uid]);
-  const capturedPhotoDataUrl = capturedPhoto ? `data:${capturedPhoto.mimeType};base64,${capturedPhoto.base64}` : null;
-
   const shifts = useMemo(() => (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
     .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location), [draftConfirmation, analysisResponse]);
 
@@ -66,67 +52,15 @@ const ConfirmPage = () => {
     return weekDays.some((day) => day.shifts.some((shift) => shift.startTime || shift.endTime || shift.eventName || shift.location));
   }, [weekDays]);
 
-  const handleCreateEvents = async () => {
-    const confirmedDraft = loadDraftConfirmation(uid);
-    if (!confirmedDraft) {
-      console.error("No draft confirmation available, cannot create events.");
-      return;
-    }
-    const calendarId = confirmedDraft.selectedCalendarId || 'primary';
-    const confirmedWeekDays = buildWeekDays(confirmedDraft.shifts);
-    const eventsToCreate = confirmedWeekDays.flatMap((day) => day.shifts
-      .filter((shift) => !shift.isPlaceholder && shift.date && shift.startTime && shift.endTime)
-      .map((element) => editableShift2GoogleCalendarEvent(element)))
-      .filter((event): event is NonNullable<typeof event> => event !== null);
-
-    console.log('Number of events to create:', eventsToCreate.length);
-
-    let accessToken = getToken();
-    if (!accessToken) {
-      console.log('No access token found, initiating authentication...');
-      await authenticate();
-      await sleep(250);
-      accessToken = getToken();
-      if (!accessToken) {
-        throw new Error('Failed to obtain access token after authentication');
-      }
-    }
-
-    const createEventRequest = async (eventBody: GoogleCalendarEvent, accessToken: string) => {
-      console.log(`Creating event in ${calendarId} calendar: `, eventBody.summary, eventBody.start.dateTime);
-      const response = await gcalapi.withAccessToken(accessToken).createEvent(calendarId, eventBody);
-
-      if (response.status === 401) {
-        // Unauthorized: Google OAuth token may have expired
-        await authenticate();
-        const newToken = getToken();
-        if (!newToken) {
-          throw new Error('Failed to obtain access token after authentication');
-        }
-        return await gcalapi.withAccessToken(newToken).createEvent(calendarId, eventBody);
-      }
-
-      return response;
-    };
-
-
-    let hasSuccess = false;
-    const eventRequests = [];
-    for (const event of eventsToCreate) {
-      const request = createEventRequest(event, accessToken);
-      eventRequests.push(request);
-    }
-    const responses = await Promise.all(eventRequests);
-    hasSuccess = responses.some(response => response.ok);
-
-    // TODO: Show loading indicator while creating events
-    // TODO: Handle the case where none of the events were successfully created.
-    // TODO: Handle the case where some events failed to be created.
-
-    if (hasSuccess) {
-      clearAnalysisFlowCache(user?.uid);
-      void navigate('/finished', { replace: true, viewTransition: true });
-    }
+  const handleCreateEvents = () => {
+    void navigate('/creating', {
+      replace: true,
+      viewTransition: true,
+      state: {
+        create: true,
+        createRunId: crypto?.randomUUID() ?? `${Date.now()}`,
+      },
+    });
   };
 
   const saveShifts = useCallback((shifts: ScheduleAnalysisShift[]) => {
@@ -195,7 +129,7 @@ const ConfirmPage = () => {
         )}
 
         <div className="confirm-card__actions">
-          <ActionButton variant="primary" onClick={() => { void handleCreateEvents(); }} disabled={!hasEditableShift}>
+          <ActionButton variant="primary" onClick={handleCreateEvents} disabled={!hasEditableShift}>
             Create Events
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
