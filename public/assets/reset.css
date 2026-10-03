@@ -1,3 +1,84 @@
-* {
+:root {
+  --p-max-inline-size: 75ch;
+}
+
+*, *::before, *::after {
   box-sizing: border-box;
+}
+
+*:not(dialog) {
+  margin: 0;
+}
+
+* {
+  padding: 0;
+  font-family: inherit;
+}
+
+html {
+  hanging-punctuation: first last;
+  scrollbar-gutter: stable;
+
+  text-size-adjust: none;
+
+  color-scheme: dark light;
+}
+
+body {
+  min-block-size: 100vh;
+  min-block-size: 100svh;
+
+  font-family: system-ui, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+h1, h2, h3 {
+  line-height: 1.1;
+}
+
+p {
+  max-inline-size: var(--p-max-inline-size);
+  text-wrap: pretty;
+}
+
+img {
+  font-style: italic;
+}
+
+img,
+picture,
+video,
+svg,
+canvas {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  shape-margin: 1rem;
+}
+
+:has(:target) {
+  scroll-padding-top: 3rem;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+
+  :has(:target) {
+    scroll-behavior: smooth;
+  }
 }
