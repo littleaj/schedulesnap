@@ -13,6 +13,7 @@ import './CreatingPage.css';
 import type { EventStatus, QueuedEventItem } from './types';
 import useDraftEvents from './hooks/draft-events';
 import EventCreationStatusList from './EventCreationStatusList';
+import CreationProgressBar from './CreationProgressBar';
 
 const inFlightBatchKeys = new Set<string>();
 
@@ -239,14 +240,7 @@ const CreatingPage = () => {
           </div>
         ) : (
           <>
-            {isFinished ? (
-              <output className="creating-card__success">Creation complete</output>
-            ) : (
-              <div className="creating-card__progress">
-                <progress max={100} value={progressPercent} aria-label="Creation progress" />
-                <span>{progressPercent}%</span>
-              </div>
-            )}
+            <CreationProgressBar percent={progressPercent} isFinished={isFinished} />
 
             <EventCreationStatusList items={items} />
 
