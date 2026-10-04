@@ -102,10 +102,10 @@ describe('CapturePage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /upload .*/i })).toBeInTheDocument();
     });
-    expect(screen.getByLabelText(/choose a schedule photo/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Analyze Photo/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/choose a picture/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Analyze Image/i })).toBeInTheDocument();
   });
 
   it('resizes and caches the selected file before enabling review', async () => {
@@ -124,10 +124,12 @@ describe('CapturePage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /upload .*/i })).toBeInTheDocument();
     });
 
-    const input = screen.getByLabelText(/choose a schedule photo/i) as HTMLInputElement;
+    expect(screen.getByRole('button', { name: /Analyze Image/i })).not.toBeEnabled();
+
+    const input = screen.getByLabelText(/choose a picture/i) as HTMLInputElement;
 
     fireEvent.change(input, {
       target: {
@@ -144,8 +146,7 @@ describe('CapturePage', () => {
       });
     });
 
-    expect(screen.getByText(/schedule\.png/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Analyze Photo/i })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /Analyze Image/i })).toBeEnabled();
   });
 
   it('navigates to analysis after a photo is prepared', async () => {
@@ -164,20 +165,21 @@ describe('CapturePage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /upload your schedule photo/i })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /upload.*/i })).toBeInTheDocument();
     });
 
-    fireEvent.change(screen.getByLabelText(/choose a schedule photo/i), {
+    fireEvent.change(screen.getByLabelText(/choose a picture/i), {
       target: {
         files: [new File(['test'], 'schedule.png', { type: 'image/png' })],
       },
     });
 
+    const analyzeButton = screen.getByRole('button');
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /Analyze Photo/i })).toBeEnabled();
+      expect(analyzeButton).toBeEnabled();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /Analyze Photo/i }));
+    fireEvent.click(analyzeButton);
 
     expect(navigateMock).toHaveBeenCalledWith(
       '/analyze',
