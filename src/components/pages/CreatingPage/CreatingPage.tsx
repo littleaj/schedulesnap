@@ -237,7 +237,7 @@ const CreatingPage = () => {
       runningRef.current = false;
       inFlightBatchKeys.delete(batchKey);
     }
-  }, [authenticate, createOneItem, finalizeSuccess, getToken, items, markStatus, resolveToken, runUntilUnauthorized, stopWithAuthFailure]);
+  }, [authenticate, autoRunKey, createOneItem, finalizeSuccess, getToken, items, markStatus, resolveToken, runUntilUnauthorized, stopWithAuthFailure]);
 
   useEffect(() => {
     if (!location.state?.create || items.length === 0 || hasAttempted || autoStartAttemptedRef.current) {
