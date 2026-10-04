@@ -3,8 +3,40 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import ProfileForm from './ProfileForm';
 
+const { getUserProfileMock, saveUserProfileMock, useCurrentUserMock, useFirestoreMock } = vi.hoisted(() => ({
+  getUserProfileMock: vi.fn(),
+  saveUserProfileMock: vi.fn(),
+  useCurrentUserMock: vi.fn(),
+  useFirestoreMock: vi.fn(),
+}));
+
+vi.mock('@/hooks/firebase', () => ({
+  useAuth: () => ({ currentUser: { uid: 'fake-user-id' } }),
+  useFirestore: () => useFirestoreMock(),
+  useAnalytics: () => undefined,
+}));
+
+vi.mock('@/hooks/current-user', () => ({
+  default: () => useCurrentUserMock(),
+}));
+
+vi.mock('@/services/user-profile', () => ({
+  buildDefaultUserProfile: (timezone = 'UTC', displayName: string | null = null, calendarId = 'primary') => ({
+    targetName: typeof displayName === 'string' ? (displayName.split(' ')[0] ?? '') : '',
+    timezone,
+    defaultCalendarId: calendarId,
+    reminder: {
+      enabled: false,
+      minutesBefore: 30,
+    },
+  }),
+  getUserProfile: getUserProfileMock,
+  saveUserProfile: saveUserProfileMock,
+}));
+
 describe('ProfileForm', () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue({
@@ -12,6 +44,10 @@ describe('ProfileForm', () => {
         json: async () => ({ items: [{ id: 'primary', summary: 'Primary' }] }),
       }),
     );
+    useCurrentUserMock.mockReturnValue({ uid: 'fake-user-id', displayName: 'Taylor' });
+    useFirestoreMock.mockReturnValue({});
+    getUserProfileMock.mockResolvedValue(null);
+    saveUserProfileMock.mockImplementation(async (_firestore, _uid, profile) => profile);
   });
 
   afterEach(() => {
@@ -61,6 +97,9 @@ describe('ProfileForm', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /save profile/i }));
 
-    expect(onSubmit).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(saveUserProfileMock).toHaveBeenCalledTimes(1);
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+    });
   });
 });
