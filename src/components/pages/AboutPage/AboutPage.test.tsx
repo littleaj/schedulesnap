@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import AboutPage from './AboutPage';
 
 describe('AboutPage', () => {
-  it('renders the story, tech stack, and support link', () => {
+  it('renders the about page', () => {
     render(
       <MemoryRouter>
         <AboutPage />
