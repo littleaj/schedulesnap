@@ -14,6 +14,7 @@ import PageContent from '@/components/templates/PageContent';
 import './CreatingPage.css';
 import type { EventStatus, QueuedEventItem } from './types';
 import useDraftEvents from './hooks/draft-events';
+import EventCreationStatusList from './EventCreationStatusList';
 
 const inFlightBatchKeys = new Set<string>();
 
@@ -255,16 +256,7 @@ const CreatingPage = () => {
               </div>
             )}
 
-            <ul className="creating-card__event-list" aria-label="Pending event creations">
-              {items.map((item) => (
-                <li key={item.id} className={`creating-card__event creating-card__event--${item.status}`}>
-                  <span className="material-symbols-rounded creating-card__event-icon" aria-hidden="true">
-                    {iconByStatus[item.status]}
-                  </span>
-                  <span className="creating-card__event-title">{item.event.summary} @ {item.event.start.dateTime}</span>
-                </li>
-              ))}
-            </ul>
+            <EventCreationStatusList items={items} />
 
             {authError ? (
               <p className="creating-card__error" role="alert">{authError}</p>
