@@ -6,9 +6,7 @@ import { GoogleOAuthTokenContext } from '@/contexts/google-oauth';
 import { useGoogleLogin } from '@/hooks/google-login';
 import useCurrentUser from '@/hooks/current-user';
 import gcalapi from '@/services/google-calendar';
-import { clearAnalysisFlowCache, loadDraftConfirmation } from '@/services/schedule-analysis';
-import { editableShift2GoogleCalendarEvent } from '@/utils/mappers';
-import { buildWeekDays } from '@/components/pages/ConfirmPage/utils/weekdays';
+import { clearAnalysisFlowCache } from '@/services/schedule-analysis';
 import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import PageContent from '@/components/templates/PageContent';
 import './CreatingPage.css';
@@ -227,12 +225,6 @@ const CreatingPage = () => {
     autoStartAttemptedRef.current = true;
     void runCreation('all');
   }, [autoRunKey, hasAttempted, items.length, location.state, runCreation]);
-
-  const iconByStatus: Record<EventStatus, string> = {
-    pending: '\ue9d0',
-    success: '\ue86c',
-    failed: '\ue000',
-  };
 
   return (
     <PageContent className="creating-page">
