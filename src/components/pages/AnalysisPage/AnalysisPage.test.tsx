@@ -66,7 +66,7 @@ describe('AnalysisPage', () => {
     analyzeSchedulePhotoMock.mockResolvedValue({ warnings: [], shifts: [] });
 
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' }, analyze: true } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/analyze', state: { from: { pathname: '/capture' }, analyze: true } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
@@ -92,7 +92,7 @@ describe('AnalysisPage', () => {
     loadCapturedSchedulePhotoMock.mockReturnValue(null);
 
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' }, analyze: true } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/analyze', state: { from: { pathname: '/capture' }, analyze: true } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
@@ -122,7 +122,7 @@ describe('AnalysisPage', () => {
     analyzeSchedulePhotoMock.mockRejectedValue(new Error('boom'));
 
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' }, analyze: true } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/analyze', state: { from: { pathname: '/capture' }, analyze: true } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
