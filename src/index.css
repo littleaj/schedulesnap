@@ -9,6 +9,10 @@
   color-scheme: only light;
 }
 
+.material-symbols-outlined {
+  /* TODO */
+}
+
 body {
   min-height: 100svh;
   margin: 0;
