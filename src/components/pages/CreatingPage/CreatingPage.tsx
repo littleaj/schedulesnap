@@ -25,7 +25,6 @@ const CreatingPage = () => {
   const { authenticate } = useGoogleLogin();
 
   if (!user) {
-    // TODO: check other pages to see how they handle unauthenticated users
     throw new Error('User is not authenticated.');
   }
 
