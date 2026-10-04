@@ -12,14 +12,7 @@ import { buildWeekDays } from '@/components/pages/ConfirmPage/utils/weekdays';
 import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import PageContent from '@/components/templates/PageContent';
 import './CreatingPage.css';
-
-type EventStatus = 'pending' | 'success' | 'failed';
-
-interface QueuedEventItem {
-  id: string;
-  event: GoogleCalendarEvent;
-  status: EventStatus;
-}
+import type { EventStatus, QueuedEventItem } from './types';
 
 const inFlightBatchKeys = new Set<string>();
 
