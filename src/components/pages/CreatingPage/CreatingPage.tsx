@@ -13,6 +13,7 @@ import type { GoogleCalendarEvent } from '@/types/google-calendar';
 import PageContent from '@/components/templates/PageContent';
 import './CreatingPage.css';
 import type { EventStatus, QueuedEventItem } from './types';
+import useDraftEvents from './hooks/draft-events';
 
 const inFlightBatchKeys = new Set<string>();
 
@@ -29,21 +30,7 @@ const CreatingPage = () => {
   }
 
   const { uid } = user;
-  const draftConfirmation = useMemo(() => loadDraftConfirmation(uid), [uid]);
-  const calendarId = draftConfirmation?.selectedCalendarId ?? 'primary';
-  const sourceEvents = useMemo(() => {
-    if (!draftConfirmation) {
-      return [] as GoogleCalendarEvent[];
-    }
-
-    const weekDays = buildWeekDays(draftConfirmation.shifts);
-
-    return weekDays
-      .flatMap((day) => day.shifts)
-      .filter((shift) => !shift.isPlaceholder && shift.date && shift.startTime && shift.endTime)
-      .map((shift) => editableShift2GoogleCalendarEvent(shift))
-      .filter((event): event is NonNullable<typeof event> => event !== null);
-  }, [draftConfirmation]);
+  const { events: sourceEvents, calendarId } = useDraftEvents(uid);
 
   const autoRunKey = useMemo(() => {
     const runId = location.state?.createRunId ? location.state.createRunId : 'default';
