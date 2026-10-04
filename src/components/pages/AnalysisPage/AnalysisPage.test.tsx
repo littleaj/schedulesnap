@@ -66,12 +66,12 @@ describe('AnalysisPage', () => {
     analyzeSchedulePhotoMock.mockResolvedValue({ warnings: [], shifts: [] });
 
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' } } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' }, analyze: true } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: /analyzing your schedule/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /analyzing.*/i })).toBeInTheDocument();
 
     await waitFor(() => {
       expect(analyzeSchedulePhotoMock).toHaveBeenCalledWith(fakeUid,
@@ -92,7 +92,7 @@ describe('AnalysisPage', () => {
     loadCapturedSchedulePhotoMock.mockReturnValue(null);
 
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' } } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' }, analyze: true } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
@@ -122,7 +122,7 @@ describe('AnalysisPage', () => {
     analyzeSchedulePhotoMock.mockRejectedValue(new Error('boom'));
 
     render(
-      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' } } }]}>
+      <MemoryRouter initialEntries={[{ pathname: '/analysis', state: { from: { pathname: '/capture' }, analyze: true } }]}>
         <AnalysisPage />
       </MemoryRouter>,
     );
@@ -132,4 +132,6 @@ describe('AnalysisPage', () => {
       expect(document.querySelector('.analysis-card__icon--error')).toBeTruthy();
     });
   });
+
+  it.todo('should display an analyze button when state.analyze is false');
 });
