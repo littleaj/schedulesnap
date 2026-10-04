@@ -133,11 +133,12 @@ describe('CreatingPage', () => {
 
     renderPage({ create: true });
 
+    const link = screen.getByRole('link');
     await waitFor(() => {
-      expect(createEventMock).not.toHaveBeenCalled();
+      expect(link).toBeInTheDocument();
     });
 
-    const link = screen.getByRole('link');
+    expect(createEventMock).not.toHaveBeenCalled();
     expect(link).toHaveAttribute('href');
   });
 
