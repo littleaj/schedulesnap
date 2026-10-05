@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { UserMessageProvider } from './error';
-import useUserMessage from '@/hooks/error';
+import { UserMessageProvider } from './user-message';
+import useUserMessage from '@/hooks/user-message';
 
 const MessageTrigger = () => {
   const { showToast, showModal } = useUserMessage();
@@ -96,9 +96,13 @@ describe('UserMessageProvider', () => {
     expect(screen.getByRole('status')).toHaveTextContent('OAuth scope was declined.');
 
     act(() => {
-      vi.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(999);
     });
+    expect(screen.getByRole('status')).toBeInTheDocument();
 
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 

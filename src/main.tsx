@@ -8,7 +8,7 @@ import '@/styles/utils.css';
 import './index.css';
 import { CurrentUserProvider } from '@/contexts/current-user';
 import ErrorBoundary from '@/components/organisms/ErrorBoundary';
-import { UserMessageProvider } from '@/contexts/error';
+import { UserMessageProvider } from '@/contexts/user-message';
 const node = document.getElementById('root');
 if (!node) throw new Error('Root node not found!');
 
