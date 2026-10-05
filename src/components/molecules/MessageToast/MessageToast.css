@@ -19,21 +19,21 @@
 }
 
 .message-toast.warning {
-  border-color: var(--md-tertiary);
-  background: var(--md-tertiary-container);
-  color: var(--md-on-tertiary-container);
+  border-color: var(--md-warning);
+  background: var(--md-warning-container);
+  color: var(--md-on-warning-container);
 }
 
 .message-toast.success {
-  border-color: var(--md-primary);
-  background: var(--md-primary-container);
-  color: var(--md-on-primary-container);
+  border-color: var(--md-success);
+  background: var(--md-success-container);
+  color: var(--md-on-success-container);
 }
 
 .message-toast.information {
-  border-color: var(--md-secondary);
-  background: var(--md-secondary-container);
-  color: var(--md-on-secondary-container);
+  border-color: var(--md-tertiary);
+  background: var(--md-tertiary-container);
+  color: var(--md-on-tertiary-container);
 }
 
 .message-toast__content {
