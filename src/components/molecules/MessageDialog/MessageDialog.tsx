@@ -73,7 +73,6 @@ const MessageDialog = ({
       role="alertdialog"
       aria-modal="true"
       aria-labelledby={titleId}
-      aria-describedby={headingId}
     >
       <div className="message-dialog__title-bar">
         <strong className="message-dialog__title" id={titleId}>{title}</strong>
