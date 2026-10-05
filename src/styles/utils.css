@@ -10,4 +10,5 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--md-accent);
+  min-width: 100%;
 }
