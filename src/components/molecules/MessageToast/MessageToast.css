@@ -4,7 +4,7 @@
   bottom: 1rem;
   z-index: 60;
   max-width: min(32rem, calc(100% - 2rem));
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   border: 2px solid var(--md-outline);
   border-radius: 1rem;
   background: var(--md-surface-container-high);
@@ -38,7 +38,23 @@
 
 
 .message-toast__title-bar {
-  margin-bottom: 0.5rem;
+  display: flex;
+  margin-bottom: 0.125rem;
+}
+
+.message-toast__close {
+  margin-left: auto;
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 100%;
+  line-height: 1;
 }
 
 .message-toast__title {

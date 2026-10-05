@@ -18,11 +18,14 @@ const MessageToast = ({ title, content, variant, role = 'status' }: MessageToast
 
   return (
     <aside className={`message-toast ${variant}`} role={role} aria-live={liveRegionMode}>
-      {title ? (
-        <div className="message-toast__title-bar">
+      <div className="message-toast__title-bar">
+        {title ? (
           <strong className="message-toast__title">{title}</strong>
-        </div>
-      ) : null}
+        ) : null}
+        <button className="material-symbols-outlined message-toast__close" aria-label="close">
+          {'\ue5cd'}
+        </button>
+      </div>
       {typeof content === 'string' ? (
         <p className="message-toast__content">{content}</p>
       ) : (
