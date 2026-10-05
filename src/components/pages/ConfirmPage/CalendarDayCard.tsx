@@ -4,9 +4,11 @@ import type { WeekDay } from "@/types/shift-display";
 export interface CalendarDayCardProps {
   day: WeekDay;
   updateShiftField: (isoDate: string, shiftId: string, field: "startTime" | "endTime" | "eventName" | "location", value: React.InputHTMLAttributes<HTMLInputElement>['value']) => void;
+  onRemoveShift: (isoDate: string, shiftId: string) => void;
+  canRemoveShift: boolean;
 }
 
-const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
+const CalendarDayCard = ({ day, updateShiftField, onRemoveShift, canRemoveShift }: CalendarDayCardProps) => {
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
@@ -16,6 +18,19 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
         <div className="confirm-card__events">
           {day.shifts.map((shift) => (
             <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}>
+              {!shift.isPlaceholder ? (
+                <div className="confirm-card__event-actions">
+                  <button
+                    type="button"
+                    className="material-symbols-outlined confirm-card__remove-shift"
+                    aria-label={`Remove shift on ${day.weekday} ${day.monthDay}`}
+                    onClick={() => onRemoveShift(day.isoDate, shift.id)}
+                    disabled={!canRemoveShift}
+                  >
+                    {'\ue872'}
+                  </button>
+                </div>
+              ) : null}
               <div className="confirm-card__time-row">
                 <label htmlFor={`start-time-${shift.id}`}>Start</label>
                 <EditableText

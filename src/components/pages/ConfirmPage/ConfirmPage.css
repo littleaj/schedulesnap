@@ -214,6 +214,37 @@
   }
 }
 
+.confirm-card__event-actions {
+  display: flex;
+  justify-content: end;
+}
+
+.confirm-card__remove-shift {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.confirm-card__remove-shift:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.confirm-card__undo {
+  border: 1px solid currentColor;
+  border-radius: 999rem;
+  padding-block: 0.25rem;
+  padding-inline: 0.75rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
 .confirm-card__event--off {
   background-color: var(--md-surface);
   color: var(--md-on-surface);
