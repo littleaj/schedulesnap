@@ -3,7 +3,7 @@ import ActionButton from '@/components/atoms/ActionButton';
 import './MessageDialog.css';
 
 interface MessageDialogProps {
-  heading: string;
+  heading?: string;
   content: ReactNode;
   actionLabels?: string[];
   /**
@@ -87,7 +87,7 @@ const MessageDialog = ({
           <span className="material-symbols-outlined" aria-hidden="true">{'\ue5cd'}</span>
         </button>
       </div>
-      <h2 id={headingId}>{heading}</h2>
+      {heading ? <h2 id={headingId}>{heading}</h2> : null}
       {typeof content === 'string' ? (
         <p className="message-dialog__content">{content}</p>
       ) : (

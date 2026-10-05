@@ -16,7 +16,7 @@ export interface ToastMessage {
 
 export interface ModalMessage {
   title: string;
-  heading: string; // TODO: MAKE THIS OPTIONAL
+  heading?: string;
   content: ReactNode;
   variant: MessageVariant;
   actionLabels?: string[];
