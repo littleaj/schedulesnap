@@ -1,26 +1,22 @@
-import React from 'react';
-import ActionButton from '@/components/atoms/ActionButton';
+import React, { type AriaRole, type ReactNode } from 'react';
 import './ErrorToast.css';
 
-interface ErrorToastProps {
-  message: string;
-  action: string;
-  actionLabel?: string;
-  onAction?: () => void;
+interface MessageToastProps {
+  content: ReactNode;
+  variant: string;
+  role?: AriaRole;
 }
 
-const ErrorToast = ({ message, action, actionLabel, onAction }: ErrorToastProps) => {
+const MessageToast = ({ content, variant, role = 'status' }: MessageToastProps) => {
   return (
-    <aside className="error-toast" role="status" aria-live="polite">
-      <p className="error-toast__message">{message}</p>
-      <p className="error-toast__action">{action}</p>
-      {actionLabel && onAction ? (
-        <ActionButton variant="secondary" onClick={onAction}>
-          {actionLabel}
-        </ActionButton>
-      ) : null}
+    <aside className={`message-toast ${variant}`} role={role} aria-live="polite">
+      {typeof content === 'string' ? (
+        <p className="message-toast__content">{content}</p>
+      ) : (
+        <div className="message-toast__content">{content}</div>
+      )}
     </aside>
   );
 };
 
-export default ErrorToast;
+export default MessageToast;

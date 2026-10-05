@@ -8,7 +8,7 @@ import '@/styles/utils.css';
 import './index.css';
 import { CurrentUserProvider } from '@/contexts/current-user';
 import ErrorBoundary from '@/components/organisms/ErrorBoundary';
-import { ErrorProvider } from '@/contexts/error';
+import { UserMessageProvider } from '@/contexts/error';
 const node = document.getElementById('root');
 if (!node) throw new Error('Root node not found!');
 
@@ -16,13 +16,13 @@ const root = createRoot(node);
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <ErrorProvider>
+      <UserMessageProvider>
         <FirebaseProvider>
           <CurrentUserProvider>
             <App />
           </CurrentUserProvider>
         </FirebaseProvider>
-      </ErrorProvider>
+      </UserMessageProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );
