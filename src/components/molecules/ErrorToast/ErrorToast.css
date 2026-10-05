@@ -1,0 +1,20 @@
+.error-toast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  display: grid;
+  gap: 0.75rem;
+  max-width: min(32rem, calc(100% - 2rem));
+  padding: 1rem;
+  border: 2px solid var(--md-error);
+  border-radius: 16px;
+  background: var(--md-error-container);
+  color: var(--md-on-error-container);
+  box-shadow: 0 10px 18px rgba(from var(--md-shadow) r g b / 0.5);
+}
+
+.error-toast__message,
+.error-toast__action {
+  margin: 0;
+}
