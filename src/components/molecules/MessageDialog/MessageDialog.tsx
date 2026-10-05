@@ -1,6 +1,6 @@
 import React, { useEffect, useId, useRef, type ReactNode } from 'react';
 import ActionButton from '@/components/atoms/ActionButton';
-import './ErrorDialog.css';
+import './MessageDialog.css';
 
 interface MessageDialogProps {
   heading: string;
@@ -22,6 +22,7 @@ const MessageDialog = ({
   onAcknowledge,
 }: MessageDialogProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   const headingId = useId();
 
   useEffect(() => {
@@ -66,16 +67,16 @@ const MessageDialog = ({
       className={`message-dialog ${variant}`}
       role="alertdialog"
       aria-modal="true"
-      aria-labelledby={headingId}
+      aria-labelledby={titleId}
+      aria-describedby={headingId}
     >
       <div className="message-dialog__title-bar">
-        <strong className="message-dialog__title">{title}</strong>
+        <strong className="message-dialog__title" id={titleId}>{title}</strong>
         <button
           type="button"
           className="message-dialog__close"
           aria-label="Close message"
           onClick={() => onAcknowledge(null)}
-          disabled={!closeable}
           hidden={!closeable}
         >
           <span className="material-symbols-outlined" aria-hidden="true">close</span>
@@ -88,8 +89,8 @@ const MessageDialog = ({
         <div className="message-dialog__content">{content}</div>
       )}
       <div className="message-dialog__actions">
-        {actionLabels.map((label) => (
-          <ActionButton key={label} variant="primary" onClick={() => onAcknowledge(label)}>{label}</ActionButton>
+        {actionLabels.map((label, index) => (
+          <ActionButton key={`${label}-${index}`} variant="primary" onClick={() => onAcknowledge(label)}>{label}</ActionButton>
         ))}
       </div>
     </dialog>
