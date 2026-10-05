@@ -4,7 +4,7 @@ import './MessageToast.css';
 interface MessageToastProps {
   title?: string;
   content: ReactNode;
-  variant: string;
+  variant: 'error' | 'warning' | 'success' | 'information';
   role?: AriaRole;
 }
 
