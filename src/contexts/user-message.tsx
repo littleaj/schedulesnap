@@ -119,6 +119,7 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
           content={activeMessage.content}
           variant={activeMessage.variant}
           role={activeMessage.role}
+          onDismiss={dismissActiveMessage}
         />
       ) : null}
       {activeMessage?.kind === 'modal' ? (

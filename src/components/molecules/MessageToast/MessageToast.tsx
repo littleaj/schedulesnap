@@ -11,9 +11,10 @@ interface MessageToastProps {
    */
   variant: 'error' | 'warning' | 'success' | 'information';
   role?: AriaRole;
+  onDismiss?: () => void;
 }
 
-const MessageToast = ({ title, content, variant, role = 'status' }: MessageToastProps) => {
+const MessageToast = ({ title, content, variant, role = 'status', onDismiss }: MessageToastProps) => {
   const liveRegionMode = role === 'alert' ? 'assertive' : 'polite';
 
   return (
@@ -22,7 +23,12 @@ const MessageToast = ({ title, content, variant, role = 'status' }: MessageToast
         {title ? (
           <strong className="message-toast__title">{title}</strong>
         ) : null}
-        <button className="material-symbols-outlined message-toast__close" aria-label="close">
+        <button
+          type="button"
+          className="material-symbols-outlined message-toast__close"
+          aria-label="Close toast"
+          onClick={onDismiss}
+        >
           {'\ue5cd'}
         </button>
       </div>

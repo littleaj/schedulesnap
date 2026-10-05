@@ -111,6 +111,27 @@ describe('UserMessageProvider', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
+  it('dismisses an active toast when the close button is clicked', () => {
+    vi.useFakeTimers();
+
+    render(
+      <UserMessageProvider>
+        <MessageTrigger />
+      </UserMessageProvider>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /show short toast/i }));
+    expect(screen.getByRole('status')).toHaveTextContent('OAuth scope was declined.');
+
+    fireEvent.click(screen.getByRole('button', { name: /close toast/i }));
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
   it('queues toast and modal messages in one FIFO queue', () => {
     vi.useFakeTimers();
 
