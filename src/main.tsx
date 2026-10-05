@@ -16,13 +16,13 @@ const root = createRoot(node);
 root.render(
   <React.StrictMode>
     <ErrorBoundary>
-      <UserMessageProvider>
-        <FirebaseProvider>
-          <CurrentUserProvider>
+      <FirebaseProvider>
+        <CurrentUserProvider>
+          <UserMessageProvider>
             <App />
-          </CurrentUserProvider>
-        </FirebaseProvider>
-      </UserMessageProvider>
+          </UserMessageProvider>
+        </CurrentUserProvider>
+      </FirebaseProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );
