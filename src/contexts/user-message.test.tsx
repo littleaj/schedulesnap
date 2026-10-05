@@ -13,6 +13,7 @@ const MessageTrigger = () => {
         onClick={() => showToast({
           content: <span>Calendar write failed after 3 attempts. Try again in a moment.</span>,
           variant: 'error',
+          title: 'Save failed',
         })}
       >
         Show toast
@@ -80,6 +81,7 @@ describe('UserMessageProvider', () => {
     expect(toast).toHaveTextContent('Calendar write failed after 3 attempts. Try again in a moment.');
     expect(toast.className).toContain('message-toast');
     expect(toast.className).toContain('error');
+    expect(screen.getByText('Save failed')).toBeInTheDocument();
   });
 
   it('auto-dismisses toast using per-call timeout', () => {
@@ -93,7 +95,9 @@ describe('UserMessageProvider', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /show short toast/i }));
 
-    expect(screen.getByRole('status')).toHaveTextContent('OAuth scope was declined.');
+    const toast = screen.getByRole('status');
+    expect(toast).toHaveTextContent('OAuth scope was declined.');
+    expect(screen.queryByText('Save failed')).not.toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(999);
