@@ -16,7 +16,7 @@ export interface ToastMessage {
 
 export interface ModalMessage {
   title: string;
-  heading: string;
+  heading: string; // TODO: MAKE THIS OPTIONAL
   content: ReactNode;
   variant: MessageVariant;
   actionLabels?: string[];
@@ -40,7 +40,7 @@ type UserMessage = QueuedToastMessage | QueuedModalMessage;
 
 interface UserMessageContextValue {
   showToast: (message: ToastMessage) => void;
-  showModal: (message: ModalMessage) => void;
+  showModal: (message: ModalMessage) => Promise<string | null>;
 }
 
 export const UserMessageContext = React.createContext<UserMessageContextValue | undefined>(undefined);
@@ -55,8 +55,26 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
   }, []);
 
   const showModal = useCallback((message: ModalMessage) => {
-    nextMessageId.current += 1;
-    setQueue((currentQueue) => [...currentQueue, { id: nextMessageId.current, kind: 'modal', ...message }]);
+    const modalId = nextMessageId.current + 1;
+    nextMessageId.current = modalId;
+
+    return new Promise<string | null>((resolve) => {
+      setQueue((currentQueue) => [
+        ...currentQueue,
+        {
+          id: modalId,
+          kind: 'modal',
+          ...message,
+          onAcknowledge: (label: string | null) => {
+            try {
+              message.onAcknowledge?.(label);
+            } finally {
+              resolve(label);
+            }
+          },
+        },
+      ]);
+    });
   }, []);
 
   const dismissActiveMessage = useCallback(() => {

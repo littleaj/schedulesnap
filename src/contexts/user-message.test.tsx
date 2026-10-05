@@ -1,4 +1,5 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import React, { useEffect } from 'react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { UserMessageProvider } from './user-message';
 import useUserMessage from '@/hooks/user-message';
@@ -130,6 +131,43 @@ describe('UserMessageProvider', () => {
 
     expect(screen.getByRole('alertdialog')).toHaveTextContent('Camera permission is required to take a schedule photo.');
     expect(screen.getByRole('button', { name: /open settings/i })).toBeInTheDocument();
+  });
+
+  it('resolves the modal promise with the selected action label', async () => {
+    const resolvedLabel: { current: string | null | undefined } = { current: undefined };
+
+    const AutoModalTrigger = () => {
+      const { showModal } = useUserMessage();
+
+      useEffect(() => {
+        void showModal({
+          title: 'Session expired',
+          heading: 'Token expired while saving events.',
+          content: 'Sign in again and retry saving.',
+          variant: 'error',
+          actionLabels: ['Sign in again'],
+        }).then((label) => {
+          resolvedLabel.current = label;
+        });
+      }, [showModal]);
+
+      return null;
+    };
+
+    render(
+      <UserMessageProvider>
+        <AutoModalTrigger />
+      </UserMessageProvider>
+    );
+
+    expect(screen.getByRole('alertdialog')).toHaveTextContent('Session expired');
+
+    fireEvent.click(screen.getByRole('button', { name: /sign in again/i }));
+
+    await waitFor(() => {
+      expect(resolvedLabel.current).toBe('Sign in again');
+    });
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
   });
 
   it('renders string title/heading and ReactNode content for modal', () => {
