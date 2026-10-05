@@ -132,7 +132,7 @@ describe('UserMessageProvider', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
-  it('queues toast and modal messages in one FIFO queue', () => {
+  it('renders active toast and modal at the same time', () => {
     vi.useFakeTimers();
 
     render(
@@ -144,14 +144,15 @@ describe('UserMessageProvider', () => {
     fireEvent.click(screen.getByRole('button', { name: /queue toast and modal/i }));
 
     expect(screen.getByRole('status')).toHaveTextContent('Queued toast appears first.');
-    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(screen.getByRole('alertdialog')).toHaveTextContent('Camera permission is required to take a schedule photo.');
+    expect(screen.getByRole('button', { name: /open settings/i })).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(1000);
     });
 
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.getByRole('alertdialog')).toHaveTextContent('Camera permission is required to take a schedule photo.');
-    expect(screen.getByRole('button', { name: /open settings/i })).toBeInTheDocument();
   });
 
   it('resolves the modal promise with the selected action label', async () => {

@@ -36,8 +36,6 @@ interface QueuedModalMessage extends ModalMessage, QueuedMessageBase {
   kind: 'modal';
 }
 
-type UserMessage = QueuedToastMessage | QueuedModalMessage;
-
 interface UserMessageContextValue {
   showToast: (message: ToastMessage) => void;
   showModal: (message: ModalMessage) => Promise<string | null>;
@@ -46,13 +44,14 @@ interface UserMessageContextValue {
 export const UserMessageContext = React.createContext<UserMessageContextValue | undefined>(undefined);
 
 export const UserMessageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [queue, setQueue] = useState<UserMessage[]>([]);
+  const [toastQueue, setToastQueue] = useState<QueuedToastMessage[]>([]);
+  const [modalQueue, setModalQueue] = useState<QueuedModalMessage[]>([]);
   const nextMessageId = useRef(0);
 
   const showToast = useCallback((message: ToastMessage) => {
     const messageId = nextMessageId.current + 1;
     nextMessageId.current = messageId;
-    setQueue((currentQueue) => [...currentQueue, { id: messageId, kind: 'toast', ...message }]);
+    setToastQueue((currentQueue) => [...currentQueue, { id: messageId, kind: 'toast', ...message }]);
   }, []);
 
   const showModal = useCallback((message: ModalMessage) => {
@@ -60,7 +59,7 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
     nextMessageId.current = modalId;
 
     return new Promise<string | null>((resolve) => {
-      setQueue((currentQueue) => [
+      setModalQueue((currentQueue) => [
         ...currentQueue,
         {
           id: modalId,
@@ -78,23 +77,28 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
     });
   }, []);
 
-  const dismissActiveMessage = useCallback(() => {
-    setQueue(([, ...remaining]) => remaining);
+  const dismissActiveToast = useCallback(() => {
+    setToastQueue(([, ...remaining]) => remaining);
   }, []);
 
-  const activeMessage = queue[0] ?? null;
+  const dismissActiveModal = useCallback((label: string | null = null) => {
+    setModalQueue((currentQueue) => {
+      const [activeModal, ...remaining] = currentQueue;
+      activeModal?.onAcknowledge?.(label);
+      return remaining;
+    });
+  }, []);
+
+  const activeToast = toastQueue[0] ?? null;
+  const activeModal = modalQueue[0] ?? null;
 
   const handleModalAcknowledge = useCallback((label: string | null) => {
-    if (activeMessage?.kind === 'modal') {
-      activeMessage.onAcknowledge?.(label);
-    }
+    dismissActiveModal(label);
+  }, [dismissActiveModal]);
 
-    dismissActiveMessage();
-  }, [activeMessage, dismissActiveMessage]);
-
-  const activeToastId = activeMessage?.kind === 'toast' ? activeMessage.id : null;
-  const activeToastTimeoutMs = activeMessage?.kind === 'toast' && activeMessage.timeoutMs && activeMessage.timeoutMs > 0
-    ? activeMessage.timeoutMs
+  const activeToastId = activeToast?.id ?? null;
+  const activeToastTimeoutMs = activeToast?.timeoutMs && activeToast.timeoutMs > 0
+    ? activeToast.timeoutMs
     : DEFAULT_TOAST_TIMEOUT_MS;
 
   useEffect(() => {
@@ -103,34 +107,34 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
     }
 
     const timer = window.setTimeout(() => {
-      dismissActiveMessage();
+      dismissActiveToast();
     }, activeToastTimeoutMs);
 
     return () => window.clearTimeout(timer);
-  }, [activeToastId, activeToastTimeoutMs, dismissActiveMessage]);
+  }, [activeToastId, activeToastTimeoutMs, dismissActiveToast]);
 
   const value = useMemo(() => ({ showToast, showModal }), [showModal, showToast]);
 
   return (
     <UserMessageContext.Provider value={value}>
       {children}
-      {activeMessage?.kind === 'toast' ? (
+      {activeToast ? (
         <MessageToast
-          title={activeMessage.title}
-          content={activeMessage.content}
-          variant={activeMessage.variant}
-          role={activeMessage.role}
-          onDismiss={dismissActiveMessage}
+          title={activeToast.title}
+          content={activeToast.content}
+          variant={activeToast.variant}
+          role={activeToast.role}
+          onDismiss={dismissActiveToast}
         />
       ) : null}
-      {activeMessage?.kind === 'modal' ? (
+      {activeModal ? (
         <MessageDialog
-          title={activeMessage.title}
-          heading={activeMessage.heading}
-          content={activeMessage.content}
-          variant={activeMessage.variant}
-          actionLabels={activeMessage.actionLabels}
-          closeable={activeMessage.closeable}
+          title={activeModal.title}
+          heading={activeModal.heading}
+          content={activeModal.content}
+          variant={activeModal.variant}
+          actionLabels={activeModal.actionLabels}
+          closeable={activeModal.closeable}
           onAcknowledge={handleModalAcknowledge}
         />
       ) : null}
