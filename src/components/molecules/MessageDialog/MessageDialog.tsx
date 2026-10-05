@@ -6,7 +6,7 @@ interface MessageDialogProps {
   heading: string;
   content: ReactNode;
   actionLabels?: string[];
-  variant: string;
+  variant: 'error' | 'warning' | 'success' | 'information';
   title: string;
   closeable?: boolean;
   onAcknowledge: (label: string | null) => void;
