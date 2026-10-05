@@ -20,15 +20,15 @@
 }
 
 .message-dialog.warning {
-  border-color: var(--md-tertiary);
+  border-color: var(--md-warning);
 }
 
 .message-dialog.success {
-  border-color: var(--md-primary);
+  border-color: var(--md-success);
 }
 
 .message-dialog.information {
-  border-color: var(--md-secondary);
+  border-color: var(--md-tertiary);
 }
 
 .message-dialog__title-bar {
