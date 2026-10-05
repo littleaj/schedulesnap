@@ -50,8 +50,9 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
   const nextMessageId = useRef(0);
 
   const showToast = useCallback((message: ToastMessage) => {
-    nextMessageId.current += 1;
-    setQueue((currentQueue) => [...currentQueue, { id: nextMessageId.current, kind: 'toast', ...message }]);
+    const messageId = nextMessageId.current + 1;
+    nextMessageId.current = messageId;
+    setQueue((currentQueue) => [...currentQueue, { id: messageId, kind: 'toast', ...message }]);
   }, []);
 
   const showModal = useCallback((message: ModalMessage) => {
