@@ -47,3 +47,7 @@ select option:checked {
 input {
   font-size: 1rem;
 }
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined'; /* NOSONAR */
+}

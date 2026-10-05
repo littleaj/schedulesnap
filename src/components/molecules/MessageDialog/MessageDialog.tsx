@@ -84,7 +84,7 @@ const MessageDialog = ({
           onClick={() => onAcknowledge(null)}
           hidden={!closeable}
         >
-          <span className="material-symbols-outlined" aria-hidden="true">close</span>
+          <span className="material-symbols-outlined" aria-hidden="true">{'\ue5cd'}</span>
         </button>
       </div>
       <h2 id={headingId}>{heading}</h2>
