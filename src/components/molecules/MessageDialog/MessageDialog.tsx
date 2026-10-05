@@ -6,6 +6,11 @@ interface MessageDialogProps {
   heading: string;
   content: ReactNode;
   actionLabels?: string[];
+  /**
+   * The variant of the message dialog, which determines its visual style via a class of the same name.
+   *
+   * NOTE: When adding values, a corresponding class should be added to the CSS to style the dialog appropriately.
+   */
   variant: 'error' | 'warning' | 'success' | 'information';
   title: string;
   closeable?: boolean;
