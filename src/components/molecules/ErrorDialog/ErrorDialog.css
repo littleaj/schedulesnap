@@ -1,30 +1,73 @@
-.error-dialog {
+.message-dialog {
   position: fixed;
   inset: 0;
   margin: auto;
   width: min(34rem, calc(100% - 2rem));
-  border: 3px solid var(--md-error);
+  border: 3px solid var(--md-outline);
   border-radius: 1.5rem;
   padding: 1.5rem;
   background: var(--md-surface);
   color: var(--md-on-surface);
 }
 
-.error-dialog::backdrop {
+.message-dialog::backdrop {
   background-color: var(--md-scrim);
   backdrop-filter: blur(5px);
 }
 
-.error-dialog h2 {
-  margin: 0;
-  color: var(--md-error);
+.message-dialog.error {
+  border-color: var(--md-error);
 }
 
-.error-dialog p {
+.message-dialog.warning {
+  border-color: var(--md-tertiary);
+}
+
+.message-dialog.success {
+  border-color: var(--md-primary);
+}
+
+.message-dialog.information {
+  border-color: var(--md-secondary);
+}
+
+.message-dialog__title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.message-dialog__title {
+  font-size: 0.95rem;
+  letter-spacing: 0.05ch;
+  color: var(--md-on-surface-variant);
+}
+
+.message-dialog h2 {
+  margin: 0.75rem 0 0;
+}
+
+.message-dialog__content {
   margin: 0.75rem 0 0;
   color: var(--md-on-surface-variant);
 }
 
-.error-dialog__actions {
+.message-dialog__close {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.message-dialog__actions {
   margin-top: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }

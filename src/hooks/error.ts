@@ -1,14 +1,14 @@
 import { useContext } from 'react';
-import { ErrorContext } from '@/contexts/error';
+import { UserMessageContext } from '@/contexts/error';
 
-const useError = () => {
-  const context = useContext(ErrorContext);
+const useUserMessage = () => {
+  const context = useContext(UserMessageContext);
 
   if (!context) {
-    throw new Error('useError must be used within an ErrorProvider');
+    throw new Error('useUserMessage must be used within a UserMessageProvider');
   }
 
   return context;
 };
 
-export default useError;
+export default useUserMessage;

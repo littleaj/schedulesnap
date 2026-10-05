@@ -1,100 +1,107 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import ErrorDialog from '@/components/molecules/ErrorDialog/ErrorDialog';
-import ErrorToast from '@/components/molecules/ErrorToast/ErrorToast';
+import React, { useCallback, useEffect, useMemo, useState, type AriaRole, type ReactNode } from 'react';
+import MessageDialog from '@/components/molecules/ErrorDialog/ErrorDialog';
+import MessageToast from '@/components/molecules/ErrorToast/ErrorToast';
 
 const DEFAULT_TOAST_TIMEOUT_MS = 5000;
 
-interface ErrorContent {
-  message: string;
-  action: string;
-}
-
-interface ToastError extends ErrorContent {
-  actionLabel?: string;
-  onAction?: () => void;
+export interface ToastMessage {
+  content: ReactNode;
+  variant: string;
   timeoutMs?: number;
+  role?: AriaRole;
 }
 
-interface ModalError extends ErrorContent {
-  acknowledgeLabel?: string;
-  onAcknowledge?: () => void;
+export interface ModalMessage {
+  title: string;
+  heading: string;
+  content: ReactNode;
+  variant: string;
+  actionLabels?: string[];
+  closeable?: boolean;
+  onAcknowledge?: (label: string | null) => void;
 }
 
-interface ErrorContextValue {
-  showToast: (error: ToastError) => void;
-  showModal: (error: ModalError) => void;
+interface QueuedToastMessage extends ToastMessage {
+  kind: 'toast';
 }
 
-export const ErrorContext = React.createContext<ErrorContextValue | undefined>(undefined);
+interface QueuedModalMessage extends ModalMessage {
+  kind: 'modal';
+}
 
-export const ErrorProvider = ({ children }: { children: React.ReactNode }) => {
-  const [toastError, setToastError] = useState<ToastError | null>(null);
-  const [modalQueue, setModalQueue] = useState<ModalError[]>([]);
+type UserMessage = QueuedToastMessage | QueuedModalMessage;
 
-  const showToast = useCallback((error: ToastError) => {
-    setToastError(error);
+interface UserMessageContextValue {
+  showToast: (message: ToastMessage) => void;
+  showModal: (message: ModalMessage) => void;
+}
+
+export const UserMessageContext = React.createContext<UserMessageContextValue | undefined>(undefined);
+
+export const UserMessageProvider = ({ children }: { children: React.ReactNode }) => {
+  const [queue, setQueue] = useState<UserMessage[]>([]);
+
+  const showToast = useCallback((message: ToastMessage) => {
+    setQueue((currentQueue) => [...currentQueue, { kind: 'toast', ...message }]);
   }, []);
 
-  const showModal = useCallback((error: ModalError) => {
-    setModalQueue(queue => [...queue, error]);
+  const showModal = useCallback((message: ModalMessage) => {
+    setQueue((currentQueue) => [...currentQueue, { kind: 'modal', ...message }]);
   }, []);
 
-  const dismissModal = useCallback(() => {
-    setModalQueue(([, ...remaining]) => remaining);
+  const dismissActiveMessage = useCallback(() => {
+    setQueue(([, ...remaining]) => remaining);
   }, []);
 
-  const handleToastAction = useCallback(() => {
-    toastError?.onAction?.();
-    setToastError(null);
-  }, [toastError]);
+  const activeMessage = queue[0] ?? null;
 
-  const activeModal = modalQueue[0] ?? null;
-
-  const handleModalAcknowledge = useCallback(() => {
-    if (!activeModal) {
-      return;
+  const handleModalAcknowledge = useCallback((label: string | null) => {
+    if (activeMessage?.kind === 'modal') {
+      activeMessage.onAcknowledge?.(label);
     }
 
-    activeModal.onAcknowledge?.();
-    dismissModal();
-  }, [activeModal, dismissModal]);
-  const timeoutMs = toastError?.timeoutMs && toastError.timeoutMs > 0
-    ? toastError.timeoutMs
-    : DEFAULT_TOAST_TIMEOUT_MS;
+    dismissActiveMessage();
+  }, [activeMessage, dismissActiveMessage]);
 
   useEffect(() => {
-    if (!toastError) {
+    if (!activeMessage || activeMessage.kind !== 'toast') {
       return;
     }
 
+    const timeoutMs = activeMessage.timeoutMs && activeMessage.timeoutMs > 0
+      ? activeMessage.timeoutMs
+      : DEFAULT_TOAST_TIMEOUT_MS;
+
     const timer = window.setTimeout(() => {
-      setToastError(null);
+      dismissActiveMessage();
     }, timeoutMs);
 
     return () => window.clearTimeout(timer);
-  }, [timeoutMs, toastError]);
+  }, [activeMessage, dismissActiveMessage]);
 
   const value = useMemo(() => ({ showToast, showModal }), [showModal, showToast]);
 
   return (
-    <ErrorContext.Provider value={value}>
+    <UserMessageContext.Provider value={value}>
       {children}
-      {toastError ? (
-        <ErrorToast
-          message={toastError.message}
-          action={toastError.action}
-          actionLabel={toastError.actionLabel}
-          onAction={handleToastAction}
+      {activeMessage?.kind === 'toast' ? (
+        <MessageToast
+          content={activeMessage.content}
+          variant={activeMessage.variant}
+          role={activeMessage.role}
         />
       ) : null}
-      {activeModal ? (
-        <ErrorDialog
-          message={activeModal.message}
-          action={activeModal.action}
-          acknowledgeLabel={activeModal.acknowledgeLabel}
+      {activeMessage?.kind === 'modal' ? (
+        <MessageDialog
+          title={activeMessage.title}
+          heading={activeMessage.heading}
+          content={activeMessage.content}
+          variant={activeMessage.variant}
+          actionLabels={activeMessage.actionLabels}
+          closeable={activeMessage.closeable}
           onAcknowledge={handleModalAcknowledge}
         />
       ) : null}
-    </ErrorContext.Provider>
+    </UserMessageContext.Provider>
   );
 };

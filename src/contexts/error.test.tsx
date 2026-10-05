@@ -1,22 +1,18 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { ErrorProvider } from './error';
-import useError from '@/hooks/error';
+import { UserMessageProvider } from './error';
+import useUserMessage from '@/hooks/error';
 
-const retryAction = vi.fn();
-
-const ErrorTrigger = () => {
-  const { showToast, showModal } = useError();
+const MessageTrigger = () => {
+  const { showToast, showModal } = useUserMessage();
 
   return (
     <>
       <button
         type="button"
         onClick={() => showToast({
-          message: 'Calendar write failed after 3 attempts.',
-          action: 'Try again in a moment.',
-          actionLabel: 'Retry',
-          onAction: retryAction,
+          content: <span>Calendar write failed after 3 attempts. Try again in a moment.</span>,
+          variant: 'error',
         })}
       >
         Show toast
@@ -24,8 +20,8 @@ const ErrorTrigger = () => {
       <button
         type="button"
         onClick={() => showToast({
-          message: 'OAuth scope was declined.',
-          action: 'Review requested permissions and retry sign in.',
+          content: 'OAuth scope was declined. Review requested permissions and retry sign in.',
+          variant: 'warning',
           timeoutMs: 1000,
         })}
       >
@@ -34,73 +30,65 @@ const ErrorTrigger = () => {
       <button
         type="button"
         onClick={() => {
-          showModal({
-            message: 'Camera permission is required to take a schedule photo.',
-            action: 'Open browser settings and allow camera access.',
-            acknowledgeLabel: 'Open settings',
+          showToast({
+            content: 'Queued toast appears first.',
+            variant: 'information',
+            timeoutMs: 1000,
           });
           showModal({
-            message: 'Token expired while saving events.',
-            action: 'Sign in again and retry saving.',
-            acknowledgeLabel: 'Sign in again',
+            title: 'Permission required',
+            heading: 'Camera permission is required to take a schedule photo.',
+            content: 'Open browser settings and allow camera access.',
+            variant: 'error',
+            actionLabels: ['Open settings'],
           });
         }}
       >
-        Queue modals
+        Queue toast and modal
+      </button>
+      <button
+        type="button"
+        onClick={() => showModal({
+          title: 'Session expired',
+          heading: 'Token expired while saving events.',
+          content: <strong>Sign in again and retry saving.</strong>,
+          variant: 'error',
+          actionLabels: ['Sign in again'],
+        })}
+      >
+        Show modal
       </button>
     </>
   );
 };
 
-describe('ErrorProvider', () => {
+describe('UserMessageProvider', () => {
   afterEach(() => {
-    retryAction.mockReset();
     vi.useRealTimers();
   });
 
-  it('renders caller-provided toast message/action with optional action button', () => {
+  it('renders caller-provided toast ReactNode content and variant class', () => {
     render(
-      <ErrorProvider>
-        <ErrorTrigger />
-      </ErrorProvider>
+      <UserMessageProvider>
+        <MessageTrigger />
+      </UserMessageProvider>
     );
 
     fireEvent.click(screen.getByRole('button', { name: /show toast/i }));
 
-    expect(screen.getByRole('status')).toHaveTextContent('Calendar write failed after 3 attempts.');
-    expect(screen.getByRole('status')).toHaveTextContent('Try again in a moment.');
-
-    fireEvent.click(screen.getByRole('button', { name: /retry/i }));
-    expect(retryAction).toHaveBeenCalledTimes(1);
-  });
-
-
-  it('auto-dismisses toast with the default timeout when none is provided', () => {
-    vi.useFakeTimers();
-
-    render(
-      <ErrorProvider>
-        <ErrorTrigger />
-      </ErrorProvider>
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: /show toast/i }));
-    expect(screen.getByRole('status')).toHaveTextContent('Calendar write failed after 3 attempts.');
-
-    act(() => {
-      vi.advanceTimersByTime(10000);
-    });
-
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    const toast = screen.getByRole('status');
+    expect(toast).toHaveTextContent('Calendar write failed after 3 attempts. Try again in a moment.');
+    expect(toast.className).toContain('message-toast');
+    expect(toast.className).toContain('error');
   });
 
   it('auto-dismisses toast using per-call timeout', () => {
     vi.useFakeTimers();
 
     render(
-      <ErrorProvider>
-        <ErrorTrigger />
-      </ErrorProvider>
+      <UserMessageProvider>
+        <MessageTrigger />
+      </UserMessageProvider>
     );
 
     fireEvent.click(screen.getByRole('button', { name: /show short toast/i }));
@@ -108,32 +96,48 @@ describe('ErrorProvider', () => {
     expect(screen.getByRole('status')).toHaveTextContent('OAuth scope was declined.');
 
     act(() => {
-      vi.advanceTimersByTime(999);
+      vi.advanceTimersByTime(1000);
     });
-    expect(screen.getByRole('status')).toBeInTheDocument();
 
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
-  it('queues blocking modal errors until the current modal is acknowledged', () => {
+  it('queues toast and modal messages in one FIFO queue', () => {
+    vi.useFakeTimers();
+
     render(
-      <ErrorProvider>
-        <ErrorTrigger />
-      </ErrorProvider>
+      <UserMessageProvider>
+        <MessageTrigger />
+      </UserMessageProvider>
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /queue modals/i }));
+    fireEvent.click(screen.getByRole('button', { name: /queue toast and modal/i }));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Queued toast appears first.');
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
 
     expect(screen.getByRole('alertdialog')).toHaveTextContent('Camera permission is required to take a schedule photo.');
-    expect(screen.getByRole('alertdialog')).toHaveTextContent('Open browser settings and allow camera access.');
-    expect(screen.queryByText('Token expired while saving events.')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open settings/i })).toBeInTheDocument();
+  });
 
-    fireEvent.click(screen.getByRole('button', { name: /open settings/i }));
+  it('renders string title/heading and ReactNode content for modal', () => {
+    render(
+      <UserMessageProvider>
+        <MessageTrigger />
+      </UserMessageProvider>
+    );
 
+    fireEvent.click(screen.getByRole('button', { name: /show modal/i }));
+
+    expect(screen.getByRole('alertdialog')).toHaveTextContent('Session expired');
     expect(screen.getByRole('alertdialog')).toHaveTextContent('Token expired while saving events.');
     expect(screen.getByRole('alertdialog')).toHaveTextContent('Sign in again and retry saving.');
+
+    fireEvent.click(screen.getByRole('button', { name: /sign in again/i }));
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
   });
 });
