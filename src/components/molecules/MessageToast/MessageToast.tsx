@@ -4,6 +4,11 @@ import './MessageToast.css';
 interface MessageToastProps {
   title?: string;
   content: ReactNode;
+  /**
+   * The variant of the message toast, which determines its visual style via a class of the same name.
+   *
+   * NOTE: When adding values, a corresponding class should be added to the CSS to style the toast appropriately.
+   */
   variant: 'error' | 'warning' | 'success' | 'information';
   role?: AriaRole;
 }
