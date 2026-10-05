@@ -7,6 +7,7 @@ const DEFAULT_TOAST_TIMEOUT_MS = 5000;
 export type MessageVariant = 'error' | 'warning' | 'success' | 'information';
 
 export interface ToastMessage {
+  title?: string;
   content: ReactNode;
   variant: MessageVariant;
   timeoutMs?: number;
@@ -96,6 +97,7 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
       {children}
       {activeMessage?.kind === 'toast' ? (
         <MessageToast
+          title={activeMessage.title}
           content={activeMessage.content}
           variant={activeMessage.variant}
           role={activeMessage.role}

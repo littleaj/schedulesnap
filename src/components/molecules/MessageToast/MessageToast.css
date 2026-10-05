@@ -36,6 +36,17 @@
   color: var(--md-on-tertiary-container);
 }
 
+
+.message-toast__title-bar {
+  margin-bottom: 0.5rem;
+}
+
+.message-toast__title {
+  display: block;
+  font-size: 0.95rem;
+  letter-spacing: 0.05ch;
+}
+
 .message-toast__content {
   margin: 0;
 }
