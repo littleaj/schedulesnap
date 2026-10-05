@@ -8,7 +8,7 @@
   max-width: min(32rem, calc(100% - 2rem));
   padding: 1rem;
   border: 2px solid var(--md-error);
-  border-radius: 16px;
+  border-radius: 1rem;
   background: var(--md-error-container);
   color: var(--md-on-error-container);
   box-shadow: 0 10px 18px rgba(from var(--md-shadow) r g b / 0.5);

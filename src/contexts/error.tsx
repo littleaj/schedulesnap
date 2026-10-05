@@ -49,6 +49,15 @@ export const ErrorProvider = ({ children }: { children: React.ReactNode }) => {
   }, [toastError]);
 
   const activeModal = modalQueue[0] ?? null;
+
+  const handleModalAcknowledge = useCallback(() => {
+    if (!activeModal) {
+      return;
+    }
+
+    activeModal.onAcknowledge?.();
+    dismissModal();
+  }, [activeModal, dismissModal]);
   const timeoutMs = toastError?.timeoutMs && toastError.timeoutMs > 0
     ? toastError.timeoutMs
     : DEFAULT_TOAST_TIMEOUT_MS;
@@ -83,10 +92,7 @@ export const ErrorProvider = ({ children }: { children: React.ReactNode }) => {
           message={activeModal.message}
           action={activeModal.action}
           acknowledgeLabel={activeModal.acknowledgeLabel}
-          onAcknowledge={() => {
-            activeModal.onAcknowledge?.();
-            dismissModal();
-          }}
+          onAcknowledge={handleModalAcknowledge}
         />
       ) : null}
     </ErrorContext.Provider>
