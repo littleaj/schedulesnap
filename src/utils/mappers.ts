@@ -21,7 +21,7 @@ export const resolveShiftDateTimes = (date: string, startTime: string, endTime: 
   }
 
   const endDateTime = new Date(rawEndDateTime);
-  const isPotentialOvernight = endDateTime <= startDateTime && startDateTime.getHours() >= 12 && endDateTime.getHours() < 12;
+  const isPotentialOvernight = endDateTime < startDateTime && startDateTime.getHours() >= 12 && endDateTime.getHours() < 12;
   if (isPotentialOvernight) {
     endDateTime.setDate(endDateTime.getDate() + 1);
   }
