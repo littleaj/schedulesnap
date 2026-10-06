@@ -45,7 +45,7 @@ vi.mock('@/services/schedule-analysis', () => ({
 
 vi.mock('@/services/user-profile', () => ({
   getUserProfile: getUserProfileMock,
-  resolveShiftName: (profile, extractedName) => {
+  resolveShiftName: (profile: { defaultShiftName?: string; namePrefix?: string }, extractedName?: string | null) => {
     const baseName = extractedName?.trim() ? extractedName.trim() : (profile.defaultShiftName?.trim() || 'Work');
     return `${profile.namePrefix ?? ''}${baseName}`;
   },
@@ -222,13 +222,13 @@ describe('ConfirmPage', () => {
           rawText: 'Sep 5 9:00 AM - 5:00 PM',
         },
         {
-          date: '2026-09-06',
-          startTime: '09:00',
-          endTime: '17:00',
+          date: '2026-09-05',
+          startTime: '12:00',
+          endTime: '21:00',
           role: 'Barista',
           location: 'Downtown',
           confidence: 0.9,
-          rawText: 'Sep 6 9:00 AM - 5:00 PM',
+          rawText: 'Sep 5 12:00 PM - 9:00 PM',
         },
       ],
     });
