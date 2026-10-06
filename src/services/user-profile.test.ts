@@ -51,6 +51,8 @@ describe('userProfileService', () => {
       targetName: 'Alex',
       timezone: 'America/New_York',
       defaultCalendarId: 'primary',
+      defaultShiftName: 'Work',
+      namePrefix: 'Retail - ',
       reminder: {
         enabled: true,
         minutesBefore: 30,
@@ -63,6 +65,13 @@ describe('userProfileService', () => {
 
     expect(profile).toEqual(data);
     expect(isUserProfileComplete(profile)).toBe(true);
+  });
+
+  it('fills in silent defaults for missing default shift naming fields', () => {
+    const sanitized = buildDefaultUserProfile('UTC');
+
+    expect(sanitized.defaultShiftName).toBe('Work');
+    expect(sanitized.namePrefix).toBe('');
   });
 
   it('saves the profile with merge semantics', async () => {

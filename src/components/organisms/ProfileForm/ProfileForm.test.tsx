@@ -25,6 +25,8 @@ vi.mock('@/services/user-profile', () => ({
     targetName: typeof displayName === 'string' ? (displayName.split(' ')[0] ?? '') : '',
     timezone,
     defaultCalendarId: calendarId,
+    defaultShiftName: 'Work',
+    namePrefix: '',
     reminder: {
       enabled: false,
       minutesBefore: 30,
@@ -76,6 +78,8 @@ describe('ProfileForm', () => {
     expect(screen.getByLabelText(/name on schedule/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/timezone/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/default calendar/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/default shift name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/name prefix/i)).toBeInTheDocument();
     // expect(screen.getByLabelText(/enable reminders/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /save profile/i })).toBeInTheDocument();
   });
@@ -94,6 +98,8 @@ describe('ProfileForm', () => {
     fireEvent.change(screen.getByLabelText(/name on schedule/i), { target: { value: 'Taylor' } });
     fireEvent.change(screen.getByLabelText(/timezone/i), { target: { value: 'America/Chicago' } });
     fireEvent.change(screen.getByLabelText(/default calendar/i), { target: { value: 'primary' } });
+    fireEvent.change(screen.getByLabelText(/default shift name/i), { target: { value: 'Work Shift' } });
+    fireEvent.change(screen.getByLabelText(/name prefix/i), { target: { value: 'Retail - ' } });
 
     fireEvent.click(screen.getByRole('button', { name: /save profile/i }));
 
