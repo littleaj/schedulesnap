@@ -188,11 +188,7 @@ describe('ConfirmPage', () => {
     });
     loadAnalysisResponseMock.mockReturnValue(null);
 
-    render(
-      <MemoryRouter>
-        <ConfirmPage />
-      </MemoryRouter>,
-    );
+    renderConfirmPage();
 
     const disclaimer = screen.getByText(/Schedules are extracted by AI and can contain mistakes/i);
     const grid = document.getElementById('confirm-card__grid');
