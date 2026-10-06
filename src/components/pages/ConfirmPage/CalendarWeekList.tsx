@@ -12,6 +12,10 @@ interface CalendarWeekListProps {
 const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeekListProps) => {
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
 
+  useEffect(() => {
+    setWeekDays(shifts);
+  }, [shifts]);
+
   const updateShiftField = useCallback((dayIso: string, shiftId: string, field: 'startTime' | 'endTime' | 'eventName' | 'location', value: React.InputHTMLAttributes<HTMLInputElement>['value']) => {
     setWeekDays((currentWeekDays) => {
       const nextWeekDays = currentWeekDays.map((day) => {
