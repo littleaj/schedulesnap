@@ -26,6 +26,7 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
 const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const { showToast, dismissToast } = useUserMessage();
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
+  const weekDaysRef = useRef<WeekDay[]>(shifts);
   const [pendingRemovals, setPendingRemovals] = useState<Record<string, number>>({});
   const pendingRemovalsRef = useRef<Record<string, number>>({});
   const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
@@ -92,21 +93,19 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     }
 
     const timeoutId = window.setTimeout(() => {
-      setWeekDays((currentWeekDays) => {
-        const nextWeekDays = currentWeekDays.map((day) => {
-          if (day.isoDate !== isoDate) {
-            return day;
-          }
+      const nextWeekDays = weekDaysRef.current.map((day) => {
+        if (day.isoDate !== isoDate) {
+          return day;
+        }
 
-          return {
-            ...day,
-            shifts: day.shifts.filter((shift) => shift.id !== shiftId),
-          };
-        });
-
-        onChange(nextWeekDays);
-        return nextWeekDays;
+        return {
+          ...day,
+          shifts: day.shifts.filter((shift) => shift.id !== shiftId),
+        };
       });
+      weekDaysRef.current = nextWeekDays;
+      setWeekDays(nextWeekDays);
+      onChange(nextWeekDays);
 
       const { [pendingKey]: _discard, ...remainingPendingRemovals } = pendingRemovalsRef.current;
       const { [pendingKey]: _discardToast, ...remainingToastIds } = pendingRemovalToastIdsRef.current;
@@ -165,6 +164,10 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   useEffect(() => {
     pendingRemovalsRef.current = pendingRemovals;
   }, [pendingRemovals]);
+
+  useEffect(() => {
+    weekDaysRef.current = weekDays;
+  }, [weekDays]);
 
   useEffect(() => {
     return () => {
