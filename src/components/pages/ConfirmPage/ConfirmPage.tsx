@@ -117,7 +117,7 @@ const ConfirmPage = () => {
           <>
             <div className="confirm-card__disclaimer">
               <div className="material-symbols-outlined confirm-card__disclaimer-icon">{'\ue88e'}</div>
-              <p role="status" aria-live="polite">
+              <p role="note" aria-live="polite">
                 Schedules are extracted by AI and can contain mistakes — review each shift before adding it to your calendar.
               </p>
             </div>
