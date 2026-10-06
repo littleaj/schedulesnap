@@ -171,6 +171,39 @@ describe('ConfirmPage', () => {
     });
   });
 
+  it('renders a persistent AI review disclaimer above the weekly schedule', () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    render(
+      <MemoryRouter>
+        <ConfirmPage />
+      </MemoryRouter>,
+    );
+
+    const disclaimer = screen.getByText(/Schedules are extracted by AI and can contain mistakes/i);
+    const grid = document.getElementById('confirm-card__grid');
+
+    expect(disclaimer).toBeInTheDocument();
+    expect(grid).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /close|dismiss/i })).not.toBeInTheDocument();
+    expect(grid).not.toBeNull();
+    expect(disclaimer.compareDocumentPosition(grid as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('falls back to capture when no cached review exists', () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue(null);

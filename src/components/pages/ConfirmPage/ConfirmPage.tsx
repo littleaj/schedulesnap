@@ -114,14 +114,19 @@ const ConfirmPage = () => {
         </div>
 
         {shifts.length > 0 ? (
-          <Card className="confirm-card__summary" aria-label="Extracted shifts week view">
-            <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
-            <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
-            <CalendarWeekList
-              shifts={weekDays}
-              onChange={saveWeekDays}
-            />
-          </Card>
+          <>
+            <p className="confirm-card__disclaimer" role="status" aria-live="polite">
+              Schedules are extracted by AI and can contain mistakes — review each shift before adding it to your calendar.
+            </p>
+            <Card className="confirm-card__summary" aria-label="Extracted shifts week view">
+              <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
+              <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
+              <CalendarWeekList
+                shifts={weekDays}
+                onChange={saveWeekDays}
+              />
+            </Card>
+          </>
         ) : (
           <p className="confirm-card__intro">
             No saved review was found. Start over from <Link to="/capture" replace>capture</Link> to continue.
