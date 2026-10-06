@@ -115,9 +115,12 @@ const ConfirmPage = () => {
 
         {shifts.length > 0 ? (
           <>
-            <p className="confirm-card__disclaimer" role="status" aria-live="polite">
-              Schedules are extracted by AI and can contain mistakes — review each shift before adding it to your calendar.
-            </p>
+            <div className="confirm-card__disclaimer">
+              <div className="material-symbols-outlined confirm-card__disclaimer-icon">{'\ue88e'}</div>
+              <p role="status" aria-live="polite">
+                Schedules are extracted by AI and can contain mistakes — review each shift before adding it to your calendar.
+              </p>
+            </div>
             <Card className="confirm-card__summary" aria-label="Extracted shifts week view">
               <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
               <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
