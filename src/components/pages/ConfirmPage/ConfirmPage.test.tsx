@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { StrictMode } from 'react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserMessageProvider } from '@/contexts/user-message';
@@ -247,6 +248,43 @@ describe('ConfirmPage', () => {
     expect(screen.getByRole('button', { name: /undo/i })).toBeInTheDocument();
   });
 
+  it('persists a removed shift only once in strict mode after undo timeout', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    render(
+      <StrictMode>
+        <UserMessageProvider>
+          <MemoryRouter>
+            <ConfirmPage />
+          </MemoryRouter>
+        </UserMessageProvider>
+      </StrictMode>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /remove shift/i }));
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(saveDraftConfirmationMock).toHaveBeenCalledTimes(1);
+  });
+
   it('restores a removed shift when undo is clicked before the toast timeout', () => {
     vi.useFakeTimers();
     loadDraftConfirmationMock.mockReturnValue({
@@ -306,6 +344,13 @@ describe('ConfirmPage', () => {
     loadAnalysisResponseMock.mockReturnValue(null);
 
     renderConfirmPage();
+
+    expect(
+      screen.getByRole('button', { name: /remove shift barista on .* from 09:00 to 12:00/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /remove shift cashier on .* from 13:00 to 17:00/i }),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getAllByRole('button', { name: /remove shift/i })[0]);
 
