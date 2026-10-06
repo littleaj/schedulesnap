@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CalendarDayCard from "./CalendarDayCard";
 import type { EditableShift, WeekDay } from "@/types/shift-display";
+import { getWeekValidationState, type WeekValidationState } from "./utils/shift-validation";
 import useUserMessage from "@/hooks/user-message";
 
 interface CalendarWeekListProps {
   shifts: WeekDay[];
   onChange: (weekDays: WeekDay[]) => void;
+  onValidationChange?: (state: WeekValidationState) => void;
 }
 
 const REMOVE_SHIFT_TIMEOUT_MS = 5000;
@@ -23,7 +25,7 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
   isPlaceholder: true,
 });
 
-const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
+const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeekListProps) => {
   const { showToast, dismissToast } = useUserMessage();
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
   const weekDaysRef = useRef<WeekDay[]>(shifts);
@@ -59,6 +61,10 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return nextWeekDays;
     });
   }, [onChange]);
+
+  useEffect(() => {
+    onValidationChange?.(getWeekValidationState(weekDays));
+  }, [onValidationChange, weekDays]);
 
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLDivElement>(null);

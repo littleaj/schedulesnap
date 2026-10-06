@@ -55,6 +55,16 @@ describe('ConfirmPage', () => {
     </UserMessageProvider>,
   );
 
+  const baseShift = {
+    date: '2026-09-05',
+    startTime: '09:00',
+    endTime: '17:00',
+    role: 'Barista',
+    location: 'Downtown',
+    confidence: 0.9,
+    rawText: 'Sep 5 9:00 AM - 5:00 PM',
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     navigateMock.mockReset();
@@ -145,15 +155,7 @@ describe('ConfirmPage', () => {
   it('forwards to creating page when create events is clicked', async () => {
     loadDraftConfirmationMock.mockReturnValue({
       shifts: [
-        {
-          date: '2026-09-05',
-          startTime: '09:00',
-          endTime: '17:00',
-          role: 'Barista',
-          location: 'Downtown',
-          confidence: 0.9,
-          rawText: 'Sep 5 9:00 AM - 5:00 PM',
-        },
+        baseShift,
       ],
       selectedCalendarId: 'primary',
     });
@@ -423,5 +425,58 @@ describe('ConfirmPage', () => {
     });
 
     expect(screen.queryByRole('button', { name: /remove shift/i })).not.toBeInTheDocument();
+  });
+
+  it('disables create events when a shift is missing a required field', () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        { ...baseShift, role: '' },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    expect(screen.getByRole('button', { name: /create events/i })).toBeDisabled();
+    expect(screen.getByText(/invalid shift/i)).toBeInTheDocument();
+  });
+
+  it('treats overnight shifts as valid and keeps create enabled', () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        { ...baseShift, startTime: '22:00', endTime: '02:00' },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    expect(screen.getByRole('button', { name: /create events/i })).toBeEnabled();
+    expect(screen.queryByText(/invalid shift/i)).not.toBeInTheDocument();
+  });
+
+  it('flags genuinely invalid end-before-start shifts and re-enables after fixing', async () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        { ...baseShift, startTime: '09:00', endTime: '08:00' },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    const createButton = screen.getByRole('button', { name: /create events/i });
+    expect(createButton).toBeDisabled();
+    expect(screen.getByText(/invalid shift/i)).toBeInTheDocument();
+
+    const endTimeInput = screen.getByDisplayValue('08:00');
+    fireEvent.change(endTimeInput, { target: { value: '17:00' } });
+
+    await waitFor(() => {
+      expect(createButton).toBeEnabled();
+    });
   });
 });

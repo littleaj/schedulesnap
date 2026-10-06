@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import ActionButton from '@/components/atoms/ActionButton';
 import {
@@ -17,6 +17,7 @@ import { Card } from '@/components/atoms/Card';
 import CalendarWeekList from './CalendarWeekList';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import PageContent from '@/components/templates/PageContent';
+import { getWeekValidationState, type WeekValidationState } from './utils/shift-validation';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -48,8 +49,10 @@ const ConfirmPage = () => {
     console.log("Loaded shifts from", draftConfirmation ? "draft confirmation" : "analysis response");
   }
 
-  const hasEditableShift = useMemo(() => {
-    return weekDays.some((day) => day.shifts.some((shift) => shift.startTime || shift.endTime || shift.eventName || shift.location));
+  const [weekValidationState, setWeekValidationState] = useState<WeekValidationState>(() => getWeekValidationState(weekDays));
+
+  useEffect(() => {
+    setWeekValidationState(getWeekValidationState(weekDays));
   }, [weekDays]);
 
   const handleCreateEvents = () => {
@@ -102,7 +105,7 @@ const ConfirmPage = () => {
 
   return (
     <PageContent className="confirm-page">
-      <Card element={<section/>} className="confirm-card" aria-labelledby="confirm-title">
+      <Card element={<section />} className="confirm-card" aria-labelledby="confirm-title">
         <div className="confirm-card__header">
           <div className="confirm-card__heading-group">
             <p className="eyebrow">Review schedule</p>
@@ -127,6 +130,7 @@ const ConfirmPage = () => {
               <CalendarWeekList
                 shifts={weekDays}
                 onChange={saveWeekDays}
+                onValidationChange={setWeekValidationState}
               />
             </Card>
           </>
@@ -137,7 +141,7 @@ const ConfirmPage = () => {
         )}
 
         <div className="confirm-card__actions">
-          <ActionButton variant="primary" onClick={handleCreateEvents} disabled={!hasEditableShift}>
+          <ActionButton variant="primary" onClick={handleCreateEvents} disabled={!weekValidationState.hasEditableShift || weekValidationState.hasInvalidShift}>
             Create Events
           </ActionButton>
           <ActionButton variant="secondary" onClick={() => {
