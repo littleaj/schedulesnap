@@ -65,6 +65,16 @@
   font-size: 1rem;
 }
 
+.confirm-card__disclaimer {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--md-tertiary-container);
+  color: var(--md-on-tertiary-container);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 .confirm-card__summary {
   position: relative;
   margin-top: 1rem;
