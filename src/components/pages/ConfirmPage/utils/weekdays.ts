@@ -2,16 +2,25 @@ import type { ScheduleAnalysisShift } from "@/types/schedule-analysis";
 import type { WeekDay, EditableShift } from "@/types/shift-display";
 import { getWeekStartDate } from "@/utils/time-utils";
 import { toLocalDate, toLocalIsoDate, formatWeekday, formatMonthDay, formatTime } from "./formatting";
+import { resolveShiftName } from '@/services/user-profile';
+import type { UserProfile } from '@/types/user-profile';
 
-
-export const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
+export const buildWeekDays = (
+  shifts: ScheduleAnalysisShift[],
+  profile?: Pick<UserProfile, 'defaultShiftName' | 'namePrefix'>,
+): WeekDay[] => {
   const firstShiftDate = shifts[0] ? toLocalDate(shifts[0].date) : null;
   const weekStart = firstShiftDate ? getWeekStartDate(firstShiftDate) : null;
   const groupedShifts = new Map<string, EditableShift[]>();
 
   for (const shift of shifts) {
     const dayShifts = groupedShifts.get(shift.date) ?? [];
-    dayShifts.push({ ...shift, eventName: shift.role ?? '', id: formatShiftKey(shift), isPlaceholder: false });
+    dayShifts.push({
+      ...shift,
+      eventName: profile ? resolveShiftName(profile, shift.role ?? '') : (shift.role ?? ''),
+      id: formatShiftKey(shift),
+      isPlaceholder: false,
+    });
     groupedShifts.set(shift.date, dayShifts);
   }
 

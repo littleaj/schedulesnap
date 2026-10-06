@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserMessageProvider } from '@/contexts/user-message';
 import ConfirmPage from './ConfirmPage';
+import { buildWeekDays } from './utils/weekdays';
 
 const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock, getUserProfileMock, useCurrentUserMock, useFirestoreMock, navigateMock } = vi.hoisted(() => ({
   loadAnalysisResponseMock: vi.fn(),
@@ -44,6 +45,10 @@ vi.mock('@/services/schedule-analysis', () => ({
 
 vi.mock('@/services/user-profile', () => ({
   getUserProfile: getUserProfileMock,
+  resolveShiftName: (profile, extractedName) => {
+    const baseName = extractedName?.trim() ? extractedName.trim() : (profile.defaultShiftName?.trim() || 'Work');
+    return `${profile.namePrefix ?? ''}${baseName}`;
+  },
 }));
 
 describe('ConfirmPage', () => {
@@ -202,7 +207,7 @@ describe('ConfirmPage', () => {
     expect(disclaimer.compareDocumentPosition(grid as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
-  it('prepends the name prefix and falls back to the default shift name when no AI name is extracted', () => {
+  it('prepends the name prefix and falls back to the default shift name when no AI name is extracted', async () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue({
       scheduleOwnerGuess: 'Alex',
@@ -230,8 +235,10 @@ describe('ConfirmPage', () => {
 
     renderConfirmPage();
 
-    expect(screen.getByDisplayValue('Retail - Work Shift')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Retail - Barista')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Retail - Work Shift')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Retail - Barista')).toBeInTheDocument();
+    });
   });
 
   it('falls back to capture when no cached review exists', () => {
