@@ -70,6 +70,10 @@ describe('ConfirmPage', () => {
     useFirestoreMock.mockReturnValue({});
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it.todo('renders the cached analysis response when resuming a review', () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue({
@@ -209,6 +213,40 @@ describe('ConfirmPage', () => {
     expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
       shifts: expect.not.arrayContaining([expect.objectContaining({ role: 'Barista', startTime: '09:00', endTime: '17:00' })]),
     }));
+  });
+
+  it('shows a new undo toast after a previous removal is undone and re-removed', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    const removeButton = screen.getByRole('button', { name: /remove shift/i });
+
+    fireEvent.click(removeButton);
+    expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
+
+    fireEvent.click(screen.getByRole('button', { name: /undo/i }));
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByDisplayValue('Barista')).toBeInTheDocument();
+
+    fireEvent.click(removeButton);
+    expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
+    expect(screen.getByRole('button', { name: /undo/i })).toBeInTheDocument();
   });
 
   it('restores a removed shift when undo is clicked before the toast timeout', () => {

@@ -65,74 +65,67 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
 
   const restoreShift = useCallback((isoDate: string, shiftId: string) => {
     const pendingKey = toPendingRemovalKey(isoDate, shiftId);
+    const timerId = pendingRemovalsRef.current[pendingKey];
 
-    setPendingRemovals((currentPendingRemovals) => {
-      const timerId = currentPendingRemovals[pendingKey];
-      if (timerId === undefined) {
-        return currentPendingRemovals;
-      }
+    if (timerId === undefined) {
+      return;
+    }
 
-      window.clearTimeout(timerId);
-      const { [pendingKey]: _discard, ...remainingPendingRemovals } = currentPendingRemovals;
-      return remainingPendingRemovals;
-    });
+    window.clearTimeout(timerId);
+    const { [pendingKey]: _discard, ...remainingPendingRemovals } = pendingRemovalsRef.current;
+    pendingRemovalsRef.current = remainingPendingRemovals;
+    setPendingRemovals(remainingPendingRemovals);
   }, []);
 
   const removeShift = useCallback((isoDate: string, shiftId: string) => {
     const pendingKey = toPendingRemovalKey(isoDate, shiftId);
-    let hasScheduledRemoval = false;
 
-    setPendingRemovals((currentPendingRemovals) => {
-      if (currentPendingRemovals[pendingKey] !== undefined) {
-        return currentPendingRemovals;
-      }
-
-      const timeoutId = window.setTimeout(() => {
-        setWeekDays((currentWeekDays) => {
-          const nextWeekDays = currentWeekDays.map((day) => {
-            if (day.isoDate !== isoDate) {
-              return day;
-            }
-
-            return {
-              ...day,
-              shifts: day.shifts.filter((shift) => shift.id !== shiftId),
-            };
-          });
-
-          onChange(nextWeekDays);
-          return nextWeekDays;
-        });
-
-        setPendingRemovals((currentPendingRemovals) => {
-          const { [pendingKey]: _discard, ...remainingPendingRemovals } = currentPendingRemovals;
-          return remainingPendingRemovals;
-        });
-      }, REMOVE_SHIFT_TIMEOUT_MS);
-
-      hasScheduledRemoval = true;
-      return {
-        ...currentPendingRemovals,
-        [pendingKey]: timeoutId,
-      };
-    });
-
-    if (hasScheduledRemoval) {
-      showToast({
-        title: 'Shift removed',
-        content: (
-          <button
-            type="button"
-            className="confirm-card__undo"
-            onClick={() => restoreShift(isoDate, shiftId)}
-          >
-            Undo
-          </button>
-        ),
-        timeoutMs: REMOVE_SHIFT_TIMEOUT_MS,
-        variant: 'information',
-      });
+    if (pendingRemovalsRef.current[pendingKey] !== undefined) {
+      return;
     }
+
+    const timeoutId = window.setTimeout(() => {
+      setWeekDays((currentWeekDays) => {
+        const nextWeekDays = currentWeekDays.map((day) => {
+          if (day.isoDate !== isoDate) {
+            return day;
+          }
+
+          return {
+            ...day,
+            shifts: day.shifts.filter((shift) => shift.id !== shiftId),
+          };
+        });
+
+        onChange(nextWeekDays);
+        return nextWeekDays;
+      });
+
+      const { [pendingKey]: _discard, ...remainingPendingRemovals } = pendingRemovalsRef.current;
+      pendingRemovalsRef.current = remainingPendingRemovals;
+      setPendingRemovals(remainingPendingRemovals);
+    }, REMOVE_SHIFT_TIMEOUT_MS);
+
+    pendingRemovalsRef.current = {
+      ...pendingRemovalsRef.current,
+      [pendingKey]: timeoutId,
+    };
+    setPendingRemovals(pendingRemovalsRef.current);
+
+    showToast({
+      title: 'Shift removed',
+      content: (
+        <button
+          type="button"
+          className="confirm-card__undo"
+          onClick={() => restoreShift(isoDate, shiftId)}
+        >
+          Undo
+        </button>
+      ),
+      timeoutMs: REMOVE_SHIFT_TIMEOUT_MS,
+      variant: 'information',
+    });
   }, [onChange, restoreShift, showToast]);
 
   const updateChevrons = useCallback(() => {
