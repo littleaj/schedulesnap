@@ -23,7 +23,12 @@ const CalendarDayCard = ({ day, updateShiftField, onRemoveShift, canRemoveShift 
                   <button
                     type="button"
                     className="material-symbols-outlined confirm-card__remove-shift"
-                    aria-label={`Remove shift on ${day.weekday} ${day.monthDay}`}
+                    aria-label={[
+                      'Remove shift',
+                      shift.role || shift.eventName || 'shift',
+                      `on ${day.weekday} ${day.monthDay}`,
+                      shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
+                    ].filter(Boolean).join(' ')}
                     onClick={() => onRemoveShift(day.isoDate, shift.id)}
                     disabled={!canRemoveShift}
                   >
