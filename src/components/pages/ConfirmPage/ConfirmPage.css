@@ -227,10 +227,20 @@
   cursor: pointer;
   font-size: 1.25rem;
   line-height: 1;
+  opacity: 0.9;
+  transition: opacity 150ms ease, filter 150ms ease, transform 150ms ease;
+}
+
+.confirm-card__remove-shift:hover:not(:disabled),
+.confirm-card__remove-shift:focus-visible:not(:disabled) {
+  opacity: 1;
+  filter: saturate(0.7) brightness(1.05);
+  transform: translateY(-1px);
 }
 
 .confirm-card__remove-shift:disabled {
   opacity: 0.5;
+  filter: grayscale(0.2) saturate(0.5);
   cursor: not-allowed;
 }
 
@@ -243,6 +253,13 @@
   color: inherit;
   font: inherit;
   cursor: pointer;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+
+.confirm-card__undo:hover,
+.confirm-card__undo:focus-visible {
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  opacity: 0.96;
 }
 
 .confirm-card__event--off {

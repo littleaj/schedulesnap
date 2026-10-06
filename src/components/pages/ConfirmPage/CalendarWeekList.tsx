@@ -24,10 +24,11 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
 });
 
 const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
-  const { showToast } = useUserMessage();
+  const { showToast, dismissToast } = useUserMessage();
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
   const [pendingRemovals, setPendingRemovals] = useState<Record<string, number>>({});
   const pendingRemovalsRef = useRef<Record<string, number>>({});
+  const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
 
   const updateShiftField = useCallback((dayIso: string, shiftId: string, field: 'startTime' | 'endTime' | 'eventName' | 'location', value: React.InputHTMLAttributes<HTMLInputElement>['value']) => {
     setWeekDays((currentWeekDays) => {
@@ -66,6 +67,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const restoreShift = useCallback((isoDate: string, shiftId: string) => {
     const pendingKey = toPendingRemovalKey(isoDate, shiftId);
     const timerId = pendingRemovalsRef.current[pendingKey];
+    const pendingToastId = pendingRemovalToastIdsRef.current[pendingKey];
 
     if (timerId === undefined) {
       return;
@@ -73,9 +75,14 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
 
     window.clearTimeout(timerId);
     const { [pendingKey]: _discard, ...remainingPendingRemovals } = pendingRemovalsRef.current;
+    const { [pendingKey]: _discardToast, ...remainingToastIds } = pendingRemovalToastIdsRef.current;
     pendingRemovalsRef.current = remainingPendingRemovals;
+    pendingRemovalToastIdsRef.current = remainingToastIds;
     setPendingRemovals(remainingPendingRemovals);
-  }, []);
+    if (pendingToastId !== undefined) {
+      dismissToast(pendingToastId);
+    }
+  }, [dismissToast]);
 
   const removeShift = useCallback((isoDate: string, shiftId: string) => {
     const pendingKey = toPendingRemovalKey(isoDate, shiftId);
@@ -102,7 +109,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       });
 
       const { [pendingKey]: _discard, ...remainingPendingRemovals } = pendingRemovalsRef.current;
+      const { [pendingKey]: _discardToast, ...remainingToastIds } = pendingRemovalToastIdsRef.current;
       pendingRemovalsRef.current = remainingPendingRemovals;
+      pendingRemovalToastIdsRef.current = remainingToastIds;
       setPendingRemovals(remainingPendingRemovals);
     }, REMOVE_SHIFT_TIMEOUT_MS);
 
@@ -110,9 +119,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       ...pendingRemovalsRef.current,
       [pendingKey]: timeoutId,
     };
-    setPendingRemovals(pendingRemovalsRef.current);
-
-    showToast({
+    const removalToastId = showToast({
       title: 'Shift removed',
       content: (
         <button
@@ -126,7 +133,12 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       timeoutMs: REMOVE_SHIFT_TIMEOUT_MS,
       variant: 'information',
     });
-  }, [onChange, restoreShift, showToast]);
+    pendingRemovalToastIdsRef.current = {
+      ...pendingRemovalToastIdsRef.current,
+      [pendingKey]: removalToastId,
+    };
+    setPendingRemovals(pendingRemovalsRef.current);
+  }, [onChange, restoreShift, showToast, dismissToast]);
 
   const updateChevrons = useCallback(() => {
     if (!scroller.current || !prevIndicator.current || !nextIndicator.current) return;

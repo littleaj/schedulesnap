@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserMessageProvider } from '@/contexts/user-message';
 import ConfirmPage from './ConfirmPage';
 
@@ -235,16 +235,14 @@ describe('ConfirmPage', () => {
 
     renderConfirmPage();
 
-    const removeButton = screen.getByRole('button', { name: /remove shift/i });
-
-    fireEvent.click(removeButton);
+    fireEvent.click(screen.getByRole('button', { name: /remove shift/i }));
     expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
 
     fireEvent.click(screen.getByRole('button', { name: /undo/i }));
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.getByDisplayValue('Barista')).toBeInTheDocument();
 
-    fireEvent.click(removeButton);
+    fireEvent.click(screen.getAllByRole('button', { name: /remove shift/i })[0]);
     expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
     expect(screen.getByRole('button', { name: /undo/i })).toBeInTheDocument();
   });
