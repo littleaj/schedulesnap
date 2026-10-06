@@ -1,5 +1,6 @@
 import EditableText from "@/components/atoms/EditableText";
 import type { WeekDay } from "@/types/shift-display";
+import { isShiftValid } from "./utils/shift-validation";
 
 export interface CalendarDayCardProps {
   day: WeekDay;
@@ -14,8 +15,12 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
         <p className="confirm-card__cell-date">{day.monthDay}</p>
 
         <div className="confirm-card__events">
-          {day.shifts.map((shift) => (
-            <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}>
+          {day.shifts.map((shift) => {
+            const shiftIsInvalid = !isShiftValid(shift);
+            const invalidIndicatorId = `shift-invalid-${shift.id}`;
+
+            return (
+            <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''} ${shiftIsInvalid ? 'confirm-card__event--invalid' : ''}`}>
               <div className="confirm-card__time-row">
                 <label htmlFor={`start-time-${shift.id}`}>Start</label>
                 <EditableText
@@ -25,6 +30,9 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
                   ariaLabel={`${day.weekday} start time`}
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
                   type="time"
+                  required
+                  aria-invalid={shiftIsInvalid}
+                  aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
                 />
 
               </div>
@@ -37,6 +45,9 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
                   ariaLabel={`${day.weekday} end time`}
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
                   type="time"
+                  required
+                  aria-invalid={shiftIsInvalid}
+                  aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
                 />
 
               </div>
@@ -49,6 +60,9 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
                   placeholder="Event name"
                   ariaLabel={`${day.weekday} event name`}
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
+                  required
+                  aria-invalid={shiftIsInvalid}
+                  aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
                 />
               </div>
 
@@ -62,8 +76,9 @@ const CalendarDayCard = ({ day, updateShiftField }: CalendarDayCardProps) => {
                   onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
                 />
               </div>
+              {shiftIsInvalid ? <p id={invalidIndicatorId} className="confirm-card__event-invalid-indicator">Invalid shift</p> : null}
             </div>
-          ))}
+          )})}
         </div>
       </article>
     </div>

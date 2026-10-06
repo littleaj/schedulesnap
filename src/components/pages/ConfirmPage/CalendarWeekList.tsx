@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import CalendarDayCard from "./CalendarDayCard";
 import type { WeekDay } from "@/types/shift-display";
+import { getWeekValidationState, type WeekValidationState } from "./utils/shift-validation";
 
 interface CalendarWeekListProps {
   shifts: WeekDay[];
   onChange: (weekDays: WeekDay[]) => void;
+  onValidationChange?: (state: WeekValidationState) => void;
 }
 
-const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
+const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeekListProps) => {
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
 
   const updateShiftField = useCallback((dayIso: string, shiftId: string, field: 'startTime' | 'endTime' | 'eventName' | 'location', value: React.InputHTMLAttributes<HTMLInputElement>['value']) => {
@@ -38,6 +40,10 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return nextWeekDays;
     });
   }, [onChange]);
+
+  useEffect(() => {
+    onValidationChange?.(getWeekValidationState(weekDays));
+  }, [onValidationChange, weekDays]);
 
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLDivElement>(null);
