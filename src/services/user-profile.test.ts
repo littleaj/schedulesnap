@@ -4,6 +4,7 @@ import {
   buildDefaultUserProfile,
   getUserProfile,
   isUserProfileComplete,
+  resolveShiftName,
   saveUserProfile,
 } from './user-profile';
 
@@ -72,6 +73,9 @@ describe('userProfileService', () => {
 
     expect(sanitized.defaultShiftName).toBe('Work');
     expect(sanitized.namePrefix).toBe('');
+    expect(resolveShiftName(sanitized, 'Morning Shift')).toBe('Morning Shift');
+    expect(resolveShiftName(sanitized, '')).toBe('Work');
+    expect(resolveShiftName({ ...sanitized, namePrefix: 'Retail - ' }, '')).toBe('Retail - Work');
   });
 
   it('saves the profile with merge semantics', async () => {
@@ -99,6 +103,8 @@ describe('userProfileService', () => {
       targetName: '',
       timezone: 'UTC',
       defaultCalendarId: 'primary',
+      defaultShiftName: 'Work',
+      namePrefix: '',
       reminder: {
         enabled: true,
         minutesBefore: 60,

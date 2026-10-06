@@ -54,6 +54,10 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
       errs.defaultCalendarId = 'Default calendar is required.';
     }
 
+    if (!profile.defaultShiftName.trim()) {
+      errs.defaultShiftName = 'Default shift name is required.';
+    }
+
     if (profile.reminder.enabled && profile.reminder.minutesBefore <= 0) {
       errs.reminderMinutesBefore = 'Reminder minutes must be greater than zero.';
     }
@@ -103,6 +107,16 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
   const setDefaultCalendarId = (value: string) => {
     setSuccessMessage(null);
     setValues((current) => ({ ...current, defaultCalendarId: value }));
+  };
+
+  const setDefaultShiftName = (value: string) => {
+    setSuccessMessage(null);
+    setValues((current) => ({ ...current, defaultShiftName: value }));
+  };
+
+  const setNamePrefix = (value: string) => {
+    setSuccessMessage(null);
+    setValues((current) => ({ ...current, namePrefix: value }));
   };
 
   const submit = async () => {
@@ -173,6 +187,23 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
           defaultValue={values.defaultCalendarId}
           onChange={(value) => setDefaultCalendarId(value)}
           error={errors.defaultCalendarId}
+        />
+
+        <LabeledInput
+          id="default-shift-name"
+          label="Default shift name"
+          value={values.defaultShiftName}
+          onChange={(event) => setDefaultShiftName(event.target.value)}
+          hint="Used as the fallback event title when no shift name is found"
+          error={errors.defaultShiftName}
+        />
+
+        <LabeledInput
+          id="name-prefix"
+          label="Name prefix"
+          value={values.namePrefix}
+          onChange={(event) => setNamePrefix(event.target.value)}
+          hint="Optional text to prepend to whatever shift title is used"
         />
       </div>
 

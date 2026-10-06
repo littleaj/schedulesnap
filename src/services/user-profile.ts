@@ -10,11 +10,18 @@ export const buildDefaultUserProfile = (timezone = 'UTC', displayName: string | 
   targetName: typeof displayName === 'string' ? (displayName.split(' ')[0] ?? '') : '',
   timezone,
   defaultCalendarId: calendarId,
+  defaultShiftName: 'Work',
+  namePrefix: '',
   reminder: {
     enabled: false,
     minutesBefore: 30,
   },
 });
+
+export const resolveShiftName = (profile: Pick<UserProfile, 'defaultShiftName' | 'namePrefix'>, extractedName?: string | null): string => {
+  const resolvedBaseName = extractedName?.trim() ? extractedName.trim() : profile.defaultShiftName.trim() || 'Work';
+  return `${profile.namePrefix ?? ''}${resolvedBaseName}`;
+};
 
 const sanitizeProfileData = (source: Partial<UserProfile>): UserProfile => {
   const defaults = buildDefaultUserProfile();
@@ -24,6 +31,8 @@ const sanitizeProfileData = (source: Partial<UserProfile>): UserProfile => {
     targetName: typeof source.targetName === 'string' ? source.targetName : defaults.targetName,
     timezone: typeof source.timezone === 'string' ? source.timezone : defaults.timezone,
     defaultCalendarId: typeof source.defaultCalendarId === 'string' ? source.defaultCalendarId : defaults.defaultCalendarId,
+    defaultShiftName: typeof source.defaultShiftName === 'string' && source.defaultShiftName.trim() ? source.defaultShiftName : defaults.defaultShiftName,
+    namePrefix: typeof source.namePrefix === 'string' ? source.namePrefix : defaults.namePrefix,
     reminder: {
       enabled: typeof reminder.enabled === 'boolean' ? reminder.enabled : defaults.reminder.enabled,
       minutesBefore: typeof reminder.minutesBefore === 'number' ? reminder.minutesBefore : defaults.reminder.minutesBefore,
