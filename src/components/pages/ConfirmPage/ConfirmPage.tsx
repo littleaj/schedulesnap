@@ -108,7 +108,7 @@ const ConfirmPage = () => {
             <p className="eyebrow">Review schedule</p>
             <h1 id="confirm-title">Review your shifts</h1>
             <p className="confirm-card__intro">
-              Compare your shifts with the scanned image below and make any necessary adjustments.
+              Compare your shifts with the scanned image and make any necessary adjustments.
             </p>
           </div>
         </div>
