@@ -51,10 +51,6 @@ const ConfirmPage = () => {
 
   const [weekValidationState, setWeekValidationState] = useState<WeekValidationState>(() => getWeekValidationState(weekDays));
 
-  useEffect(() => {
-    setWeekValidationState(getWeekValidationState(weekDays));
-  }, [weekDays]);
-
   const handleCreateEvents = () => {
     void navigate('/creating', {
       replace: true,

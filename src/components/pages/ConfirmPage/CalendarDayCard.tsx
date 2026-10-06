@@ -50,40 +50,41 @@ const CalendarDayCard = ({ day, updateShiftField, onRemoveShift, canRemoveShift 
                     ariaLabel={`${day.weekday} start time`}
                     onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
                     type="time"
-                    required
-                    aria-invalid={shiftIsInvalid}
+                    required={!shift.isPlaceholder}
+                    aria-invalid={!shift.isPlaceholder && shiftIsInvalid}
                     aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
                   />
 
-                </div>
-                <div className="confirm-card__time-row">
-                  <label htmlFor={`end-time-${shift.id}`}>End</label>
-                  <EditableText
-                    id={`end-time-${shift.id}`}
-                    value={shift.endTime}
-                    placeholder="End time"
-                    ariaLabel={`${day.weekday} end time`}
-                    onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
-                    type="time"
-                    required
-                    aria-invalid={shiftIsInvalid}
-                    aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
-                  />
-                </div>
+              </div>
+              <div className="confirm-card__time-row">
+                <label htmlFor={`end-time-${shift.id}`}>End</label>
+                <EditableText
+                  id={`end-time-${shift.id}`}
+                  value={shift.endTime}
+                  placeholder="End time"
+                  ariaLabel={`${day.weekday} end time`}
+                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
+                  type="time"
+                  required={!shift.isPlaceholder}
+                  aria-invalid={!shift.isPlaceholder && shiftIsInvalid}
+                  aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
+                />
 
-                <div>
-                  <label htmlFor={`event-name-${shift.id}`}>Event Name</label>
-                  <EditableText
-                    id={`event-name-${shift.id}`}
-                    value={shift.eventName ?? shift.role ?? ''}
-                    placeholder="Event name"
-                    ariaLabel={`${day.weekday} event name`}
-                    onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
-                    required
-                    aria-invalid={shiftIsInvalid}
-                    aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
-                  />
-                </div>
+              </div>
+
+              <div>
+                <label htmlFor={`event-name-${shift.id}`}>Event Name</label>
+                <EditableText
+                  id={`event-name-${shift.id}`}
+                  value={shift.eventName ?? shift.role ?? ''}
+                  placeholder="Event name"
+                  ariaLabel={`${day.weekday} event name`}
+                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
+                  required={!shift.isPlaceholder}
+                  aria-invalid={!shift.isPlaceholder && shiftIsInvalid}
+                  aria-describedby={shiftIsInvalid ? invalidIndicatorId : undefined}
+                />
+              </div>
 
                 <div>
                   <label htmlFor={`location-${shift.id}`}>Location</label>
