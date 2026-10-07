@@ -11,6 +11,7 @@ import useCurrentUser from '@/hooks/current-user';
 import PageContent from '@/components/templates/PageContent';
 import { Card } from '@/components/atoms/Card';
 import ActionButton from '@/components/atoms/ActionButton';
+import NoteBlock from '@/components/atoms/NoteBlock/NoteBlock';
 
 const AnalysisPage = () => {
   const navigate = useNavigate();
@@ -84,7 +85,9 @@ const AnalysisPage = () => {
   const AnalysisContent = (
     <>
       <h1 id="analysis-title">Analyzing your schedule</h1>
-      <p className="analysis-card__warning">Do not navigate away from this page while the analysis is in progress.</p>
+      <NoteBlock variant="warning" className="analysis-card__warning">
+        Do not navigate away from this page while the analysis is in progress.
+      </NoteBlock>
       <div className="analysis-card__status" role="status" aria-live="polite">
         {/* TODO: use LoadingSpinner component */}
         <div

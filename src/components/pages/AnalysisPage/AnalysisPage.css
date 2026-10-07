@@ -96,6 +96,10 @@
   gap: 0.8rem;
 }
 
+.analysis-card__warning {
+  margin-top: 1.25rem;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
