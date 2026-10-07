@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import CalendarDayCard from "./CalendarDayCard";
-import type { WeekDay } from "@/types/shift-display";
 import { getWeekValidationState, type WeekValidationState } from "./utils/shift-validation";
+import type { EditableShift, WeekDay } from "@/types/shift-display";
+import useUserMessage from "@/hooks/user-message";
 
 interface CalendarWeekListProps {
   shifts: WeekDay[];
@@ -9,8 +10,28 @@ interface CalendarWeekListProps {
   onValidationChange?: (state: WeekValidationState) => void;
 }
 
-const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeekListProps) => {
+const REMOVE_SHIFT_TIMEOUT_MS = 5000;
+const toPendingRemovalKey = (isoDate: string, shiftId: string) => `${isoDate}::${shiftId}`;
+const createPlaceholderShift = (isoDate: string): EditableShift => ({
+  id: `${isoDate}-placeholder`,
+  date: isoDate,
+  startTime: '',
+  endTime: '',
+  role: '',
+  eventName: '',
+  location: '',
+  confidence: 0,
+  rawText: '',
+  isPlaceholder: true,
+});
+
+const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
+  const { showToast, dismissToast } = useUserMessage();
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
+  const weekDaysRef = useRef<WeekDay[]>(shifts);
+  const [pendingRemovals, setPendingRemovals] = useState<Record<string, number>>({});
+  const pendingRemovalsRef = useRef<Record<string, number>>({});
+  const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
     setWeekDays(shifts);
@@ -52,6 +73,81 @@ const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeek
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLDivElement>(null);
   const nextIndicator = useRef<HTMLDivElement>(null);
+  const hasPendingRemovals = useMemo(() => Object.keys(pendingRemovals).length > 0, [pendingRemovals]);
+
+  const restoreShift = useCallback((isoDate: string, shiftId: string) => {
+    const pendingKey = toPendingRemovalKey(isoDate, shiftId);
+    const timerId = pendingRemovalsRef.current[pendingKey];
+    const pendingToastId = pendingRemovalToastIdsRef.current[pendingKey];
+
+    if (timerId === undefined) {
+      return;
+    }
+
+    window.clearTimeout(timerId);
+    const { [pendingKey]: _discard, ...remainingPendingRemovals } = pendingRemovalsRef.current;
+    const { [pendingKey]: _discardToast, ...remainingToastIds } = pendingRemovalToastIdsRef.current;
+    pendingRemovalsRef.current = remainingPendingRemovals;
+    pendingRemovalToastIdsRef.current = remainingToastIds;
+    setPendingRemovals(remainingPendingRemovals);
+    if (pendingToastId !== undefined) {
+      dismissToast(pendingToastId);
+    }
+  }, [dismissToast]);
+
+  const removeShift = useCallback((isoDate: string, shiftId: string) => {
+    const pendingKey = toPendingRemovalKey(isoDate, shiftId);
+
+    if (pendingRemovalsRef.current[pendingKey] !== undefined) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      const nextWeekDays = weekDaysRef.current.map((day) => {
+        if (day.isoDate !== isoDate) {
+          return day;
+        }
+
+        return {
+          ...day,
+          shifts: day.shifts.filter((shift) => shift.id !== shiftId),
+        };
+      });
+      weekDaysRef.current = nextWeekDays;
+      setWeekDays(nextWeekDays);
+      onChange(nextWeekDays);
+
+      const { [pendingKey]: _discard, ...remainingPendingRemovals } = pendingRemovalsRef.current;
+      const { [pendingKey]: _discardToast, ...remainingToastIds } = pendingRemovalToastIdsRef.current;
+      pendingRemovalsRef.current = remainingPendingRemovals;
+      pendingRemovalToastIdsRef.current = remainingToastIds;
+      setPendingRemovals(remainingPendingRemovals);
+    }, REMOVE_SHIFT_TIMEOUT_MS);
+
+    pendingRemovalsRef.current = {
+      ...pendingRemovalsRef.current,
+      [pendingKey]: timeoutId,
+    };
+    const removalToastId = showToast({
+      title: 'Shift removed',
+      content: (
+        <button
+          type="button"
+          className="confirm-card__undo"
+          onClick={() => restoreShift(isoDate, shiftId)}
+        >
+          Undo
+        </button>
+      ),
+      timeoutMs: REMOVE_SHIFT_TIMEOUT_MS,
+      variant: 'information',
+    });
+    pendingRemovalToastIdsRef.current = {
+      ...pendingRemovalToastIdsRef.current,
+      [pendingKey]: removalToastId,
+    };
+    setPendingRemovals(pendingRemovalsRef.current);
+  }, [onChange, restoreShift, showToast, dismissToast]);
 
   const updateChevrons = useCallback(() => {
     if (!scroller.current || !prevIndicator.current || !nextIndicator.current) return;
@@ -74,6 +170,30 @@ const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeek
       setIsTicking(false);
     });
   }, [isTicking, updateChevrons]);
+
+  useEffect(() => {
+    pendingRemovalsRef.current = pendingRemovals;
+  }, [pendingRemovals]);
+
+  useEffect(() => {
+    weekDaysRef.current = weekDays;
+  }, [weekDays]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(pendingRemovalsRef.current).forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
+    };
+  }, []);
+
+  const displayWeekDays = useMemo(() => weekDays.map((day) => {
+    const visibleShifts = day.shifts.filter((shift) => pendingRemovals[toPendingRemovalKey(day.isoDate, shift.id)] === undefined);
+    return {
+      ...day,
+      shifts: visibleShifts.length > 0 ? visibleShifts : [createPlaceholderShift(day.isoDate)],
+    };
+  }), [weekDays, pendingRemovals]);
 
   useEffect(() => {
     if (!scroller.current) return;
@@ -100,8 +220,14 @@ const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeek
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
       </div>
       <div ref={scroller} id="confirm-card__grid" className="confirm-card__grid" aria-label="Scanned weekly schedule">
-        {weekDays.map((day) =>
-          <CalendarDayCard key={day.isoDate} day={day} updateShiftField={updateShiftField} />)
+        {displayWeekDays.map((day) =>
+          <CalendarDayCard
+            key={day.isoDate}
+            day={day}
+            updateShiftField={updateShiftField}
+            onRemoveShift={removeShift}
+            canRemoveShift={!hasPendingRemovals}
+          />)
         }
       </div>
     </>

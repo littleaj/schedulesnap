@@ -37,7 +37,8 @@ interface QueuedModalMessage extends ModalMessage, QueuedMessageBase {
 }
 
 interface UserMessageContextValue {
-  showToast: (message: ToastMessage) => void;
+  showToast: (message: ToastMessage) => number;
+  dismissToast: (toastId?: number) => void;
   showModal: (message: ModalMessage) => Promise<string | null>;
 }
 
@@ -52,6 +53,17 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
     const messageId = nextMessageId.current + 1;
     nextMessageId.current = messageId;
     setToastQueue((currentQueue) => [...currentQueue, { id: messageId, kind: 'toast', ...message }]);
+    return messageId;
+  }, []);
+
+  const dismissToast = useCallback((toastId?: number) => {
+    setToastQueue((currentQueue) => {
+      if (toastId === undefined) {
+        return currentQueue.slice(1);
+      }
+
+      return currentQueue.filter((toast) => toast.id !== toastId);
+    });
   }, []);
 
   const showModal = useCallback((message: ModalMessage) => {
@@ -113,7 +125,7 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
     return () => window.clearTimeout(timer);
   }, [activeToastId, activeToastTimeoutMs, dismissActiveToast]);
 
-  const value = useMemo(() => ({ showToast, showModal }), [showModal, showToast]);
+  const value = useMemo(() => ({ showToast, dismissToast, showModal }), [dismissToast, showModal, showToast]);
 
   return (
     <UserMessageContext.Provider value={value}>

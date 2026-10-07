@@ -1,6 +1,8 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { StrictMode } from 'react';
 import { MemoryRouter } from 'react-router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserMessageProvider } from '@/contexts/user-message';
 import ConfirmPage from './ConfirmPage';
 
 const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock, getUserProfileMock, useCurrentUserMock, useFirestoreMock, navigateMock } = vi.hoisted(() => ({
@@ -54,6 +56,13 @@ describe('ConfirmPage', () => {
     confidence: 0.9,
     rawText: 'Sep 5 9:00 AM - 5:00 PM',
   };
+  const renderConfirmPage = () => render(
+    <UserMessageProvider>
+      <MemoryRouter>
+        <ConfirmPage />
+      </MemoryRouter>
+    </UserMessageProvider>,
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -69,6 +78,10 @@ describe('ConfirmPage', () => {
     });
     useCurrentUserMock.mockReturnValue({ uid: fakeUid, displayName: 'Alex' });
     useFirestoreMock.mockReturnValue({});
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it.todo('renders the cached analysis response when resuming a review', () => {
@@ -88,11 +101,7 @@ describe('ConfirmPage', () => {
       ],
     });
 
-    render(
-      <MemoryRouter>
-        <ConfirmPage />
-      </MemoryRouter>,
-    );
+    renderConfirmPage();
 
     expect(screen.getByRole('heading', { name: /review your shifts/i })).toBeInTheDocument();
     expect(screen.getByText(/1 shift/i)).toBeInTheDocument();
@@ -127,11 +136,7 @@ describe('ConfirmPage', () => {
       ],
     });
 
-    render(
-      <MemoryRouter>
-        <ConfirmPage />
-      </MemoryRouter>,
-    );
+    renderConfirmPage();
 
     const input = screen.getByDisplayValue('09:00 AM');
     fireEvent.change(input, { target: { value: '10:30 AM' } });
@@ -155,11 +160,7 @@ describe('ConfirmPage', () => {
     });
     loadAnalysisResponseMock.mockReturnValue(null);
 
-    render(
-      <MemoryRouter>
-        <ConfirmPage />
-      </MemoryRouter>,
-    );
+    renderConfirmPage();
 
     fireEvent.click(screen.getByRole('button', { name: /create events/i }));
 
@@ -171,17 +172,258 @@ describe('ConfirmPage', () => {
     });
   });
 
+  it('renders a persistent AI review disclaimer above the weekly schedule', () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    const disclaimer = screen.getByText(/Schedules are extracted by AI and can contain mistakes/i);
+    const grid = document.getElementById('confirm-card__grid');
+
+    expect(disclaimer).toBeInTheDocument();
+    expect(grid).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /close|dismiss/i })).not.toBeInTheDocument();
+    expect(grid).not.toBeNull();
+    expect(disclaimer.compareDocumentPosition(grid as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it('falls back to capture when no cached review exists', () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue(null);
 
-    render(
-      <MemoryRouter>
-        <ConfirmPage />
-      </MemoryRouter>,
-    );
+    renderConfirmPage();
 
     expect(screen.getByText(/no saved review was found/i)).toBeInTheDocument();
+  });
+
+  it('shows an undo toast and delays draft persistence when removing a shift', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    fireEvent.click(screen.getByRole('button', { name: /remove shift/i }));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
+    expect(screen.getByRole('button', { name: /undo/i })).toBeInTheDocument();
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+      shifts: expect.not.arrayContaining([expect.objectContaining({ role: 'Barista', startTime: '09:00', endTime: '17:00' })]),
+    }));
+  });
+
+  it('shows a new undo toast after a previous removal is undone and re-removed', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    fireEvent.click(screen.getByRole('button', { name: /remove shift/i }));
+    expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
+
+    fireEvent.click(screen.getByRole('button', { name: /undo/i }));
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByDisplayValue('Barista')).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole('button', { name: /remove shift/i })[0]);
+    expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
+    expect(screen.getByRole('button', { name: /undo/i })).toBeInTheDocument();
+  });
+
+  it('persists a removed shift only once in strict mode after undo timeout', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    render(
+      <StrictMode>
+        <UserMessageProvider>
+          <MemoryRouter>
+            <ConfirmPage />
+          </MemoryRouter>
+        </UserMessageProvider>
+      </StrictMode>,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /remove shift/i }));
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(saveDraftConfirmationMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('restores a removed shift when undo is clicked before the toast timeout', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    fireEvent.click(screen.getByRole('button', { name: /remove shift/i }));
+    fireEvent.click(screen.getByRole('button', { name: /undo/i }));
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
+    expect(screen.getByDisplayValue('Barista')).toBeInTheDocument();
+  });
+
+  it('removes only the selected shift when a day has multiple shifts', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '12:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 12:00 PM',
+        },
+        {
+          date: '2026-09-05',
+          startTime: '13:00',
+          endTime: '17:00',
+          role: 'Cashier',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 1:00 PM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    expect(
+      screen.getByRole('button', { name: /remove shift barista on .* from 09:00 to 12:00/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /remove shift cashier on .* from 13:00 to 17:00/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getAllByRole('button', { name: /remove shift/i })[0]);
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+      shifts: expect.arrayContaining([expect.objectContaining({ role: 'Cashier', startTime: '13:00', endTime: '17:00' })]),
+    }));
+    expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+      shifts: expect.not.arrayContaining([expect.objectContaining({ role: 'Barista', startTime: '09:00', endTime: '12:00' })]),
+    }));
+  });
+
+  it('shows the day-off empty state when removing the only shift on a day', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+    expect(screen.getAllByRole('button', { name: /remove shift/i })).toHaveLength(1);
+
+    fireEvent.click(screen.getByRole('button', { name: /remove shift/i }));
+
+    act(() => {
+      vi.advanceTimersByTime(5000);
+    });
+
+    expect(screen.queryByRole('button', { name: /remove shift/i })).not.toBeInTheDocument();
   });
 
   it('disables create events when a shift is missing a required field', () => {

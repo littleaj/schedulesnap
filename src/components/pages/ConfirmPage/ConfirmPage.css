@@ -65,6 +65,23 @@
   font-size: 1rem;
 }
 
+.confirm-card__disclaimer {
+  margin: 1rem 0 0;
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
+  background: var(--md-tertiary-container);
+  color: var(--md-on-tertiary-container);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+
+  .confirm-card__disclaimer-icon {
+    font-size: 1.5rem;
+  }
+}
+
 .confirm-card__summary {
   position: relative;
   margin-top: 1rem;
@@ -212,6 +229,54 @@
     font-size: 0.75rem;
     margin-inline: 0.5rem;
   }
+}
+
+.confirm-card__event-actions {
+  display: flex;
+  justify-content: end;
+}
+
+.confirm-card__remove-shift {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  opacity: 0.9;
+  transition: opacity 150ms ease, filter 150ms ease, transform 150ms ease;
+}
+
+.confirm-card__remove-shift:hover:not(:disabled),
+.confirm-card__remove-shift:focus-visible:not(:disabled) {
+  opacity: 1;
+  filter: saturate(0.7) brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.confirm-card__remove-shift:disabled {
+  opacity: 0.5;
+  filter: grayscale(0.2) saturate(0.5);
+  cursor: not-allowed;
+}
+
+.confirm-card__undo {
+  border: 1px solid currentColor;
+  border-radius: 999rem;
+  padding-block: 0.25rem;
+  padding-inline: 0.75rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+
+.confirm-card__undo:hover,
+.confirm-card__undo:focus-visible {
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  opacity: 0.96;
 }
 
 .confirm-card__event--off {

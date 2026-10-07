@@ -107,21 +107,29 @@ const ConfirmPage = () => {
             <p className="eyebrow">Review schedule</p>
             <h1 id="confirm-title">Review your shifts</h1>
             <p className="confirm-card__intro">
-              Compare your shifts with the scanned image below and make any necessary adjustments.
+              Compare your shifts with the scanned image and make any necessary adjustments.
             </p>
           </div>
         </div>
 
         {shifts.length > 0 ? (
-          <Card className="confirm-card__summary" aria-label="Extracted shifts week view">
-            <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
-            <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
-            <CalendarWeekList
-              shifts={weekDays}
-              onChange={saveWeekDays}
-              onValidationChange={setWeekValidationState}
-            />
-          </Card>
+          <>
+            <div className="confirm-card__disclaimer">
+              <div className="material-symbols-outlined confirm-card__disclaimer-icon">{'\ue88e'}</div>
+              <p role="note" aria-live="polite">
+                Schedules are extracted by AI and can contain mistakes — review each shift before adding it to your calendar.
+              </p>
+            </div>
+            <Card className="confirm-card__summary" aria-label="Extracted shifts week view">
+              <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
+              <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
+              <CalendarWeekList
+                shifts={weekDays}
+                onChange={saveWeekDays}
+                onValidationChange={setWeekValidationState}
+              />
+            </Card>
+          </>
         ) : (
           <p className="confirm-card__intro">
             No saved review was found. Start over from <Link to="/capture" replace>capture</Link> to continue.
