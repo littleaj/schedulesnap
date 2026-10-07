@@ -33,10 +33,6 @@ const CalendarWeekList = ({ shifts, onChange, onValidationChange }: CalendarWeek
   const pendingRemovalsRef = useRef<Record<string, number>>({});
   const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
 
-  useEffect(() => {
-    setWeekDays(shifts);
-  }, [shifts]);
-
   const updateShiftField = useCallback((dayIso: string, shiftId: string, field: 'startTime' | 'endTime' | 'eventName' | 'location', value: React.InputHTMLAttributes<HTMLInputElement>['value']) => {
     setWeekDays((currentWeekDays) => {
       const nextWeekDays = currentWeekDays.map((day) => {
