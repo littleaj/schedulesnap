@@ -1,0 +1,49 @@
+.note-block {
+  --_note-block-bg-color: var(--note-block-bg-color, var(--md-primary-container));
+  --_note-block-text-color: var(--note-block-text-color, var(--md-on-primary-container));
+  padding: 0.75rem 0.5rem;
+  border-radius: 12px;
+  background: var(--_note-block-bg-color);
+  color: var(--_note-block-text-color);
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+
+  &::before {
+    font-family: 'Material Symbols Outlined'; /* NOSONAR */
+    font-size: 1.75rem;
+    content: '';
+  }
+}
+
+.note-block.information {
+  --note-block-bg-color: var(--md-tertiary-container);
+  --note-block-text-color: var(--md-on-tertiary-container);
+  &::before {
+    content: '\e88e ';
+  }
+}
+
+.note-block.warning {
+  --note-block-bg-color: var(--md-warning-container);
+  --note-block-text-color: var(--md-on-warning-container);
+  &::before {
+    content: '\e002 ';
+  }
+}
+
+.note-block.error {
+  --note-block-bg-color: var(--md-error-container);
+  --note-block-text-color: var(--md-on-error-container);
+  &::before {
+    content: '\e001 ';
+  }
+}
+
+.note-block.success {
+  --note-block-bg-color: var(--md-success-container);
+  --note-block-text-color: var(--md-on-success-container);
+  &::before {
+    content: '\e86c ';
+  }
+}
