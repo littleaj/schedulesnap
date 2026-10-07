@@ -67,19 +67,8 @@
 
 .confirm-card__disclaimer {
   margin: 1rem 0 0;
-  padding: 0.75rem 0.5rem;
-  border-radius: 12px;
-  background: var(--md-tertiary-container);
-  color: var(--md-on-tertiary-container);
   font-size: 0.9rem;
   line-height: 1.6;
-  display: flex;
-  align-items: start;
-  gap: 0.5rem;
-
-  .confirm-card__disclaimer-icon {
-    font-size: 1.5rem;
-  }
 }
 
 .confirm-card__summary {

@@ -17,6 +17,7 @@ import { Card } from '@/components/atoms/Card';
 import CalendarWeekList from './CalendarWeekList';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import PageContent from '@/components/templates/PageContent';
+import NoteBlock from '@/components/atoms/NoteBlock';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -115,12 +116,11 @@ const ConfirmPage = () => {
 
         {shifts.length > 0 ? (
           <>
-            <div className="confirm-card__disclaimer">
-              <div className="material-symbols-outlined confirm-card__disclaimer-icon">{'\ue88e'}</div>
+            <NoteBlock variant="information" className="confirm-card__disclaimer">
               <p role="note" aria-live="polite">
                 Schedules are extracted by AI and can contain mistakes — review each shift before adding it to your calendar.
               </p>
-            </div>
+            </NoteBlock>
             <Card className="confirm-card__summary" aria-label="Extracted shifts week view">
               <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
               <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
