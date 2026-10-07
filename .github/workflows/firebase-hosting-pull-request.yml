@@ -1,5 +1,9 @@
 name: PR build and test
-on: pull_request
+on:
+  pull_request:
+  push:
+    branches:
+      - main
 permissions:
   checks: write
   contents: read
