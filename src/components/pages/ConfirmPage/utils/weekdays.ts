@@ -2,12 +2,9 @@ import type { ScheduleAnalysisShift } from "@/types/schedule-analysis";
 import type { WeekDay, EditableShift } from "@/types/shift-display";
 import { getWeekStartDate } from "@/utils/time-utils";
 import { toLocalDate, toLocalIsoDate, formatWeekday, formatMonthDay, formatTime } from "./formatting";
-import { resolveShiftName } from '@/services/user-profile';
-import type { UserProfile } from '@/types/user-profile';
 
 export const buildWeekDays = (
   shifts: ScheduleAnalysisShift[],
-  profile?: Pick<UserProfile, 'defaultShiftName' | 'namePrefix'>,
 ): WeekDay[] => {
   const firstShiftDate = shifts[0] ? toLocalDate(shifts[0].date) : null;
   const weekStart = firstShiftDate ? getWeekStartDate(firstShiftDate) : null;
@@ -17,7 +14,7 @@ export const buildWeekDays = (
     const dayShifts = groupedShifts.get(shift.date) ?? [];
     dayShifts.push({
       ...shift,
-      eventName: profile ? resolveShiftName(profile, shift.role ?? '') : (shift.role ?? ''),
+      eventName: shift.role ?? '',
       id: formatShiftKey(shift),
       isPlaceholder: false,
     });

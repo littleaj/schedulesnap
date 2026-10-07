@@ -18,6 +18,7 @@ import CalendarWeekList from './CalendarWeekList';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import PageContent from '@/components/templates/PageContent';
 import NoteBlock from '@/components/atoms/NoteBlock';
+import { resolveShiftName } from '@/utils/shift-name';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -43,7 +44,13 @@ const ConfirmPage = () => {
   const shifts = useMemo(() => (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
     .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location), [draftConfirmation, analysisResponse]);
 
-  const weekDays = useMemo(() => (shifts.length > 0 ? buildWeekDays(shifts, profile ?? undefined) : []), [profile, shifts]);
+  const weekDays = useMemo(() => (shifts.length > 0 ? buildWeekDays(shifts).map((day) => ({
+    ...day,
+    shifts: day.shifts.map((shift) => ({
+      ...shift,
+      eventName: profile ? resolveShiftName(profile, shift.eventName ?? shift.role ?? '') : (shift.eventName || shift.role || ''),
+    })),
+  })) : []), [profile, shifts]);
 
   if (shifts.length > 0) {
     console.log("Loaded shifts from", draftConfirmation ? "draft confirmation" : "analysis response");
@@ -125,6 +132,7 @@ const ConfirmPage = () => {
               <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
               <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
               <CalendarWeekList
+                key={weekDays.map((day) => day.isoDate + ':' + day.shifts.map((shift) => `${shift.id}:${shift.eventName ?? ''}`).join('|')).join(';')}
                 shifts={weekDays}
                 onChange={saveWeekDays}
               />

@@ -45,9 +45,17 @@ vi.mock('@/services/schedule-analysis', () => ({
 
 vi.mock('@/services/user-profile', () => ({
   getUserProfile: getUserProfileMock,
+}));
+
+vi.mock('@/utils/shift-name', () => ({
   resolveShiftName: (profile: { defaultShiftName?: string; namePrefix?: string }, extractedName?: string | null) => {
-    const baseName = extractedName?.trim() ? extractedName.trim() : (profile.defaultShiftName?.trim() || 'Work');
-    return `${profile.namePrefix ?? ''}${baseName}`;
+    const prefix = profile.namePrefix ?? '';
+    const trimmedName = extractedName?.trim() ?? '';
+    const withoutPrefix = prefix && trimmedName.startsWith(prefix)
+      ? trimmedName.slice(prefix.length)
+      : trimmedName;
+    const baseName = withoutPrefix || profile.defaultShiftName?.trim() || 'Work';
+    return `${prefix}${baseName}`;
   },
 }));
 

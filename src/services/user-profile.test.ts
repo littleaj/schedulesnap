@@ -76,6 +76,7 @@ describe('userProfileService', () => {
     expect(resolveShiftName(sanitized, 'Morning Shift')).toBe('Morning Shift');
     expect(resolveShiftName(sanitized, '')).toBe('Work');
     expect(resolveShiftName({ ...sanitized, namePrefix: 'Retail - ' }, '')).toBe('Retail - Work');
+    expect(resolveShiftName({ ...sanitized, namePrefix: 'Retail - ' }, 'Retail - Morning Shift')).toBe('Retail - Morning Shift');
   });
 
   it('saves the profile with merge semantics', async () => {

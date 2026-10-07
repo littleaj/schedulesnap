@@ -6,6 +6,8 @@ import {
 } from 'firebase/firestore';
 import type { UserProfile } from '@/types/user-profile';
 
+export { resolveShiftName } from '@/utils/shift-name';
+
 export const buildDefaultUserProfile = (timezone = 'UTC', displayName: string | null = null, calendarId = 'primary'): UserProfile => ({
   targetName: typeof displayName === 'string' ? (displayName.split(' ')[0] ?? '') : '',
   timezone,
@@ -17,11 +19,6 @@ export const buildDefaultUserProfile = (timezone = 'UTC', displayName: string | 
     minutesBefore: 30,
   },
 });
-
-export const resolveShiftName = (profile: Pick<UserProfile, 'defaultShiftName' | 'namePrefix'>, extractedName?: string | null): string => {
-  const resolvedBaseName = extractedName?.trim() ? extractedName.trim() : profile.defaultShiftName.trim() || 'Work';
-  return `${profile.namePrefix ?? ''}${resolvedBaseName}`;
-};
 
 const sanitizeProfileData = (source: Partial<UserProfile>): UserProfile => {
   const defaults = buildDefaultUserProfile();
