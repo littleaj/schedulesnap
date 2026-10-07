@@ -28,9 +28,14 @@ const AnalysisPage = () => {
 
   const capturedPhoto = loadCapturedSchedulePhoto(user.uid);
 
+  const analyzingRef = useRef(false);
   const doAnalysis = useCallback(() => {
 
     const runAnalysis = async () => {
+      if (analyzingRef.current) {
+        return;
+      }
+      analyzingRef.current = true;
       if (!capturedPhoto) {
         setErrorMessage('No captured photo was found. Go back and upload a schedule image first.');
         setStatusMessage('Waiting for a captured schedule photo.');
@@ -60,12 +65,13 @@ const AnalysisPage = () => {
 
         setErrorMessage('Something went wrong reading your photo. Refresh the page and try again.');
         setStatusMessage('Analysis failed.');
+      } finally {
+        console.info("Analysis finished.");
+        analyzingRef.current = false;
       }
     };
 
-    void runAnalysis().finally(() => {
-      console.info("Analysis finished.");
-    });
+    void runAnalysis();
   }, [user, firestore, navigate]);
 
   useEffect(() => {
