@@ -11,8 +11,9 @@ interface CalendarWeekListProps {
 
 const REMOVE_SHIFT_TIMEOUT_MS = 5000;
 const toPendingRemovalKey = (isoDate: string, shiftId: string) => `${isoDate}::${shiftId}`;
-const createPlaceholderShift = (isoDate: string): EditableShift => ({
-  id: `${isoDate}-placeholder`,
+
+const createShift = (isoDate: string, isPlaceholder: boolean): EditableShift => ({
+  id: isPlaceholder ? `${isoDate}-placeholder` : `${isoDate}-new-${crypto.randomUUID?.() ?? Date.now()}`,
   date: isoDate,
   startTime: '',
   endTime: '',
@@ -21,8 +22,10 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
   location: '',
   confidence: 0,
   rawText: '',
-  isPlaceholder: true,
+  isPlaceholder,
 });
+
+const createPlaceholderShift = (isoDate: string): EditableShift => createShift(isoDate, true);
 
 const clearPendingRemoval = (
   pendingKey: string,
@@ -118,6 +121,66 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       endTime: latestDraft.endTime,
     });
   }, [showModal, updateShift]);
+
+  const addNewShift = useCallback(async (isoDate: string) => {
+    const day = weekDays.find((d) => d.isoDate === isoDate);
+    if (!day) {
+      return;
+    }
+
+    const newShift = createShift(isoDate, false);
+    const initialDraft: ShiftEditDraft = {
+      eventName: '',
+      startTime: '',
+      endTime: '',
+    };
+    let latestDraft = initialDraft;
+    const editResult = await showModal({
+      title: 'Add shift',
+      heading: `${day.weekday} ${day.monthDay}`,
+      content: (
+        <ShiftEditDialogContent
+          initialDraft={initialDraft}
+          shiftId={newShift.id}
+          onDraftChange={(draft) => {
+            latestDraft = draft;
+          }}
+        />
+      ),
+      variant: 'information',
+      actionLabels: ['OK', 'Cancel'],
+    });
+
+    if (editResult !== 'OK') {
+      return;
+    }
+
+    // Add the new shift to the day's shifts
+    const nextWeekDays = weekDays.map((d) => {
+      if (d.isoDate !== isoDate) {
+        return d;
+      }
+
+      // Remove placeholder if it exists
+      const nonPlaceholderShifts = d.shifts.filter((shift) => !shift.isPlaceholder);
+
+      return {
+        ...d,
+        shifts: [
+          ...nonPlaceholderShifts,
+          {
+            ...newShift,
+            eventName: latestDraft.eventName,
+            startTime: latestDraft.startTime,
+            endTime: latestDraft.endTime,
+            isPlaceholder: false,
+          },
+        ],
+      };
+    });
+    setWeekDays(nextWeekDays);
+    onChange(nextWeekDays);
+  }, [weekDays, showModal, onChange]);
 
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLButtonElement>(null);
@@ -290,6 +353,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
             onEditShift={openShiftEditor}
             onRemoveShift={removeShift}
             canRemoveShift={!hasPendingRemovals}
+            onAddShift={addNewShift}
           />)
         }
       </div>
