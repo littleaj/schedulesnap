@@ -1,17 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CalendarDayCard from "./CalendarDayCard";
+import ShiftEditDialogContent, { type ShiftEditDraft } from "./ShiftEditDialogContent";
 import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
 
 interface CalendarWeekListProps {
   shifts: WeekDay[];
   onChange: (weekDays: WeekDay[]) => void;
-}
-
-interface ShiftEditDraft {
-  eventName: string;
-  startTime: string;
-  endTime: string;
 }
 
 const REMOVE_SHIFT_TIMEOUT_MS = 5000;
@@ -28,63 +23,6 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
   rawText: '',
   isPlaceholder: true,
 });
-
-interface ShiftEditDialogContentProps {
-  initialDraft: ShiftEditDraft;
-  onDraftChange: (draft: ShiftEditDraft) => void;
-  shiftId: string;
-}
-
-const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftEditDialogContentProps) => {
-  const [draft, setDraft] = useState<ShiftEditDraft>(initialDraft);
-
-  return (
-    <div className="confirm-card__edit-dialog">
-      <label htmlFor={`edit-event-name-${shiftId}`}>Event Name</label>
-      <input
-        id={`edit-event-name-${shiftId}`}
-        name="event-name"
-        type="text"
-        value={draft.eventName}
-        onChange={(event) => {
-          setDraft((currentDraft) => {
-            const nextDraft = { ...currentDraft, eventName: event.target.value };
-            onDraftChange(nextDraft);
-            return nextDraft;
-          });
-        }}
-      />
-      <label htmlFor={`edit-start-time-${shiftId}`}>Start Time</label>
-      <input
-        id={`edit-start-time-${shiftId}`}
-        name="start-time"
-        type="text"
-        value={draft.startTime}
-        onChange={(event) => {
-          setDraft((currentDraft) => {
-            const nextDraft = { ...currentDraft, startTime: event.target.value };
-            onDraftChange(nextDraft);
-            return nextDraft;
-          });
-        }}
-      />
-      <label htmlFor={`edit-end-time-${shiftId}`}>End Time</label>
-      <input
-        id={`edit-end-time-${shiftId}`}
-        name="end-time"
-        type="text"
-        value={draft.endTime}
-        onChange={(event) => {
-          setDraft((currentDraft) => {
-            const nextDraft = { ...currentDraft, endTime: event.target.value };
-            onDraftChange(nextDraft);
-            return nextDraft;
-          });
-        }}
-      />
-    </div>
-  );
-};
 
 const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const { showModal, showToast, dismissToast } = useUserMessage();
