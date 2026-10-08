@@ -10,7 +10,7 @@ export interface CalendarDayCardProps {
 
 const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift) => [
   prefix,
-  shift.role || shift.eventName || 'shift',
+  shift.eventName || shift.role || 'shift',
   `on ${day.weekday} ${day.monthDay}`,
   shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
 ].filter(Boolean).join(' ');
