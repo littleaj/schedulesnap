@@ -1,14 +1,13 @@
-import EditableText from "@/components/atoms/EditableText";
-import type { WeekDay } from "@/types/shift-display";
+import type { EditableShift, WeekDay } from "@/types/shift-display";
 
 export interface CalendarDayCardProps {
   day: WeekDay;
-  updateShiftField: (isoDate: string, shiftId: string, field: "startTime" | "endTime" | "eventName" | "location", value: React.InputHTMLAttributes<HTMLInputElement>['value']) => void;
+  onEditShift: (day: WeekDay, shift: EditableShift) => void;
   onRemoveShift: (isoDate: string, shiftId: string) => void;
   canRemoveShift: boolean;
 }
 
-const CalendarDayCard = ({ day, updateShiftField, onRemoveShift, canRemoveShift }: CalendarDayCardProps) => {
+const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: CalendarDayCardProps) => {
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
@@ -20,6 +19,19 @@ const CalendarDayCard = ({ day, updateShiftField, onRemoveShift, canRemoveShift 
             <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}>
               {!shift.isPlaceholder ? (
                 <div className="confirm-card__event-actions">
+                  <button
+                    type="button"
+                    className="material-symbols-outlined confirm-card__edit-shift"
+                    aria-label={[
+                      'Edit shift',
+                      shift.role || shift.eventName || 'shift',
+                      `on ${day.weekday} ${day.monthDay}`,
+                      shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
+                    ].filter(Boolean).join(' ')}
+                    onClick={() => onEditShift(day, shift)}
+                  >
+                    {'\ue3c9'}
+                  </button>
                   <button
                     type="button"
                     className="material-symbols-outlined confirm-card__remove-shift"
@@ -36,52 +48,15 @@ const CalendarDayCard = ({ day, updateShiftField, onRemoveShift, canRemoveShift 
                   </button>
                 </div>
               ) : null}
-              <div className="confirm-card__time-row">
-                <label htmlFor={`start-time-${shift.id}`}>Start</label>
-                <EditableText
-                  id={`start-time-${shift.id}`}
-                  value={shift.startTime}
-                  placeholder="Start time"
-                  ariaLabel={`${day.weekday} start time`}
-                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'startTime', value)}
-                  type="time"
-                />
-
-              </div>
-              <div className="confirm-card__time-row">
-                <label htmlFor={`end-time-${shift.id}`}>End</label>
-                <EditableText
-                  id={`end-time-${shift.id}`}
-                  value={shift.endTime}
-                  placeholder="End time"
-                  ariaLabel={`${day.weekday} end time`}
-                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'endTime', value)}
-                  type="time"
-                />
-
-              </div>
-
-              <div>
-                <label htmlFor={`event-name-${shift.id}`}>Event Name</label>
-                <EditableText
-                  id={`event-name-${shift.id}`}
-                  value={shift.eventName ?? shift.role ?? ''}
-                  placeholder="Event name"
-                  ariaLabel={`${day.weekday} event name`}
-                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'eventName', value)}
-                />
-              </div>
-
-              <div>
-                <label htmlFor={`location-${shift.id}`}>Location</label>
-                <EditableText
-                  id={`location-${shift.id}`}
-                  value={shift.location ?? ''}
-                  placeholder="Location"
-                  ariaLabel={`${day.weekday} location`}
-                  onCommit={(value) => updateShiftField(day.isoDate, shift.id, 'location', value)}
-                />
-              </div>
+              {!shift.isPlaceholder ? (
+                <div className="confirm-card__event-summary" onDoubleClick={() => onEditShift(day, shift)}>
+                  <p className="confirm-card__cell-role">{shift.eventName || shift.role || 'Shift'}</p>
+                  <p className="confirm-card__cell-time">{shift.startTime || 'Start time'}</p>
+                  <p className="confirm-card__cell-time">{shift.endTime || 'End time'}</p>
+                </div>
+              ) : (
+                <p className="confirm-card__cell-role">Day off</p>
+              )}
             </div>
           ))}
         </div>

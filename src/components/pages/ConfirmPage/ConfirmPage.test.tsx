@@ -75,7 +75,7 @@ describe('ConfirmPage', () => {
     vi.useRealTimers();
   });
 
-  it.todo('renders the cached analysis response when resuming a review', () => {
+  it('renders shifts as read-only text blocks by default', () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue({
       scheduleOwnerGuess: 'Alex',
@@ -96,20 +96,17 @@ describe('ConfirmPage', () => {
 
     expect(screen.getByRole('heading', { name: /review your shifts/i })).toBeInTheDocument();
     expect(screen.getByText(/1 shift/i)).toBeInTheDocument();
-    expect(screen.getByRole('list', { name: /scanned weekly schedule/i })).toBeInTheDocument();
-    expect(screen.getAllByRole('listitem')).toHaveLength(7);
+    expect(screen.getByLabelText(/scanned weekly schedule/i)).toBeInTheDocument();
     expect(screen.getByText(new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date('2026-09-05T00:00:00')))).toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: /start time/i }).some((button) => button.textContent !== 'Start time')).toBe(true);
-    expect(screen.getAllByRole('button', { name: /end time/i }).some((button) => button.textContent !== 'End time')).toBe(true);
     expect(screen.getByText('Barista')).toBeInTheDocument();
-    expect(screen.getByText('Downtown')).toBeInTheDocument();
-    expect(screen.getAllByPlaceholderText('Start time')).toHaveLength(6);
-    expect(screen.getAllByPlaceholderText('End time')).toHaveLength(6);
-    expect(screen.getAllByPlaceholderText('Event name')).toHaveLength(6);
-    expect(screen.getAllByPlaceholderText('Location')).toHaveLength(6);
+    expect(screen.getByText('09:00')).toBeInTheDocument();
+    expect(screen.getByText('17:00')).toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /event name/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /start time/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('textbox', { name: /end time/i })).not.toBeInTheDocument();
   });
 
-  it.todo('saves edited values to the draft when a shift is updated', async () => {
+  it('opens the edit dialog and saves values only when OK is clicked', async () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue({
       scheduleOwnerGuess: 'Alex',
@@ -128,10 +125,17 @@ describe('ConfirmPage', () => {
     });
 
     renderConfirmPage();
+    saveDraftConfirmationMock.mockClear();
 
-    const input = screen.getByDisplayValue('09:00 AM');
-    fireEvent.change(input, { target: { value: '10:30 AM' } });
-    fireEvent.keyDown(input, { key: 'Enter' });
+    fireEvent.click(screen.getByRole('button', { name: /edit shift barista on/i }));
+
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /event name/i })).toHaveValue('Barista');
+    expect(screen.getByRole('textbox', { name: /start time/i })).toHaveValue('09:00');
+    expect(screen.getByRole('textbox', { name: /end time/i })).toHaveValue('17:00');
+
+    fireEvent.change(screen.getByRole('textbox', { name: /start time/i }), { target: { value: '10:30' } });
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
 
     await waitFor(() => {
       expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
@@ -140,6 +144,38 @@ describe('ConfirmPage', () => {
         ]),
       }));
     });
+  });
+
+  it('discards edit dialog changes when Cancel is clicked', async () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      warnings: [],
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+    saveDraftConfirmationMock.mockClear();
+
+    fireEvent.doubleClick(screen.getByText('Barista'));
+    fireEvent.change(screen.getByRole('textbox', { name: /start time/i }), { target: { value: '11:15' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('09:00')).toBeInTheDocument();
+    expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
   });
 
   it('forwards to creating page when create events is clicked', async () => {
@@ -270,7 +306,7 @@ describe('ConfirmPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /undo/i }));
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
-    expect(screen.getByDisplayValue('Barista')).toBeInTheDocument();
+    expect(screen.getByText('Barista')).toBeInTheDocument();
 
     fireEvent.click(screen.getAllByRole('button', { name: /remove shift/i })[0]);
     expect(screen.getByRole('status')).toHaveTextContent('Shift removed');
@@ -342,7 +378,7 @@ describe('ConfirmPage', () => {
     });
 
     expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
-    expect(screen.getByDisplayValue('Barista')).toBeInTheDocument();
+    expect(screen.getByText('Barista')).toBeInTheDocument();
   });
 
   it('removes only the selected shift when a day has multiple shifts', () => {
