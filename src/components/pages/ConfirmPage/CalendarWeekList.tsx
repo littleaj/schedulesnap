@@ -65,10 +65,12 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return;
     }
 
-    const draftValues = {
-      eventName: shift.eventName || shift.role || '',
-      startTime: shift.startTime,
-      endTime: shift.endTime,
+    const draftValuesRef = {
+      current: {
+        eventName: shift.eventName || shift.role || '',
+        startTime: shift.startTime,
+        endTime: shift.endTime,
+      }
     };
     const editResult = await showModal({
       title: 'Edit shift',
@@ -80,9 +82,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
             id={`edit-event-name-${shift.id}`}
             name="event-name"
             type="text"
-            defaultValue={draftValues.eventName}
+            defaultValue={draftValuesRef.current.eventName}
             onChange={(event) => {
-              draftValues.eventName = event.target.value;
+              draftValuesRef.current.eventName = event.target.value;
             }}
           />
           <label htmlFor={`edit-start-time-${shift.id}`}>Start Time</label>
@@ -90,9 +92,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
             id={`edit-start-time-${shift.id}`}
             name="start-time"
             type="text"
-            defaultValue={draftValues.startTime}
+            defaultValue={draftValuesRef.current.startTime}
             onChange={(event) => {
-              draftValues.startTime = event.target.value;
+              draftValuesRef.current.startTime = event.target.value;
             }}
           />
           <label htmlFor={`edit-end-time-${shift.id}`}>End Time</label>
@@ -100,9 +102,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
             id={`edit-end-time-${shift.id}`}
             name="end-time"
             type="text"
-            defaultValue={draftValues.endTime}
+            defaultValue={draftValuesRef.current.endTime}
             onChange={(event) => {
-              draftValues.endTime = event.target.value;
+              draftValuesRef.current.endTime = event.target.value;
             }}
           />
         </div>
@@ -116,9 +118,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     }
 
     updateShift(day.isoDate, shift.id, {
-      eventName: draftValues.eventName,
-      startTime: draftValues.startTime,
-      endTime: draftValues.endTime,
+      eventName: draftValuesRef.current.eventName,
+      startTime: draftValuesRef.current.startTime,
+      endTime: draftValuesRef.current.endTime,
     });
   }, [showModal, updateShift]);
 

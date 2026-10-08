@@ -127,7 +127,7 @@ describe('ConfirmPage', () => {
     renderConfirmPage();
     saveDraftConfirmationMock.mockClear();
 
-    fireEvent.click(screen.getByRole('button', { name: /edit shift barista on/i }));
+    fireEvent.click(screen.getByRole('button', { name: /edit shift barista on .* from 09:00 to 17:00/i }));
 
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: /event name/i })).toHaveValue('Barista');
