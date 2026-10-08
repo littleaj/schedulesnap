@@ -477,6 +477,258 @@ describe('ConfirmPage', () => {
     expect(screen.queryByRole('button', { name: /remove shift/i })).not.toBeInTheDocument();
   });
 
+  it('renders add shift button on each day cell', () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+
+    // Should have 7 add buttons (one per day of the week)
+    const addButtons = screen.getAllByRole('button', { name: /add shift to/i });
+    expect(addButtons).toHaveLength(7);
+  });
+
+  it('opens edit dialog when add shift button is clicked', async () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+
+    fireEvent.click(screen.getByRole('button', { name: /add shift to sat/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+    expect(screen.getByRole('heading', { name: /sat/i })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /event name/i })).toHaveValue('');
+    expect(screen.getByLabelText(/start time/i)).toHaveValue('');
+    expect(screen.getByLabelText(/end time/i)).toHaveValue('');
+  });
+
+  it('adds a new shift to the day when add shift dialog is submitted', async () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+    saveDraftConfirmationMock.mockClear();
+
+    fireEvent.click(screen.getByRole('button', { name: /add shift to sat/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByRole('textbox', { name: /event name/i }), { target: { value: 'Cashier' } });
+    fireEvent.change(screen.getByLabelText(/start time/i), { target: { value: '13:00' } });
+    fireEvent.change(screen.getByLabelText(/end time/i), { target: { value: '17:00' } });
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+
+    await waitFor(() => {
+      expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+        shifts: expect.arrayContaining([
+          expect.objectContaining({ role: 'Cashier', startTime: '13:00', endTime: '17:00', date: '2026-09-05' }),
+        ]),
+      }));
+    });
+  });
+
+  it('discards new shift when cancel is clicked in add dialog', async () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+    saveDraftConfirmationMock.mockClear();
+
+    fireEvent.click(screen.getByRole('button', { name: /add shift to sat/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByRole('textbox', { name: /event name/i }), { target: { value: 'Cashier' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+    expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
+  });
+
+  it('supports adding multiple shifts to the same day', async () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '12:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 12:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+    saveDraftConfirmationMock.mockClear();
+
+    // Add first new shift
+    fireEvent.click(screen.getByRole('button', { name: /add shift to sat/i }));
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByRole('textbox', { name: /event name/i }), { target: { value: 'Cashier' } });
+    fireEvent.change(screen.getByLabelText(/start time/i), { target: { value: '13:00' } });
+    fireEvent.change(screen.getByLabelText(/end time/i), { target: { value: '17:00' } });
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+    });
+
+    // Verify both shifts are now visible
+    expect(screen.getByText('Barista')).toBeInTheDocument();
+    expect(screen.getByText('Cashier')).toBeInTheDocument();
+
+    saveDraftConfirmationMock.mockClear();
+
+    // Add second new shift to the same day
+    fireEvent.click(screen.getByRole('button', { name: /add shift to sat/i }));
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByRole('textbox', { name: /event name/i }), { target: { value: 'Supervisor' } });
+    fireEvent.change(screen.getByLabelText(/start time/i), { target: { value: '17:00' } });
+    fireEvent.change(screen.getByLabelText(/end time/i), { target: { value: '21:00' } });
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+
+    await waitFor(() => {
+      expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+        shifts: expect.arrayContaining([
+          expect.objectContaining({ role: 'Barista', startTime: '09:00', endTime: '12:00', date: '2026-09-05' }),
+          expect.objectContaining({ role: 'Cashier', startTime: '13:00', endTime: '17:00', date: '2026-09-05' }),
+          expect.objectContaining({ role: 'Supervisor', startTime: '17:00', endTime: '21:00', date: '2026-09-05' }),
+        ]),
+      }));
+    });
+  });
+
+  it('renders and edits multiple shifts in a single day independently', async () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '12:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 12:00 PM',
+        },
+        {
+          date: '2026-09-05',
+          startTime: '13:00',
+          endTime: '17:00',
+          role: 'Cashier',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 1:00 PM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    // Verify both shifts render
+    expect(screen.getByText('Barista')).toBeInTheDocument();
+    expect(screen.getByText('Cashier')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /edit shift/i })).toHaveLength(2);
+
+    // Edit the first shift
+    saveDraftConfirmationMock.mockClear();
+    const editButtons = screen.getAllByRole('button', { name: /edit shift/i });
+    fireEvent.click(editButtons[0]);
+
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+    expect(screen.getByLabelText(/start time/i)).toHaveValue('09:00');
+
+    fireEvent.change(screen.getByLabelText(/start time/i), { target: { value: '08:00' } });
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+
+    await waitFor(() => {
+      expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+        shifts: expect.arrayContaining([
+          expect.objectContaining({ role: 'Barista', startTime: '08:00', endTime: '12:00' }),
+          expect.objectContaining({ role: 'Cashier', startTime: '13:00', endTime: '17:00' }),
+        ]),
+      }));
+    });
+
+    // Verify both shifts still render and the second is unaffected
+    expect(screen.getByText('Barista')).toBeInTheDocument();
+    expect(screen.getByText('Cashier')).toBeInTheDocument();
+  });
+
   it('renders chevron buttons for navigating between days', () => {
     loadDraftConfirmationMock.mockReturnValue({
       shifts: [

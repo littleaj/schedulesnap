@@ -6,6 +6,7 @@ export interface CalendarDayCardProps {
   onEditShift: (day: WeekDay, shift: EditableShift) => void;
   onRemoveShift: (isoDate: string, shiftId: string) => void;
   canRemoveShift: boolean;
+  onAddShift: (isoDate: string) => void;
 }
 
 const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift) => [
@@ -15,12 +16,22 @@ const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift)
   shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
 ].filter(Boolean).join(' ');
 
-const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: CalendarDayCardProps) => {
+const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift, onAddShift }: CalendarDayCardProps) => {
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
       <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
-        <p className="confirm-card__cell-date">{day.monthDay}</p>
+        <div className="confirm-card__cell-header">
+          <p className="confirm-card__cell-date">{day.monthDay}</p>
+          <button
+            type="button"
+            className="material-symbols-outlined confirm-card__add-shift"
+            aria-label={`Add shift to ${day.weekday} ${day.monthDay}`}
+            onClick={() => onAddShift(day.isoDate)}
+          >
+            {'\ue145'}
+          </button>
+        </div>
 
         <div className="confirm-card__events">
           {day.shifts.map((shift) => (
