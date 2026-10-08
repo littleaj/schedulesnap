@@ -94,7 +94,7 @@ const MessageDialog = ({
       )}
       <div className="message-dialog__actions">
         {actionLabels.map((label, index) => (
-          <ActionButton key={`${label}-${index}`} variant="primary" onClick={() => onAcknowledge(label)}>{label}</ActionButton>
+          <ActionButton key={`${label}-${index}`} variant={index === 0 ? "primary" : "secondary"} onClick={() => onAcknowledge(label)}>{label}</ActionButton>
         ))}
       </div>
     </dialog>
