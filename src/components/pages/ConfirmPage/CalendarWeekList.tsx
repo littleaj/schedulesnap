@@ -8,6 +8,12 @@ interface CalendarWeekListProps {
   onChange: (weekDays: WeekDay[]) => void;
 }
 
+interface ShiftEditDraft {
+  eventName: string;
+  startTime: string;
+  endTime: string;
+}
+
 const REMOVE_SHIFT_TIMEOUT_MS = 5000;
 const toPendingRemovalKey = (isoDate: string, shiftId: string) => `${isoDate}::${shiftId}`;
 const createPlaceholderShift = (isoDate: string): EditableShift => ({
@@ -22,6 +28,55 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
   rawText: '',
   isPlaceholder: true,
 });
+
+interface ShiftEditDialogContentProps {
+  initialDraft: ShiftEditDraft;
+  onDraftChange: (draft: ShiftEditDraft) => void;
+  shiftId: string;
+}
+
+const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftEditDialogContentProps) => {
+  const [draft, setDraft] = useState<ShiftEditDraft>(initialDraft);
+
+  useEffect(() => {
+    onDraftChange(draft);
+  }, [draft, onDraftChange]);
+
+  return (
+    <div className="confirm-card__edit-dialog">
+      <label htmlFor={`edit-event-name-${shiftId}`}>Event Name</label>
+      <input
+        id={`edit-event-name-${shiftId}`}
+        name="event-name"
+        type="text"
+        value={draft.eventName}
+        onChange={(event) => {
+          setDraft((currentDraft) => ({ ...currentDraft, eventName: event.target.value }));
+        }}
+      />
+      <label htmlFor={`edit-start-time-${shiftId}`}>Start Time</label>
+      <input
+        id={`edit-start-time-${shiftId}`}
+        name="start-time"
+        type="text"
+        value={draft.startTime}
+        onChange={(event) => {
+          setDraft((currentDraft) => ({ ...currentDraft, startTime: event.target.value }));
+        }}
+      />
+      <label htmlFor={`edit-end-time-${shiftId}`}>End Time</label>
+      <input
+        id={`edit-end-time-${shiftId}`}
+        name="end-time"
+        type="text"
+        value={draft.endTime}
+        onChange={(event) => {
+          setDraft((currentDraft) => ({ ...currentDraft, endTime: event.target.value }));
+        }}
+      />
+    </div>
+  );
+};
 
 const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const { showModal, showToast, dismissToast } = useUserMessage();
@@ -65,49 +120,23 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return;
     }
 
-    const draftValuesRef = {
-      current: {
-        eventName: shift.eventName || shift.role || '',
-        startTime: shift.startTime,
-        endTime: shift.endTime,
-      }
+    const initialDraft: ShiftEditDraft = {
+      eventName: shift.eventName || shift.role || '',
+      startTime: shift.startTime,
+      endTime: shift.endTime,
     };
+    let latestDraft = initialDraft;
     const editResult = await showModal({
       title: 'Edit shift',
       heading: `${day.weekday} ${day.monthDay}`,
       content: (
-        <div className="confirm-card__edit-dialog">
-          <label htmlFor={`edit-event-name-${shift.id}`}>Event Name</label>
-          <input
-            id={`edit-event-name-${shift.id}`}
-            name="event-name"
-            type="text"
-            defaultValue={draftValuesRef.current.eventName}
-            onChange={(event) => {
-              draftValuesRef.current.eventName = event.target.value;
-            }}
-          />
-          <label htmlFor={`edit-start-time-${shift.id}`}>Start Time</label>
-          <input
-            id={`edit-start-time-${shift.id}`}
-            name="start-time"
-            type="text"
-            defaultValue={draftValuesRef.current.startTime}
-            onChange={(event) => {
-              draftValuesRef.current.startTime = event.target.value;
-            }}
-          />
-          <label htmlFor={`edit-end-time-${shift.id}`}>End Time</label>
-          <input
-            id={`edit-end-time-${shift.id}`}
-            name="end-time"
-            type="text"
-            defaultValue={draftValuesRef.current.endTime}
-            onChange={(event) => {
-              draftValuesRef.current.endTime = event.target.value;
-            }}
-          />
-        </div>
+        <ShiftEditDialogContent
+          initialDraft={initialDraft}
+          shiftId={shift.id}
+          onDraftChange={(draft) => {
+            latestDraft = draft;
+          }}
+        />
       ),
       variant: 'information',
       actionLabels: ['OK', 'Cancel'],
@@ -118,9 +147,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     }
 
     updateShift(day.isoDate, shift.id, {
-      eventName: draftValuesRef.current.eventName,
-      startTime: draftValuesRef.current.startTime,
-      endTime: draftValuesRef.current.endTime,
+      eventName: latestDraft.eventName,
+      startTime: latestDraft.startTime,
+      endTime: latestDraft.endTime,
     });
   }, [showModal, updateShift]);
 
