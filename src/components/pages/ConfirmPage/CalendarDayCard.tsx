@@ -53,6 +53,7 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: Ca
                   <p className="confirm-card__cell-role">{shift.eventName || shift.role || 'Shift'}</p>
                   <p className="confirm-card__cell-time">{shift.startTime || 'Start time'}</p>
                   <p className="confirm-card__cell-time">{shift.endTime || 'End time'}</p>
+                  {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
                 </div>
               ) : (
                 <p className="confirm-card__cell-role">Day off</p>
