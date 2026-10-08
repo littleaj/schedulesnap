@@ -26,7 +26,7 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
 });
 
 const createNewShift = (isoDate: string): EditableShift => ({
-  id: `${isoDate}-new-${crypto.randomUUID?.() ?? Date.now()}`,
+  id: `${isoDate}-new-${crypto.randomUUID()}`,
   date: isoDate,
   startTime: '',
   endTime: '',
@@ -182,6 +182,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
           {
             ...newShift,
             eventName: latestDraft.eventName,
+            role: latestDraft.eventName,
             startTime: latestDraft.startTime,
             endTime: latestDraft.endTime,
             isPlaceholder: false,
