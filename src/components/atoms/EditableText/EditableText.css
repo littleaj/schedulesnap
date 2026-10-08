@@ -12,14 +12,12 @@
 
 .editable-text__input {
   width: 100%;
-  min-width: 0;
-  padding-inline: 0.25rem;
-  padding-block: 0.35rem;
+  padding-inline: 0.5rem;
+  padding-block: 0.5rem;
   border: 1px solid var(--md-outline);
   border-radius: 8px;
   background-color: transparent;
   color: inherit;
-  text-align: center;
 
   &::placeholder {
     font-weight: normal;
