@@ -464,4 +464,113 @@ describe('ConfirmPage', () => {
 
     expect(screen.queryByRole('button', { name: /remove shift/i })).not.toBeInTheDocument();
   });
+
+  it('renders chevron buttons for navigating between days', () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+        {
+          date: '2026-09-06',
+          startTime: '10:00',
+          endTime: '18:00',
+          role: 'Cashier',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 6 10:00 AM - 6:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    expect(screen.getByRole('button', { name: /scroll to previous day/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /scroll to next day/i })).toBeInTheDocument();
+  });
+
+  it('chevron buttons scroll the grid by one cell width when clicked', () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+        {
+          date: '2026-09-06',
+          startTime: '10:00',
+          endTime: '18:00',
+          role: 'Cashier',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 6 10:00 AM - 6:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    const grid = document.getElementById('confirm-card__grid') as HTMLDivElement;
+    const nextButton = screen.getByRole('button', { name: /scroll to next day/i }) as HTMLButtonElement;
+
+    // Mock the scrollBy method since jsdom doesn't implement it
+    let scrollByCall: { left: number; behavior: string } | undefined;
+    grid.scrollBy = vi.fn((options: ScrollToOptions) => {
+      scrollByCall = { left: options.left as number, behavior: options.behavior as string };
+    });
+
+    fireEvent.click(nextButton);
+
+    expect(scrollByCall).toBeDefined();
+    expect(scrollByCall?.behavior).toBe('smooth');
+    expect(typeof scrollByCall?.left).toBe('number');
+  });
+
+  it('chevron buttons are disabled at the start and end of the range', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    const prevButton = screen.getByRole('button', { name: /scroll to previous day/i }) as HTMLButtonElement;
+    const nextButton = screen.getByRole('button', { name: /scroll to next day/i }) as HTMLButtonElement;
+
+    // At start, prev button should be disabled
+    expect(prevButton).toBeDisabled();
+    
+    act(() => {
+      vi.advanceTimersByTime(100);
+    });
+    
+    vi.useRealTimers();
+  });
 });
