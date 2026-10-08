@@ -38,10 +38,6 @@ interface ShiftEditDialogContentProps {
 const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftEditDialogContentProps) => {
   const [draft, setDraft] = useState<ShiftEditDraft>(initialDraft);
 
-  useEffect(() => {
-    onDraftChange(draft);
-  }, [draft, onDraftChange]);
-
   return (
     <div className="confirm-card__edit-dialog">
       <label htmlFor={`edit-event-name-${shiftId}`}>Event Name</label>
@@ -51,7 +47,11 @@ const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftE
         type="text"
         value={draft.eventName}
         onChange={(event) => {
-          setDraft((currentDraft) => ({ ...currentDraft, eventName: event.target.value }));
+          setDraft((currentDraft) => {
+            const nextDraft = { ...currentDraft, eventName: event.target.value };
+            onDraftChange(nextDraft);
+            return nextDraft;
+          });
         }}
       />
       <label htmlFor={`edit-start-time-${shiftId}`}>Start Time</label>
@@ -61,7 +61,11 @@ const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftE
         type="text"
         value={draft.startTime}
         onChange={(event) => {
-          setDraft((currentDraft) => ({ ...currentDraft, startTime: event.target.value }));
+          setDraft((currentDraft) => {
+            const nextDraft = { ...currentDraft, startTime: event.target.value };
+            onDraftChange(nextDraft);
+            return nextDraft;
+          });
         }}
       />
       <label htmlFor={`edit-end-time-${shiftId}`}>End Time</label>
@@ -71,7 +75,11 @@ const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftE
         type="text"
         value={draft.endTime}
         onChange={(event) => {
-          setDraft((currentDraft) => ({ ...currentDraft, endTime: event.target.value }));
+          setDraft((currentDraft) => {
+            const nextDraft = { ...currentDraft, endTime: event.target.value };
+            onDraftChange(nextDraft);
+            return nextDraft;
+          });
         }}
       />
     </div>
