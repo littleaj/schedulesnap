@@ -12,8 +12,8 @@ interface CalendarWeekListProps {
 const REMOVE_SHIFT_TIMEOUT_MS = 5000;
 const toPendingRemovalKey = (isoDate: string, shiftId: string) => `${isoDate}::${shiftId}`;
 
-const createShift = (isoDate: string, isPlaceholder: boolean): EditableShift => ({
-  id: isPlaceholder ? `${isoDate}-placeholder` : `${isoDate}-new-${crypto.randomUUID?.() ?? Date.now()}`,
+const createPlaceholderShift = (isoDate: string): EditableShift => ({
+  id: `${isoDate}-placeholder`,
   date: isoDate,
   startTime: '',
   endTime: '',
@@ -28,12 +28,21 @@ const createShift = (isoDate: string, isPlaceholder: boolean): EditableShift => 
     xMax: 1000,
     yMax: 1000,
   },
-  isPlaceholder,
+  isPlaceholder: true,
 });
 
-const createPlaceholderShift = (isoDate: string): EditableShift => createShift(isoDate, true);
-
-const createNewShift = (isoDate: string): EditableShift => createShift(isoDate, false);
+const createNewShift = (isoDate: string): EditableShift => ({
+  id: `${isoDate}-new-${crypto.randomUUID?.() ?? Date.now()}`,
+  date: isoDate,
+  startTime: '',
+  endTime: '',
+  role: '',
+  eventName: '',
+  location: '',
+  confidence: 0,
+  rawText: '',
+  isPlaceholder: false,
+});
 
 const clearPendingRemoval = (
   pendingKey: string,
