@@ -50,9 +50,8 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: Ca
                   className="confirm-card__event-summary"
                   onDoubleClick={() => onEditShift(day, shift)}
                 >
-                  <p className="confirm-card__cell-role">{shift.eventName || shift.role || 'Shift'}</p>
-                  <p className="confirm-card__cell-time">{shift.startTime || 'Start time'}</p>
-                  <p className="confirm-card__cell-time">{shift.endTime || 'End time'}</p>
+                  <p className="confirm-card__cell-role">{shift.eventName || shift.role || 'Unnamed Shift'}</p>
+                  <p className="confirm-card__cell-time">{shift.startTime || '??'} &ndash; {shift.endTime || '??'}</p>
                   {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
                 </div>
               ) : (
