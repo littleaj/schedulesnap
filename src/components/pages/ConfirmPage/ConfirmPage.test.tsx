@@ -540,9 +540,15 @@ describe('ConfirmPage', () => {
     const grid = document.getElementById('confirm-card__grid') as HTMLDivElement;
     const nextButton = screen.getByRole('button', { name: /scroll to next day/i }) as HTMLButtonElement;
 
+    // Mock clientWidth to simulate a non-zero viewport width
+    Object.defineProperty(grid, 'clientWidth', {
+      value: 300,
+      configurable: true,
+    });
+
     // Mock the scrollBy method since jsdom doesn't implement it
     let scrollByCall: { left: number; behavior: string } | undefined;
-    grid.scrollBy = vi.fn((options: ScrollToOptions) => {
+    (grid.scrollBy as any) = vi.fn((options: ScrollToOptions) => {
       scrollByCall = { left: options.left as number, behavior: options.behavior as string };
     });
 
@@ -550,39 +556,38 @@ describe('ConfirmPage', () => {
 
     expect(scrollByCall).toBeDefined();
     expect(scrollByCall?.behavior).toBe('smooth');
-    expect(typeof scrollByCall?.left).toBe('number');
+    expect(scrollByCall?.left).toBeGreaterThan(0);
   });
 
   it('chevron buttons are disabled at the start and end of the range', () => {
     vi.useFakeTimers();
-    loadDraftConfirmationMock.mockReturnValue({
-      shifts: [
-        {
-          date: '2026-09-05',
-          startTime: '09:00',
-          endTime: '17:00',
-          role: 'Barista',
-          location: 'Downtown',
-          confidence: 0.9,
-          rawText: 'Sep 5 9:00 AM - 5:00 PM',
-        },
-      ],
-      selectedCalendarId: 'primary',
-    });
-    loadAnalysisResponseMock.mockReturnValue(null);
+    try {
+      loadDraftConfirmationMock.mockReturnValue({
+        shifts: [
+          {
+            date: '2026-09-05',
+            startTime: '09:00',
+            endTime: '17:00',
+            role: 'Barista',
+            location: 'Downtown',
+            confidence: 0.9,
+            rawText: 'Sep 5 9:00 AM - 5:00 PM',
+          },
+        ],
+        selectedCalendarId: 'primary',
+      });
+      loadAnalysisResponseMock.mockReturnValue(null);
 
-    renderConfirmPage();
+      renderConfirmPage();
 
-    const prevButton = screen.getByRole('button', { name: /scroll to previous day/i }) as HTMLButtonElement;
-    const nextButton = screen.getByRole('button', { name: /scroll to next day/i }) as HTMLButtonElement;
+      const prevButton = screen.getByRole('button', { name: /scroll to previous day/i }) as HTMLButtonElement;
+      const nextButton = screen.getByRole('button', { name: /scroll to next day/i }) as HTMLButtonElement;
 
-    // At start, prev button should be disabled
-    expect(prevButton).toBeDisabled();
-    
-    act(() => {
-      vi.advanceTimersByTime(100);
-    });
-    
-    vi.useRealTimers();
+      // At start, both prev and next buttons should be disabled (only one day available)
+      expect(prevButton).toBeDisabled();
+      expect(nextButton).toBeDisabled();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
