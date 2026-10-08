@@ -33,6 +33,8 @@ const createShift = (isoDate: string, isPlaceholder: boolean): EditableShift => 
 
 const createPlaceholderShift = (isoDate: string): EditableShift => createShift(isoDate, true);
 
+const createNewShift = (isoDate: string): EditableShift => createShift(isoDate, false);
+
 const clearPendingRemoval = (
   pendingKey: string,
   pendingRemovalsRef: React.MutableRefObject<Record<string, number>>,
@@ -134,7 +136,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return;
     }
 
-    const newShift = createShift(isoDate, false);
+    const newShift = createNewShift(isoDate);
     const initialDraft: ShiftEditDraft = {
       eventName: '',
       startTime: '',
