@@ -123,7 +123,7 @@ const ConfirmPage = () => {
             </NoteBlock>
             <Card className="confirm-card__summary" aria-label="Extracted shifts week view">
               <p className="confirm-card__summary-result">{shifts.length} shift{shifts.length === 1 ? '' : 's'} are ready to review.</p>
-              <p className="confirm-card__summary-instruction">Please review and edit your shifts as needed.</p>
+              <p className="confirm-card__summary-instruction">Double-click a shift or use the <span className="material-symbols-outlined">&#xe3c9;</span> button to edit it.</p>
               <CalendarWeekList
                 shifts={weekDays}
                 onChange={saveWeekDays}
