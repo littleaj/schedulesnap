@@ -23,6 +23,7 @@ import PrivacyPage from '@/components/pages/legal/PrivacyPage';
 import FooterBar from '@/components/organisms/FooterBar';
 import TermsPage from '@/components/pages/legal/TermsPage';
 import CreatingPage from './components/pages/CreatingPage';
+import WorkflowBreadcrumbs from '@/components/organisms/WorkflowBreadcrumbs';
 
 interface ResumeProgressWrapperProps {
   resumeTarget: AnalysisFlowResumeTarget | null;
@@ -104,6 +105,7 @@ export const App = () => {
         <ScrollToTop />
         <GoogleOAuthTokenProvider>
           <HeaderBar />
+          <WorkflowBreadcrumbs />
           <Routes>
             <Route element={<ResumeProgressWrapper
                 resumeTarget={resumeTarget}
