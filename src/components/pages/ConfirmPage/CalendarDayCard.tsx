@@ -1,4 +1,5 @@
 import type { EditableShift, WeekDay } from "@/types/shift-display";
+import { formatTimeToLocale } from "@/utils/formatTime";
 
 export interface CalendarDayCardProps {
   day: WeekDay;
@@ -51,7 +52,7 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: Ca
                   onDoubleClick={() => onEditShift(day, shift)}
                 >
                   <p className="confirm-card__cell-role">{shift.eventName || shift.role || 'Unnamed Shift'}</p>
-                  <p className="confirm-card__cell-time">{shift.startTime || '??'} &ndash; {shift.endTime || '??'}</p>
+                  <p className="confirm-card__cell-time">{formatTimeToLocale(shift.startTime)} &ndash; {formatTimeToLocale(shift.endTime)}</p>
                   {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
                 </div>
               ) : (
