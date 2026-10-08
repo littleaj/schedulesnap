@@ -91,7 +91,7 @@
   margin-top: 0.5rem;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(7, min(35ch, 100%));
+  grid-template-columns: repeat(7, min(23ch, 100%));
   gap: 0.75rem;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -179,7 +179,6 @@
   margin: 0;
   color: var(--md-on-surface);
   font-size: 1.05rem;
-  font-weight: 700;
 }
 
 .confirm-card__events {
