@@ -62,7 +62,7 @@
 .confirm-card__intro {
   margin: 0.25rem 0 0;
   color: var(--md-on-surface-variant);
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .confirm-card__disclaimer {
@@ -85,6 +85,10 @@
 
 .confirm-card__summary-result {
   font-weight: 700;
+}
+
+.confirm-card__summary-instruction {
+  font-size: 0.9rem;
 }
 
 .confirm-card__grid {
