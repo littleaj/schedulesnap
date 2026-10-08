@@ -24,14 +24,14 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
 });
 
 const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
-  const { showToast, dismissToast } = useUserMessage();
+  const { showModal, showToast, dismissToast } = useUserMessage();
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
   const weekDaysRef = useRef<WeekDay[]>(shifts);
   const [pendingRemovals, setPendingRemovals] = useState<Record<string, number>>({});
   const pendingRemovalsRef = useRef<Record<string, number>>({});
   const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
 
-  const updateShiftField = useCallback((dayIso: string, shiftId: string, field: 'startTime' | 'endTime' | 'eventName' | 'location', value: React.InputHTMLAttributes<HTMLInputElement>['value']) => {
+  const updateShift = useCallback((dayIso: string, shiftId: string, updates: Pick<EditableShift, 'startTime' | 'endTime' | 'eventName'>) => {
     setWeekDays((currentWeekDays) => {
       const nextWeekDays = currentWeekDays.map((day) => {
         if (day.isoDate !== dayIso) {
@@ -47,7 +47,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
 
             return {
               ...shift,
-              [field]: value,
+              ...updates,
               isPlaceholder: false,
             };
           }),
@@ -59,6 +59,68 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return nextWeekDays;
     });
   }, [onChange]);
+
+  const openShiftEditor = useCallback(async (day: WeekDay, shift: EditableShift) => {
+    if (shift.isPlaceholder) {
+      return;
+    }
+
+    const draftValues = {
+      eventName: shift.eventName || shift.role || '',
+      startTime: shift.startTime,
+      endTime: shift.endTime,
+    };
+    const editResult = await showModal({
+      title: 'Edit shift',
+      heading: `${day.weekday} ${day.monthDay}`,
+      content: (
+        <div className="confirm-card__edit-dialog">
+          <label htmlFor={`edit-event-name-${shift.id}`}>Event Name</label>
+          <input
+            id={`edit-event-name-${shift.id}`}
+            name="event-name"
+            type="text"
+            defaultValue={draftValues.eventName}
+            onChange={(event) => {
+              draftValues.eventName = event.target.value;
+            }}
+          />
+          <label htmlFor={`edit-start-time-${shift.id}`}>Start Time</label>
+          <input
+            id={`edit-start-time-${shift.id}`}
+            name="start-time"
+            type="text"
+            defaultValue={draftValues.startTime}
+            onChange={(event) => {
+              draftValues.startTime = event.target.value;
+            }}
+          />
+          <label htmlFor={`edit-end-time-${shift.id}`}>End Time</label>
+          <input
+            id={`edit-end-time-${shift.id}`}
+            name="end-time"
+            type="text"
+            defaultValue={draftValues.endTime}
+            onChange={(event) => {
+              draftValues.endTime = event.target.value;
+            }}
+          />
+        </div>
+      ),
+      variant: 'information',
+      actionLabels: ['OK', 'Cancel'],
+    });
+
+    if (editResult !== 'OK') {
+      return;
+    }
+
+    updateShift(day.isoDate, shift.id, {
+      eventName: draftValues.eventName,
+      startTime: draftValues.startTime,
+      endTime: draftValues.endTime,
+    });
+  }, [showModal, updateShift]);
 
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLDivElement>(null);
@@ -214,7 +276,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
           <CalendarDayCard
             key={day.isoDate}
             day={day}
-            updateShiftField={updateShiftField}
+            onEditShift={openShiftEditor}
             onRemoveShift={removeShift}
             canRemoveShift={!hasPendingRemovals}
           />)

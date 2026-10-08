@@ -222,9 +222,11 @@
 
 .confirm-card__event-actions {
   display: flex;
+  gap: 0.25rem;
   justify-content: end;
 }
 
+.confirm-card__edit-shift,
 .confirm-card__remove-shift {
   appearance: none;
   border: none;
@@ -237,11 +239,28 @@
   transition: opacity 150ms ease, filter 150ms ease, transform 150ms ease;
 }
 
+.confirm-card__edit-shift:hover:not(:disabled),
+.confirm-card__edit-shift:focus-visible:not(:disabled),
 .confirm-card__remove-shift:hover:not(:disabled),
 .confirm-card__remove-shift:focus-visible:not(:disabled) {
   opacity: 1;
   filter: saturate(0.7) brightness(1.05);
   transform: translateY(-1px);
+}
+
+.confirm-card__event-summary {
+  display: grid;
+  gap: 0.3rem;
+  cursor: default;
+}
+
+.confirm-card__edit-dialog {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.confirm-card__edit-dialog input {
+  width: 100%;
 }
 
 .confirm-card__remove-shift:disabled {
