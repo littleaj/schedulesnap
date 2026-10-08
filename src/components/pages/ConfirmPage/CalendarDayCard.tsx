@@ -7,6 +7,13 @@ export interface CalendarDayCardProps {
   canRemoveShift: boolean;
 }
 
+const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift) => [
+  prefix,
+  shift.role || shift.eventName || 'shift',
+  `on ${day.weekday} ${day.monthDay}`,
+  shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
+].filter(Boolean).join(' ');
+
 const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: CalendarDayCardProps) => {
   return (
     <div className="confirm-card__day">
@@ -22,12 +29,7 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: Ca
                   <button
                     type="button"
                     className="material-symbols-outlined confirm-card__edit-shift"
-                    aria-label={[
-                      'Edit shift',
-                      shift.role || shift.eventName || 'shift',
-                      `on ${day.weekday} ${day.monthDay}`,
-                      shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
-                    ].filter(Boolean).join(' ')}
+                    aria-label={getShiftActionLabel('Edit shift', day, shift)}
                     onClick={() => onEditShift(day, shift)}
                   >
                     {'\ue3c9'}
@@ -35,12 +37,7 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: Ca
                   <button
                     type="button"
                     className="material-symbols-outlined confirm-card__remove-shift"
-                    aria-label={[
-                      'Remove shift',
-                      shift.role || shift.eventName || 'shift',
-                      `on ${day.weekday} ${day.monthDay}`,
-                      shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
-                    ].filter(Boolean).join(' ')}
+                    aria-label={getShiftActionLabel('Remove shift', day, shift)}
                     onClick={() => onRemoveShift(day.isoDate, shift.id)}
                     disabled={!canRemoveShift}
                   >
