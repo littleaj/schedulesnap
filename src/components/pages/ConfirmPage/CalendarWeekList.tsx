@@ -33,32 +33,28 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
 
   const updateShift = useCallback((dayIso: string, shiftId: string, updates: Pick<EditableShift, 'startTime' | 'endTime' | 'eventName'>) => {
-    setWeekDays((currentWeekDays) => {
-      const nextWeekDays = currentWeekDays.map((day) => {
-        if (day.isoDate !== dayIso) {
-          return day;
-        }
+    const nextWeekDays = weekDays.map((day) => {
+      if (day.isoDate !== dayIso) {
+        return day;
+      }
 
-        return {
-          ...day,
-          shifts: day.shifts.map((shift) => {
-            if (shift.id !== shiftId) {
-              return shift;
-            }
+      return {
+        ...day,
+        shifts: day.shifts.map((shift) => {
+          if (shift.id !== shiftId) {
+            return shift;
+          }
 
-            return {
-              ...shift,
-              ...updates,
-              isPlaceholder: false,
-            };
-          }),
-        };
-      });
-
-      onChange(nextWeekDays);
-
-      return nextWeekDays;
+          return {
+            ...shift,
+            ...updates,
+            isPlaceholder: false,
+          };
+        }),
+      };
     });
+    setWeekDays(nextWeekDays);
+    onChange(nextWeekDays);
   }, [onChange]);
 
   const openShiftEditor = useCallback(async (day: WeekDay, shift: EditableShift) => {
