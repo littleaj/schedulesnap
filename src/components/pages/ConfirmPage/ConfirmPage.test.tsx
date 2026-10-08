@@ -99,8 +99,8 @@ describe('ConfirmPage', () => {
     expect(screen.getByLabelText(/scanned weekly schedule/i)).toBeInTheDocument();
     expect(screen.getByText(new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date('2026-09-05T00:00:00')))).toBeInTheDocument();
     expect(screen.getByText('Barista')).toBeInTheDocument();
-    expect(screen.getByText('09:00')).toBeInTheDocument();
-    expect(screen.getByText('17:00')).toBeInTheDocument();
+    expect(screen.getByText(/9:00 AM/i)).toBeInTheDocument();
+    expect(screen.getByText(/5:00 PM/i)).toBeInTheDocument();
     expect(screen.queryByRole('textbox', { name: /event name/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox', { name: /start time/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('textbox', { name: /end time/i })).not.toBeInTheDocument();
@@ -131,10 +131,10 @@ describe('ConfirmPage', () => {
 
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: /event name/i })).toHaveValue('Barista');
-    expect(screen.getByRole('textbox', { name: /start time/i })).toHaveValue('09:00');
-    expect(screen.getByRole('textbox', { name: /end time/i })).toHaveValue('17:00');
+    expect(screen.getByLabelText(/start time/i)).toHaveValue('09:00');
+    expect(screen.getByLabelText(/end time/i)).toHaveValue('17:00');
 
-    fireEvent.change(screen.getByRole('textbox', { name: /start time/i }), { target: { value: '10:30' } });
+    fireEvent.change(screen.getByLabelText(/start time/i), { target: { value: '10:30' } });
     fireEvent.click(screen.getByRole('button', { name: 'OK' }));
 
     await waitFor(() => {
@@ -168,13 +168,17 @@ describe('ConfirmPage', () => {
     saveDraftConfirmationMock.mockClear();
 
     fireEvent.doubleClick(screen.getByText('Barista'));
-    fireEvent.change(screen.getByRole('textbox', { name: /start time/i }), { target: { value: '11:15' } });
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByLabelText(/start time/i), { target: { value: '11:15' } });
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
     await waitFor(() => {
       expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
     });
-    expect(screen.getByText('09:00')).toBeInTheDocument();
+    expect(screen.getByText(/9:00 AM/i)).toBeInTheDocument();
     expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
   });
 
