@@ -16,13 +16,14 @@ interface ShiftEditDialogContentProps {
 const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftEditDialogContentProps) => {
   const [draft, setDraft] = useState<ShiftEditDraft>(initialDraft);
 
-  const updateDraft = <TField extends keyof ShiftEditDraft>(field: TField, value: ShiftEditDraft[TField]) => {
-    setDraft((currentDraft) => {
-      const nextDraft = { ...currentDraft, [field]: value };
-      onDraftChange(nextDraft);
-      return nextDraft;
-    });
-  };
+const updateDraft = <TField extends keyof ShiftEditDraft>(
+  field: TField,
+  value: ShiftEditDraft[TField]
+) => {
+  const nextDraft = { ...draft, [field]: value };
+  setDraft(nextDraft);
+  onDraftChange(nextDraft);
+};
 
   return (
     <div className="confirm-card__edit-dialog">
