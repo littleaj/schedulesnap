@@ -49,7 +49,23 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift }: Ca
                 </div>
               ) : null}
               {!shift.isPlaceholder ? (
-                <div className="confirm-card__event-summary" onDoubleClick={() => onEditShift(day, shift)}>
+                <div
+                  className="confirm-card__event-summary"
+                  onDoubleClick={() => onEditShift(day, shift)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={[
+                    'Edit shift',
+                    shift.role || shift.eventName || 'shift',
+                    `on ${day.weekday} ${day.monthDay}`,
+                  ].join(' ')}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      onEditShift(day, shift);
+                    }
+                  }}
+                >
                   <p className="confirm-card__cell-role">{shift.eventName || shift.role || 'Shift'}</p>
                   <p className="confirm-card__cell-time">{shift.startTime || 'Start time'}</p>
                   <p className="confirm-card__cell-time">{shift.endTime || 'End time'}</p>
