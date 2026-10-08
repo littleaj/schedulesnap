@@ -1,4 +1,4 @@
-import EditableText from '@/components/atoms/EditableText';
+import LabeledInput from '@/components/atoms/LabeledInput';
 import { useState } from 'react';
 
 export interface ShiftEditDraft {
@@ -26,31 +26,28 @@ const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftE
 
   return (
     <div className="confirm-card__edit-dialog">
-      <label htmlFor={`edit-event-name-${shiftId}`}>Event Name</label>
-      <EditableText
+      <LabeledInput
         id={`edit-event-name-${shiftId}`}
+        label="Event Name"
+        onChange={(event) => updateDraft('eventName', event.target.value)}
         value={draft.eventName}
-        onCommit={(value) => updateDraft('eventName', value as string)}
-        placeholder="Enter event name"
-        ariaLabel="Event Name"
+        aria-label="Event Name"
       />
-      <label htmlFor={`edit-start-time-${shiftId}`}>Start Time</label>
-      <EditableText
+      <LabeledInput
         id={`edit-start-time-${shiftId}`}
         type="time"
         value={draft.startTime}
-        onCommit={(value) => updateDraft('startTime', value as string)}
-        placeholder="Enter start time"
-        ariaLabel="Start Time"
+        onChange={(event) => updateDraft('startTime', event.target.value)}
+        label="Start time"
+        aria-label="Start Time"
       />
-      <label htmlFor={`edit-end-time-${shiftId}`}>End Time</label>
-      <EditableText
+      <LabeledInput
         id={`edit-end-time-${shiftId}`}
         type="time"
         value={draft.endTime}
-        onCommit={(value) => updateDraft('endTime', value as string)}
-        placeholder="Enter end time"
-        ariaLabel="End Time"
+        onChange={(event) => updateDraft('endTime', event.target.value)}
+        label="End time"
+        aria-label="End Time"
       />
     </div>
   );
