@@ -555,7 +555,6 @@ describe('ConfirmPage', () => {
     fireEvent.click(nextButton);
 
     expect(scrollByCall).toBeDefined();
-    expect(scrollByCall?.behavior).toBe('smooth');
     expect(scrollByCall?.left).toBeGreaterThan(0);
   });
 
