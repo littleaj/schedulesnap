@@ -126,7 +126,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
 
   const restoreShift = useCallback((isoDate: string, shiftId: string) => {
     const pendingKey = toPendingRemovalKey(isoDate, shiftId);
-    
+
     if (pendingRemovalsRef.current[pendingKey] === undefined) {
       return;
     }
@@ -198,17 +198,14 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     nextIndicator.current.disabled = atEnd;
   }, []);
 
-  const handleChevronClick = useCallback((direction: 'prev' | 'next') => {
+  const handleChevronClick = useCallback((direction: 'left' | 'right') => {
     if (!scroller.current) return;
-    
-    // Calculate the scroll amount as the viewport width (one day cell)
-    const scrollAmount = scroller.current.clientWidth;
-    const scrollDistance = direction === 'next' ? scrollAmount : -scrollAmount;
 
-    scroller.current.scrollBy({
-      left: scrollDistance,
-      behavior: 'smooth',
-    });
+    // Calculate the scroll amount as the viewport width (one day cell)
+    const scrollAmount = scroller.current.clientWidth + 1;
+    const scrollDistance = direction === 'right' ? scrollAmount : -scrollAmount;
+
+    scroller.current.scrollBy(scrollDistance, 0);
   }, []);
 
   const [isTicking, setIsTicking] = useState(false);
@@ -271,9 +268,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         className="chevron prev"
         id="prevBtn"
         aria-label="Scroll to previous day"
-        onClick={() => handleChevronClick('prev')}
+        onClick={() => handleChevronClick('left')}
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span className="material-symbols-outlined">&#xe5cb;</span>
       </button>
       <button
         ref={nextIndicator}
@@ -281,9 +278,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         className="chevron next"
         id="nextBtn"
         aria-label="Scroll to next day"
-        onClick={() => handleChevronClick('next')}
+        onClick={() => handleChevronClick('right')}
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        <span className="material-symbols-outlined">&#xe5cc;</span>
       </button>
       <div ref={scroller} id="confirm-card__grid" className="confirm-card__grid" aria-label="Scanned weekly schedule">
         {displayWeekDays.map((day) =>
