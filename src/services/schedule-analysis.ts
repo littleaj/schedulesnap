@@ -2,6 +2,7 @@ import { getApp } from 'firebase/app';
 import { getAI, getGenerativeModel } from 'firebase/ai';
 import aiResponseSchema from '@/ai-response-schema.json';
 import type {
+  BoundingBox,
   CapturedSchedulePhoto,
   DraftConfirmation,
   ScheduleAnalysisResponse,
@@ -22,7 +23,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> => typeof va
 const isString = (value: unknown): value is string => typeof value === 'string';
 const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 
-const isBoundingBox = (value: unknown) => {
+const isBoundingBox = (value: unknown): value is BoundingBox => {
   if (!isRecord(value)) {
     return false;
   }

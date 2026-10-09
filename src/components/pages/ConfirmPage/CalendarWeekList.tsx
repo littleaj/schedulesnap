@@ -24,8 +24,8 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
   boundingBox: {
     xMin: 0,
     yMin: 0,
-    xMax: 0,
-    yMax: 0,
+    xMax: 1000,
+    yMax: 1000,
   },
   isPlaceholder: true,
 });
