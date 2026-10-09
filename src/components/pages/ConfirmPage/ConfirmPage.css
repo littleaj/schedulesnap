@@ -17,40 +17,6 @@
   min-width: 0;
 }
 
-.confirm-card__photo-panel {
-  display: flex;
-  max-height: 10rem;
-}
-
-.confirm-card__photo-viewport {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-radius: 18px;
-  border: 2px solid rgba(from var(--md-outline-variant) r g b / 0.2);
-  background: rgba(from var(--md-on-surface) r g b / 0.1);
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.confirm-card__photo-viewport:active {
-  cursor: grabbing;
-}
-
-.confirm-card__photo {
-  display: block;
-  width: 100%;
-  height: auto;
-  transform-origin: center center;
-  transition: transform 0.08s ease-out;
-  will-change: transform;
-  pointer-events: none;
-}
-
 .confirm-card h1 {
   margin: 0.125rem 0 0;
   font-size: clamp(2rem, 5vw, 2.9rem);
@@ -100,6 +66,7 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
+  /* scroll-behavior: smooth; */
 
   &::-webkit-scrollbar {
     display: none;
@@ -109,17 +76,22 @@
 
 .chevron {
   position: absolute;
-  bottom: 27.5%;
+  bottom: 10.8rem;
   z-index: 2;
   width: 2rem;
   height: 2rem;
-  border: none;
+  font-size: 2.5rem;
+  margin-inline: 0.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: 0px 1px 3px var(--md-shadow);
   background-color: transparent;
   color: var(--md-on-tertiary-container);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  text-align: center;
+  padding: 1rem;
   opacity: 0;
   transition: opacity 0.15s;
   cursor: pointer;
@@ -127,13 +99,13 @@
 
 .chevron:not(:disabled):hover,
 .chevron:not(:disabled):focus-visible {
-  opacity: 0.7;
+  opacity: 1.0;
+  box-shadow: 0px 2px 5px var(--md-shadow);
 }
 
 .chevron:not(:disabled):focus-visible {
   outline: 2px solid var(--md-on-tertiary-container);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 .chevron:disabled {
@@ -142,15 +114,15 @@
 }
 
 .chevron.visible {
-  opacity: 0.5;
+  opacity: 0.7;
 }
 
 .chevron.prev {
-  left: -4px;
+  left: 0;
 }
 
 .chevron.next {
-  right: -4px;
+  right: 0;
 }
 
 .chevron svg {
