@@ -167,7 +167,7 @@ describe('ConfirmPage', () => {
     renderConfirmPage();
     saveDraftConfirmationMock.mockClear();
 
-    fireEvent.doubleClick(screen.getByText('Barista'));
+    fireEvent.doubleClick(screen.getByText(/9:00/i));
     await waitFor(() => {
       expect(screen.getByRole('alertdialog')).toBeInTheDocument();
     });
