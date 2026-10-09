@@ -2,6 +2,7 @@ import { getApp } from 'firebase/app';
 import { getAI, getGenerativeModel } from 'firebase/ai';
 import aiResponseSchema from '@/ai-response-schema.json';
 import type {
+  BoundingBox,
   CapturedSchedulePhoto,
   DraftConfirmation,
   ScheduleAnalysisResponse,
@@ -22,6 +23,17 @@ const isRecord = (value: unknown): value is Record<string, unknown> => typeof va
 const isString = (value: unknown): value is string => typeof value === 'string';
 const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
 
+const isBoundingBox = (value: unknown): value is BoundingBox => {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return isNumber(value.xMin)
+    && isNumber(value.yMin)
+    && isNumber(value.xMax)
+    && isNumber(value.yMax);
+};
+
 const isShift = (value: unknown): value is ScheduleAnalysisShift => {
   if (!isRecord(value)) {
     return false;
@@ -32,6 +44,7 @@ const isShift = (value: unknown): value is ScheduleAnalysisShift => {
     && isString(value.endTime)
     && isNumber(value.confidence)
     && isString(value.rawText)
+    && isBoundingBox(value.boundingBox)
     && (value.role === undefined || isString(value.role))
     && (value.location === undefined || isString(value.location));
 };
@@ -211,7 +224,8 @@ Rules:
 - Times are often ambiguous (e.g. "9-5" with no am/pm). Infer using context (typical work hours), but if genuinely ambiguous, lower confidence and note it in a warning.
 - Convert all times to 24-hour HH:mm format.
 - If the year isn't shown, assume the current year unless the month/day would already be in the past relative to today — then assume next year. Note this assumption in warnings.
-- Never invent shifts that aren't visible in the image. If the image is blurry or a section is unreadable, omit that shift and add a warning describing what was skipped.`;
+- Never invent shifts that aren't visible in the image. If the image is blurry or a section is unreadable, omit that shift and add a warning describing what was skipped.
+- For each detected shift, include a bounding box (boundingBox) that locates where on the image that shift was read from. Coordinates should be normalized to a 0-1000 scale relative to the image dimensions (e.g., xMin=0, yMin=0, xMax=1000, yMax=1000 represents the entire image).`;
 
 export const parseAnalysisResponse = (responseText: string): ScheduleAnalysisResponse => {
   const parsedValue: unknown = JSON.parse(responseText.trim());

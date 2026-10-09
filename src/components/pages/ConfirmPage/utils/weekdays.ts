@@ -44,6 +44,12 @@ export const buildWeekDays = (shifts: ScheduleAnalysisShift[]): WeekDay[] => {
             location: '',
             confidence: 0,
             rawText: '',
+            boundingBox: {
+              xMin: 0,
+              yMin: 0,
+              xMax: 1000,
+              yMax: 1000,
+            },
             isPlaceholder: true,
           },
         ],

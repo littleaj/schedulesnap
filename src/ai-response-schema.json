@@ -45,6 +45,29 @@
           "rawText": {
             "type": "string",
             "$comment": "the literal text this was parsed from"
+          },
+          "boundingBox": {
+            "type": "object",
+            "$comment": "Bounding box coordinates normalized to 0-1000 scale relative to the resized image (max dimension 1024px)",
+            "properties": {
+              "xMin": {
+                "type": "number",
+                "$comment": "Minimum X coordinate (0-1000)"
+              },
+              "yMin": {
+                "type": "number",
+                "$comment": "Minimum Y coordinate (0-1000)"
+              },
+              "xMax": {
+                "type": "number",
+                "$comment": "Maximum X coordinate (0-1000)"
+              },
+              "yMax": {
+                "type": "number",
+                "$comment": "Maximum Y coordinate (0-1000)"
+              }
+            },
+            "required": ["xMin", "yMin", "xMax", "yMax"]
           }
         },
         "required": [
@@ -52,7 +75,8 @@
           "startTime",
           "endTime",
           "confidence",
-          "rawText"
+          "rawText",
+          "boundingBox"
         ]
       }
     }
