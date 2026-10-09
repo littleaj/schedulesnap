@@ -160,6 +160,7 @@ const CreatingPage = () => {
     window.history.replaceState(window.history.state, '', '/finished');
   }, [uid]);
 
+  // TODO(refactor): split event queue state, OAuth token resolution, and calendar API execution into focused hooks/services.
   const runCreation = useCallback(async (runMode: 'all' | 'failed') => {
     if (runningRef.current) {
       return;

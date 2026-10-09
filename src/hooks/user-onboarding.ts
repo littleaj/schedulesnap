@@ -54,6 +54,7 @@ const useUserOnboardingStatus = (): UseUserOnboardingStatusResult => {
     };
   }, [user?.uid, firestore]);
 
+  // TODO(refactor): split redirect side-effect from onboarding status lookup into separate hooks for single responsibility.
   useEffect(() => {
     if (isChecking || !user || hasCompletedOnboarding) {
       return;

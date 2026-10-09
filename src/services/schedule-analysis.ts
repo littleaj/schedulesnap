@@ -18,6 +18,7 @@ const DRAFT_CONFIRMATION_STORAGE_KEY = 'schedulesnap:draft-confirmation';
 const DEFAULT_MAX_DIMENSION = 1024;
 const DEFAULT_JPEG_QUALITY = 0.8;
 
+// TODO(refactor): split into image-processing service + analysis-flow-cache service; keep this module on AI orchestration.
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
 const isString = (value: unknown): value is string => typeof value === 'string';
 const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
