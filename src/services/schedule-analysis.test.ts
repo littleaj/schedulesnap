@@ -26,7 +26,7 @@ describe('schedule-analysis services', () => {
     expect(calculateResizedDimensions(2048, 1024, 1024)).toEqual({ width: 1024, height: 512 });
   });
 
-  it('parses a valid analysis response and rejects invalid data', () => {
+  it('parses a valid analysis response with bounding boxes', () => {
     const parsedResponse = parseAnalysisResponse(JSON.stringify({
       scheduleOwnerGuess: 'Alex',
       warnings: ['Year assumed from context'],
@@ -37,19 +37,34 @@ describe('schedule-analysis services', () => {
           endTime: '17:00',
           confidence: 0.9,
           rawText: 'Sep 5 9:00 AM - 5:00 PM',
+          boundingBox: {
+            xMin: 100,
+            yMin: 200,
+            xMax: 400,
+            yMax: 300,
+          },
         },
       ],
     }));
 
     expect(parsedResponse.scheduleOwnerGuess).toBe('Alex');
     expect(parsedResponse.shifts).toHaveLength(1);
+    expect(parsedResponse.shifts[0].boundingBox).toEqual({
+      xMin: 100,
+      yMin: 200,
+      xMax: 400,
+      yMax: 300,
+    });
+  });
 
+  it('rejects shifts without bounding boxes', () => {
     expect(() => parseAnalysisResponse(JSON.stringify({
       warnings: [],
       shifts: [
         {
           date: '2026-09-05',
           startTime: '09:00',
+          endTime: '17:00',
           confidence: 0.9,
           rawText: 'Sep 5 9:00 AM - 5:00 PM',
         },
@@ -57,7 +72,49 @@ describe('schedule-analysis services', () => {
     }))).toThrow(/expected schema/i);
   });
 
-  it('saves and loads cached capture and analysis payloads', () => {
+  it('rejects bounding boxes with missing coordinates', () => {
+    expect(() => parseAnalysisResponse(JSON.stringify({
+      warnings: [],
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+          boundingBox: {
+            xMin: 100,
+            yMin: 200,
+            xMax: 400,
+            // Missing yMax
+          },
+        },
+      ],
+    }))).toThrow(/expected schema/i);
+  });
+
+  it('rejects bounding boxes with non-numeric coordinates', () => {
+    expect(() => parseAnalysisResponse(JSON.stringify({
+      warnings: [],
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+          boundingBox: {
+            xMin: '100',
+            yMin: 200,
+            xMax: 400,
+            yMax: 300,
+          },
+        },
+      ],
+    }))).toThrow(/expected schema/i);
+  });
+
+  it('saves and loads cached capture and analysis payloads with bounding boxes', () => {
     saveCapturedSchedulePhoto(fakeUid, {
       base64: 'abc123',
       mimeType: 'image/jpeg',
@@ -66,7 +123,21 @@ describe('schedule-analysis services', () => {
 
     saveAnalysisResponse(fakeUid, {
       warnings: [],
-      shifts: [],
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+          boundingBox: {
+            xMin: 100,
+            yMin: 200,
+            xMax: 400,
+            yMax: 300,
+          },
+        },
+      ],
     });
 
     expect(loadCapturedSchedulePhoto(fakeUid)).toEqual({
@@ -74,7 +145,16 @@ describe('schedule-analysis services', () => {
       mimeType: 'image/jpeg',
       fileName: 'schedule.jpg',
     });
-    expect(loadAnalysisResponse(fakeUid)).toEqual({ warnings: [], shifts: [] });
+    
+    const loadedResponse = loadAnalysisResponse(fakeUid);
+    expect(loadedResponse).toBeDefined();
+    expect(loadedResponse?.shifts).toHaveLength(1);
+    expect(loadedResponse?.shifts[0].boundingBox).toEqual({
+      xMin: 100,
+      yMin: 200,
+      xMax: 400,
+      yMax: 300,
+    });
   });
 
   it('clears all analysis-flow caches together', () => {
