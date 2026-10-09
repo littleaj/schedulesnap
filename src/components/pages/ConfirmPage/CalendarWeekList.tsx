@@ -211,7 +211,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     const scrollAmount = scroller.current.clientWidth + 1;
     const scrollDistance = direction === 'right' ? scrollAmount : -scrollAmount;
 
-    scroller.current.scrollBy(scrollDistance, 0);
+    scroller.current.scrollBy({ left: scrollDistance });
   }, []);
 
   const [isTicking, setIsTicking] = useState(false);
