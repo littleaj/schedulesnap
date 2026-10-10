@@ -239,7 +239,7 @@
 }
 
 .confirm-card__add-shift {
-  opacity: 0;
+  opacity: 0.5;
   position: absolute;
   right: 0;
   top: 0;
