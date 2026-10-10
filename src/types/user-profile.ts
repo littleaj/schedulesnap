@@ -8,11 +8,14 @@ export interface UserProfile {
   timezone: string;
   reminder: UserProfileReminder;
   defaultCalendarId: string;
+  defaultShiftName: string;
+  namePrefix: string;
 }
 
 export interface UserProfileValidationErrors {
   targetName?: string;
   timezone?: string;
   defaultCalendarId?: string;
+  defaultShiftName?: string;
   reminderMinutesBefore?: string;
 }

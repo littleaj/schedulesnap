@@ -91,6 +91,11 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const { showModal, showToast, dismissToast } = useUserMessage();
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
   const weekDaysRef = useRef<WeekDay[]>(shifts);
+
+  useEffect(() => {
+    setWeekDays(shifts);
+    weekDaysRef.current = shifts;
+  }, [shifts]);
   const [pendingRemovals, setPendingRemovals] = useState<Record<string, number>>({});
   const pendingRemovalsRef = useRef<Record<string, number>>({});
   const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});

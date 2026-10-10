@@ -6,10 +6,14 @@ import {
 } from 'firebase/firestore';
 import type { UserProfile } from '@/types/user-profile';
 
+export { resolveShiftName } from '@/utils/shift-name';
+
 export const buildDefaultUserProfile = (timezone = 'UTC', displayName: string | null = null, calendarId = 'primary'): UserProfile => ({
   targetName: typeof displayName === 'string' ? (displayName.split(' ')[0] ?? '') : '',
   timezone,
   defaultCalendarId: calendarId,
+  defaultShiftName: 'Work',
+  namePrefix: '',
   reminder: {
     enabled: false,
     minutesBefore: 30,
@@ -24,6 +28,8 @@ const sanitizeProfileData = (source: Partial<UserProfile>): UserProfile => {
     targetName: typeof source.targetName === 'string' ? source.targetName : defaults.targetName,
     timezone: typeof source.timezone === 'string' ? source.timezone : defaults.timezone,
     defaultCalendarId: typeof source.defaultCalendarId === 'string' ? source.defaultCalendarId : defaults.defaultCalendarId,
+    defaultShiftName: typeof source.defaultShiftName === 'string' && source.defaultShiftName.trim() ? source.defaultShiftName : defaults.defaultShiftName,
+    namePrefix: typeof source.namePrefix === 'string' ? source.namePrefix : defaults.namePrefix,
     reminder: {
       enabled: typeof reminder.enabled === 'boolean' ? reminder.enabled : defaults.reminder.enabled,
       minutesBefore: typeof reminder.minutesBefore === 'number' ? reminder.minutesBefore : defaults.reminder.minutesBefore,

@@ -4,6 +4,7 @@ import {
   buildDefaultUserProfile,
   getUserProfile,
   isUserProfileComplete,
+  resolveShiftName,
   saveUserProfile,
 } from './user-profile';
 
@@ -51,6 +52,8 @@ describe('userProfileService', () => {
       targetName: 'Alex',
       timezone: 'America/New_York',
       defaultCalendarId: 'primary',
+      defaultShiftName: 'Work',
+      namePrefix: 'Retail - ',
       reminder: {
         enabled: true,
         minutesBefore: 30,
@@ -63,6 +66,17 @@ describe('userProfileService', () => {
 
     expect(profile).toEqual(data);
     expect(isUserProfileComplete(profile)).toBe(true);
+  });
+
+  it('fills in silent defaults for missing default shift naming fields', () => {
+    const sanitized = buildDefaultUserProfile('UTC');
+
+    expect(sanitized.defaultShiftName).toBe('Work');
+    expect(sanitized.namePrefix).toBe('');
+    expect(resolveShiftName(sanitized, 'Morning Shift')).toBe('Morning Shift');
+    expect(resolveShiftName(sanitized, '')).toBe('Work');
+    expect(resolveShiftName({ ...sanitized, namePrefix: 'Retail - ' }, '')).toBe('Retail - Work');
+    expect(resolveShiftName({ ...sanitized, namePrefix: 'Retail - ' }, 'Retail - Morning Shift')).toBe('Retail - Morning Shift');
   });
 
   it('saves the profile with merge semantics', async () => {
@@ -90,6 +104,8 @@ describe('userProfileService', () => {
       targetName: '',
       timezone: 'UTC',
       defaultCalendarId: 'primary',
+      defaultShiftName: 'Work',
+      namePrefix: '',
       reminder: {
         enabled: true,
         minutesBefore: 60,

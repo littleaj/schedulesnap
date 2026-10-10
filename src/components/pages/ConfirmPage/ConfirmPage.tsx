@@ -18,6 +18,7 @@ import CalendarWeekList from './CalendarWeekList';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import PageContent from '@/components/templates/PageContent';
 import NoteBlock from '@/components/atoms/NoteBlock';
+import { resolveShiftName } from '@/utils/shift-name';
 
 const ConfirmPage = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const ConfirmPage = () => {
   const shifts = useMemo(() => (draftConfirmation?.shifts ?? analysisResponse?.shifts ?? [])
     .filter(shift => shift.startTime || shift.endTime || shift.role || shift.location), [draftConfirmation, analysisResponse]);
 
-  const weekDays = useMemo(() => (shifts.length > 0 ? buildWeekDays(shifts) : []), [shifts]);
+  const weekDays = useMemo(() => (shifts.length > 0 ? buildWeekDays(shifts, profile ?? undefined) : []), [profile, shifts]);
 
   if (shifts.length > 0) {
     console.log("Loaded shifts from", draftConfirmation ? "draft confirmation" : "analysis response");
@@ -99,7 +100,7 @@ const ConfirmPage = () => {
       shifts: shifts.map(val => ({ ...val, startTime: convertTo24Hour(val.startTime), endTime: convertTo24Hour(val.endTime) })),
       selectedCalendarId: profile?.defaultCalendarId ?? 'primary'
     });
-  }, [shifts]);
+  }, [profile?.defaultCalendarId, shifts, uid]);
 
   return (
     <PageContent className="confirm-page">

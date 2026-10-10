@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserMessageProvider } from '@/contexts/user-message';
 import ConfirmPage from './ConfirmPage';
+import { buildWeekDays } from './utils/weekdays';
 
 const { loadAnalysisResponseMock, loadDraftConfirmationMock, saveDraftConfirmationMock, getUserProfileMock, useCurrentUserMock, useFirestoreMock, navigateMock } = vi.hoisted(() => ({
   loadAnalysisResponseMock: vi.fn(),
@@ -46,6 +47,18 @@ vi.mock('@/services/user-profile', () => ({
   getUserProfile: getUserProfileMock,
 }));
 
+vi.mock('@/utils/shift-name', () => ({
+  resolveShiftName: (profile: { defaultShiftName?: string; namePrefix?: string }, extractedName?: string | null) => {
+    const prefix = profile.namePrefix ?? '';
+    const trimmedName = extractedName?.trim() ?? '';
+    const withoutPrefix = prefix && trimmedName.startsWith(prefix)
+      ? trimmedName.slice(prefix.length)
+      : trimmedName;
+    const baseName = withoutPrefix || profile.defaultShiftName?.trim() || 'Work';
+    return `${prefix}${baseName}`;
+  },
+}));
+
 describe('ConfirmPage', () => {
   const renderConfirmPage = () => render(
     <UserMessageProvider>
@@ -62,6 +75,8 @@ describe('ConfirmPage', () => {
       targetName: 'Alex',
       timezone: 'UTC',
       defaultCalendarId: 'primary',
+      defaultShiftName: 'Work Shift',
+      namePrefix: 'Retail - ',
       reminder: {
         enabled: false,
         minutesBefore: 30,
@@ -238,6 +253,40 @@ describe('ConfirmPage', () => {
     expect(screen.queryByRole('button', { name: /close|dismiss/i })).not.toBeInTheDocument();
     expect(grid).not.toBeNull();
     expect(disclaimer.compareDocumentPosition(grid as Node) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('prepends the name prefix and falls back to the default shift name when no AI name is extracted', async () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      warnings: [],
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+        {
+          date: '2026-09-05',
+          startTime: '12:00',
+          endTime: '21:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 12:00 PM - 9:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Retail - Work Shift')).toBeInTheDocument();
+      expect(screen.getByDisplayValue('Retail - Barista')).toBeInTheDocument();
+    });
   });
 
   it('falls back to capture when no cached review exists', () => {
