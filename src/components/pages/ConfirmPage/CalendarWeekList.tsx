@@ -32,7 +32,7 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
 });
 
 const createNewShift = (isoDate: string): EditableShift => ({
-  id: `${isoDate}-new-${crypto.randomUUID()}`,
+  id: `${isoDate}-new-${crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`}`,
   date: isoDate,
   startTime: '',
   endTime: '',
@@ -43,6 +43,14 @@ const createNewShift = (isoDate: string): EditableShift => ({
   rawText: '',
   isPlaceholder: false,
 });
+
+const validateShiftDraft = (draft: ShiftEditDraft) => {
+  const eventName = draft.eventName.trim();
+  const startTime = draft.startTime.trim();
+  const endTime = draft.endTime.trim();
+
+  return Boolean(eventName && startTime && endTime);
+};
 
 const clearPendingRemoval = (
   pendingKey: string,
@@ -77,7 +85,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
 
   const updateShift = useCallback((dayIso: string, shiftId: string, updates: Pick<EditableShift, 'startTime' | 'endTime' | 'eventName'>) => {
-    const nextWeekDays = weekDays.map((day) => {
+    const nextWeekDays = weekDaysRef.current.map((day) => {
       if (day.isoDate !== dayIso) {
         return day;
       }
@@ -97,6 +105,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         }),
       };
     });
+    weekDaysRef.current = nextWeekDays;
     setWeekDays(nextWeekDays);
     onChange(nextWeekDays);
   }, [onChange]);
@@ -132,15 +141,25 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return;
     }
 
+    const trimmedDraft = {
+      eventName: latestDraft.eventName.trim(),
+      startTime: latestDraft.startTime.trim(),
+      endTime: latestDraft.endTime.trim(),
+    };
+
+    if (!validateShiftDraft(trimmedDraft)) {
+      return;
+    }
+
     updateShift(day.isoDate, shift.id, {
-      eventName: latestDraft.eventName,
-      startTime: latestDraft.startTime,
-      endTime: latestDraft.endTime,
+      eventName: trimmedDraft.eventName,
+      startTime: trimmedDraft.startTime,
+      endTime: trimmedDraft.endTime,
     });
   }, [showModal, updateShift]);
 
   const addNewShift = useCallback(async (isoDate: string) => {
-    const day = weekDays.find((d) => d.isoDate === isoDate);
+    const day = weekDaysRef.current.find((d) => d.isoDate === isoDate);
     if (!day) {
       return;
     }
@@ -172,13 +191,21 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return;
     }
 
-    // Add the new shift to the day's shifts
-    const nextWeekDays = weekDays.map((d) => {
+    const trimmedDraft = {
+      eventName: latestDraft.eventName.trim(),
+      startTime: latestDraft.startTime.trim(),
+      endTime: latestDraft.endTime.trim(),
+    };
+
+    if (!validateShiftDraft(trimmedDraft)) {
+      return;
+    }
+
+    const nextWeekDays = weekDaysRef.current.map((d) => {
       if (d.isoDate !== isoDate) {
         return d;
       }
 
-      // Remove placeholder if it exists
       const nonPlaceholderShifts = d.shifts.filter((shift) => !shift.isPlaceholder);
 
       return {
@@ -187,18 +214,20 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
           ...nonPlaceholderShifts,
           {
             ...newShift,
-            eventName: latestDraft.eventName,
-            role: latestDraft.eventName,
-            startTime: latestDraft.startTime,
-            endTime: latestDraft.endTime,
+            eventName: trimmedDraft.eventName,
+            role: trimmedDraft.eventName,
+            startTime: trimmedDraft.startTime,
+            endTime: trimmedDraft.endTime,
             isPlaceholder: false,
           },
         ],
       };
     });
+
+    weekDaysRef.current = nextWeekDays;
     setWeekDays(nextWeekDays);
     onChange(nextWeekDays);
-  }, [weekDays, showModal, onChange]);
+  }, [showModal, onChange]);
 
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLButtonElement>(null);
