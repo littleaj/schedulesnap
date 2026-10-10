@@ -2,6 +2,7 @@ import type { GoogleCalendarEvent } from "@/types/google-calendar";
 import type { EditableShift } from "@/types/shift-display";
 import { convertTo24Hour } from "./time-utils";
 
+// TODO(refactor): move timezone resolution into shared timezone util so ProfileForm/mappers use one source.
 export const editableShift2GoogleCalendarEvent = (shift: EditableShift): GoogleCalendarEvent | null => {
   const start24Hour = convertTo24Hour(shift.startTime);
   const end24Hour = convertTo24Hour(shift.endTime);
