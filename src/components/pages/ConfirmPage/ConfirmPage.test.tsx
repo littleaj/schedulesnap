@@ -547,7 +547,46 @@ describe('ConfirmPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'OK' }));
 
-    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/enter a name and a valid time range/i)).toBeInTheDocument();
+    });
+    expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
+  });
+
+  it('requires the start time to be before the end time before saving a new shift', async () => {
+    loadDraftConfirmationMock.mockReturnValue(null);
+    loadAnalysisResponseMock.mockReturnValue({
+      scheduleOwnerGuess: 'Alex',
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+    });
+
+    renderConfirmPage();
+    saveDraftConfirmationMock.mockClear();
+
+    fireEvent.click(screen.getByRole('button', { name: /add shift to sat/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByRole('textbox', { name: /event name/i }), { target: { value: 'Cashier' } });
+    fireEvent.change(screen.getByLabelText(/start time/i), { target: { value: '17:00' } });
+    fireEvent.change(screen.getByLabelText(/end time/i), { target: { value: '13:00' } });
+    fireEvent.click(screen.getByRole('button', { name: 'OK' }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/enter a name and a valid time range/i)).toBeInTheDocument();
+    });
     expect(saveDraftConfirmationMock).not.toHaveBeenCalled();
   });
 

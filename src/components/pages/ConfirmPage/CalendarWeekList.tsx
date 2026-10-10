@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import CalendarDayCard from "./CalendarDayCard";
 import ShiftEditDialogContent, { type ShiftEditDraft } from "./ShiftEditDialogContent";
 import type { EditableShift, WeekDay } from "@/types/shift-display";
-import useUserMessage from "@/hooks/user-message";
+import useUserMessage, { type ToastMessage } from "@/hooks/user-message";
 
 interface CalendarWeekListProps {
   shifts: WeekDay[];
@@ -39,11 +39,27 @@ const createNewShift = (isoDate: string): EditableShift => ({
 });
 
 const validateShiftDraft = (draft: ShiftEditDraft) => {
-  const eventName = draft.eventName.trim();
-  const startTime = draft.startTime.trim();
-  const endTime = draft.endTime.trim();
+  const eventName = draft.eventName;
+  const startTime = draft.startTime;
+  const endTime = draft.endTime;
 
-  return Boolean(eventName && startTime && endTime);
+  if (!eventName || !startTime || !endTime) {
+    return false;
+  }
+
+  const startMinutes = Number.parseInt(startTime.slice(0, 2), 10) * 60 + Number.parseInt(startTime.slice(3, 5), 10);
+  const endMinutes = Number.parseInt(endTime.slice(0, 2), 10) * 60 + Number.parseInt(endTime.slice(3, 5), 10);
+
+  return endMinutes > startMinutes;
+};
+
+const showInvalidShiftToast = (showToast: (message: ToastMessage) => number) => {
+  showToast({
+    title: 'Invalid shift',
+    content: 'Enter a name and a valid time range where the start time is before the end time.',
+    variant: 'error',
+    timeoutMs: 5000,
+  });
 };
 
 const clearPendingRemoval = (
@@ -142,6 +158,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     };
 
     if (!validateShiftDraft(trimmedDraft)) {
+      showInvalidShiftToast(showToast);
       return;
     }
 
@@ -150,7 +167,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       startTime: trimmedDraft.startTime,
       endTime: trimmedDraft.endTime,
     });
-  }, [showModal, updateShift]);
+  }, [showModal, showToast, updateShift]);
 
   const addNewShift = useCallback(async (isoDate: string) => {
     const day = weekDaysRef.current.find((d) => d.isoDate === isoDate);
@@ -192,6 +209,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     };
 
     if (!validateShiftDraft(trimmedDraft)) {
+      showInvalidShiftToast(showToast);
       return;
     }
 
@@ -221,7 +239,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     weekDaysRef.current = nextWeekDays;
     setWeekDays(nextWeekDays);
     onChange(nextWeekDays);
-  }, [showModal, onChange]);
+  }, [showModal, showToast, onChange]);
 
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLButtonElement>(null);
