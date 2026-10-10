@@ -66,9 +66,8 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
   }, []);
 
   const showModal = useCallback((message: ModalMessage) => {
-    const modalId = nextMessageId.current + 1;
-    nextMessageId.current = modalId;
-
+    const modalId = nextMessageId.current++;
+    
     return new Promise<string | null>((resolve) => {
       setModalQueue((currentQueue) => [
         ...currentQueue,
