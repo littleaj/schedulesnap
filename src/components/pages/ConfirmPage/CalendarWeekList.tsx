@@ -331,17 +331,17 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     scroller.current.scrollBy({ left: scrollDistance });
   }, []);
 
-  const [isTicking, setIsTicking] = useState(false);
+  const tickingRef = useRef(false);
 
   const handleScroll = useCallback(() => {
-    if (isTicking) return;
-    setIsTicking(true);
+    if (tickingRef.current) return;
+    tickingRef.current = true;
 
     requestAnimationFrame(() => {
       updateChevrons();
-      setIsTicking(false);
+      tickingRef.current = false;
     });
-  }, [isTicking, updateChevrons]);
+  }, [updateChevrons]);
 
   useEffect(() => {
     pendingRemovalsRef.current = pendingRemovals;
