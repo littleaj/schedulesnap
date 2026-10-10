@@ -76,7 +76,7 @@
 
 .chevron {
   position: absolute;
-  bottom: 10.8rem;
+  bottom: 1rem;
   z-index: 2;
   width: 2rem;
   height: 2rem;
@@ -127,6 +127,7 @@
 
 .confirm-card__day {
   display: grid;
+  grid-template-rows: auto 1fr;
   scroll-snap-align: start;
   scroll-snap-stop: always;
   gap: 0.45rem;
