@@ -32,7 +32,7 @@ const createPlaceholderShift = (isoDate: string): EditableShift => ({
 });
 
 const createNewShift = (isoDate: string): EditableShift => ({
-  id: `${isoDate}-new-${crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`}`,
+  id: `${isoDate}-new-${crypto?.randomUUID?.() ?? Date.now()}`,
   date: isoDate,
   startTime: '',
   endTime: '',
