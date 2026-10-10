@@ -159,11 +159,8 @@
 }
 
 .confirm-card__cell-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
   width: 100%;
+  position: relative;
 }
 
 .confirm-card__cell-date {
@@ -241,12 +238,18 @@
 .confirm-card__add-shift:hover:not(:disabled),
 .confirm-card__add-shift:focus-visible:not(:disabled) {
   opacity: 1;
-  filter: saturate(0.7) brightness(1.05);
+  filter: drop-shadow(0 0 2px color-mix(in oklab, var(--md-accent) 50%, currentColor));
   transform: translateY(-1px);
 }
 
 .confirm-card__add-shift {
   opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0.5rem;
+  color: var(--md-on-primary);
+  background-color: transparent;
 }
 
 .confirm-card__event-summary {
