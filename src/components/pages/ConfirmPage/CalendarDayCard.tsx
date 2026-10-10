@@ -29,7 +29,7 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift, onAd
             aria-label={`Add shift to ${day.weekday} ${day.monthDay}`}
             onClick={() => onAddShift(day.isoDate)}
           >
-            {'\ue145'}
+            {'\ue146'}
           </button>
         </div>
 
