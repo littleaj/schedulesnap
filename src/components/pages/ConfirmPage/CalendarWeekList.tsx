@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import CalendarDayCard from "./CalendarDayCard";
 import ShiftEditDialogContent, { type ShiftEditDraft } from "./ShiftEditDialogContent";
 import type { EditableShift, WeekDay } from "@/types/shift-display";
-import useUserMessage, { type ToastMessage } from "@/hooks/user-message";
+import useUserMessage from "@/hooks/user-message";
+import type { ToastMessage } from "@/contexts/user-message";
 
 interface CalendarWeekListProps {
   shifts: WeekDay[];
