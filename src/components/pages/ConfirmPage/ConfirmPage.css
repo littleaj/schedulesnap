@@ -125,11 +125,6 @@
   right: 0;
 }
 
-.chevron svg {
-  width: 2rem;
-  height: 2rem;
-}
-
 .confirm-card__day {
   display: grid;
   scroll-snap-align: start;
