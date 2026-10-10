@@ -50,8 +50,7 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
   const nextMessageId = useRef(0);
 
   const showToast = useCallback((message: ToastMessage) => {
-    const messageId = nextMessageId.current + 1;
-    nextMessageId.current = messageId;
+    const messageId = nextMessageId.current++;
     setToastQueue((currentQueue) => [...currentQueue, { id: messageId, kind: 'toast', ...message }]);
     return messageId;
   }, []);
