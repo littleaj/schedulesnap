@@ -11,6 +11,8 @@ interface CalendarWeekListProps {
 }
 
 const REMOVE_SHIFT_TIMEOUT_MS = 5000;
+const EDGE_SCROLL_THRESHOLD_PX = 48;
+const EDGE_SCROLL_INTERVAL_MS = 400;
 const toPendingRemovalKey = (isoDate: string, shiftId: string) => `${isoDate}::${shiftId}`;
 
 const createPlaceholderShift = (isoDate: string): EditableShift => ({
@@ -261,6 +263,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   const scroller = useRef<HTMLDivElement>(null);
   const prevIndicator = useRef<HTMLButtonElement>(null);
   const nextIndicator = useRef<HTMLButtonElement>(null);
+  const draggedShiftRef = useRef<{ dayIso: string; shiftId: string } | null>(null);
+  const edgeScrollIntervalRef = useRef<number | null>(null);
+  const edgeScrollDirectionRef = useRef<'left' | 'right' | null>(null);
   const hasPendingRemovals = useMemo(() => Object.keys(pendingRemovals).length > 0, [pendingRemovals]);
 
   const restoreShift = useCallback((isoDate: string, shiftId: string) => {
@@ -325,6 +330,14 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     setPendingRemovals(pendingRemovalsRef.current);
   }, [onChange, restoreShift, showToast, dismissToast]);
 
+  const clearEdgeScroll = useCallback(() => {
+    if (edgeScrollIntervalRef.current !== null) {
+      window.clearInterval(edgeScrollIntervalRef.current);
+      edgeScrollIntervalRef.current = null;
+    }
+    edgeScrollDirectionRef.current = null;
+  }, []);
+
   const updateChevrons = useCallback(() => {
     if (!scroller.current || !prevIndicator.current || !nextIndicator.current) return;
     const maxScroll = scroller.current.scrollWidth - scroller.current.clientWidth;
@@ -346,6 +359,140 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
 
     scroller.current.scrollBy({ left: scrollDistance });
   }, []);
+
+  const moveShift = useCallback((sourceIsoDate: string, targetIsoDate: string, shiftId: string) => {
+    if (sourceIsoDate === targetIsoDate) {
+      return;
+    }
+
+    let draggedShift: EditableShift | undefined;
+    const removedFromSourceWeekDays = weekDaysRef.current.map((day) => {
+      if (day.isoDate !== sourceIsoDate) {
+        return day;
+      }
+
+      const remainingShifts = day.shifts.filter((shift) => {
+        if (shift.id !== shiftId) {
+          return true;
+        }
+
+        draggedShift = shift;
+        return false;
+      });
+
+      return {
+        ...day,
+        shifts: remainingShifts,
+      };
+    });
+
+    if (!draggedShift) {
+      return;
+    }
+
+    const nextWeekDays = removedFromSourceWeekDays.map((day) => {
+      if (day.isoDate !== targetIsoDate) {
+        return day;
+      }
+
+      return {
+        ...day,
+        shifts: [
+          ...day.shifts.filter((shift) => !shift.isPlaceholder),
+          {
+            ...draggedShift,
+            date: targetIsoDate,
+            isPlaceholder: false,
+          },
+        ],
+      };
+    });
+
+    weekDaysRef.current = nextWeekDays;
+    setWeekDays(nextWeekDays);
+    onChange(nextWeekDays);
+  }, [onChange]);
+
+  const scrollOneDay = useCallback((direction: 'left' | 'right') => {
+    if (!scroller.current) {
+      return;
+    }
+
+    const scrollAmount = scroller.current.clientWidth + 1;
+    const left = direction === 'right' ? scrollAmount : -scrollAmount;
+    scroller.current.scrollBy({ left });
+  }, []);
+
+  const startEdgeScroll = useCallback((direction: 'left' | 'right') => {
+    if (edgeScrollDirectionRef.current === direction) {
+      return;
+    }
+
+    clearEdgeScroll();
+    edgeScrollDirectionRef.current = direction;
+    edgeScrollIntervalRef.current = window.setInterval(() => {
+      scrollOneDay(direction);
+    }, EDGE_SCROLL_INTERVAL_MS);
+  }, [clearEdgeScroll, scrollOneDay]);
+
+  const handleShiftDragStart = useCallback((dayIso: string, shiftId: string) => {
+    draggedShiftRef.current = { dayIso, shiftId };
+  }, []);
+
+  const handleShiftDragEnd = useCallback(() => {
+    draggedShiftRef.current = null;
+    clearEdgeScroll();
+  }, [clearEdgeScroll]);
+
+  const handleDayDragOver = useCallback((event: React.DragEvent<HTMLElement>) => {
+    event.preventDefault();
+  }, []);
+
+  const handleDayDrop = useCallback((targetDayIso: string) => {
+    const draggedShift = draggedShiftRef.current;
+    clearEdgeScroll();
+
+    if (!draggedShift) {
+      return;
+    }
+
+    moveShift(draggedShift.dayIso, targetDayIso, draggedShift.shiftId);
+    draggedShiftRef.current = null;
+  }, [clearEdgeScroll, moveShift]);
+
+  const handleGridDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+
+    if (!draggedShiftRef.current || !scroller.current) {
+      clearEdgeScroll();
+      return;
+    }
+
+    const bounds = scroller.current.getBoundingClientRect();
+
+    if (event.clientX <= bounds.left + EDGE_SCROLL_THRESHOLD_PX) {
+      startEdgeScroll('left');
+      return;
+    }
+
+    if (event.clientX >= bounds.right - EDGE_SCROLL_THRESHOLD_PX) {
+      startEdgeScroll('right');
+      return;
+    }
+
+    clearEdgeScroll();
+  }, [clearEdgeScroll, startEdgeScroll]);
+
+  const handleEdgeDragOver = useCallback((direction: 'left' | 'right', event: React.DragEvent<HTMLElement>) => {
+    event.preventDefault();
+
+    if (!draggedShiftRef.current) {
+      clearEdgeScroll();
+      return;
+    }
+
+    startEdgeScroll(direction);
+  }, [clearEdgeScroll, startEdgeScroll]);
 
   const tickingRef = useRef(false);
 
@@ -369,11 +516,12 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
 
   useEffect(() => {
     return () => {
+      clearEdgeScroll();
       Object.values(pendingRemovalsRef.current).forEach((timeoutId) => {
         window.clearTimeout(timeoutId);
       });
     };
-  }, []);
+  }, [clearEdgeScroll]);
 
   const displayWeekDays = useMemo(() => weekDays.map((day) => {
     const visibleShifts = day.shifts.filter((shift) => pendingRemovals[toPendingRemovalKey(day.isoDate, shift.id)] === undefined);
@@ -408,6 +556,8 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         id="prevBtn"
         aria-label="Scroll to previous day"
         onClick={() => handleChevronClick('left')}
+        onDragEnter={(event) => handleEdgeDragOver('left', event)}
+        onDragOver={(event) => handleEdgeDragOver('left', event)}
       >
         <span className="material-symbols-outlined">&#xe5cb;</span>
       </button>
@@ -418,10 +568,19 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         id="nextBtn"
         aria-label="Scroll to next day"
         onClick={() => handleChevronClick('right')}
+        onDragEnter={(event) => handleEdgeDragOver('right', event)}
+        onDragOver={(event) => handleEdgeDragOver('right', event)}
       >
         <span className="material-symbols-outlined">&#xe5cc;</span>
       </button>
-      <div ref={scroller} id="confirm-card__grid" className="confirm-card__grid" aria-label="Scanned weekly schedule">
+      <div
+        ref={scroller}
+        id="confirm-card__grid"
+        className="confirm-card__grid"
+        aria-label="Scanned weekly schedule"
+        onDragEnter={handleGridDragOver}
+        onDragOver={handleGridDragOver}
+      >
         {displayWeekDays.map((day) =>
           <CalendarDayCard
             key={day.isoDate}
@@ -430,6 +589,10 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
             onRemoveShift={removeShift}
             canRemoveShift={!hasPendingRemovals}
             onAddShift={addNewShift}
+            onDragShiftStart={handleShiftDragStart}
+            onDragShiftEnd={handleShiftDragEnd}
+            onDragShiftOverDay={handleDayDragOver}
+            onDropShift={handleDayDrop}
           />)
         }
       </div>

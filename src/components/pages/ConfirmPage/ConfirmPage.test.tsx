@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { StrictMode } from 'react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -830,6 +830,128 @@ describe('ConfirmPage', () => {
 
     expect(screen.getByRole('button', { name: /scroll to previous day/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /scroll to next day/i })).toBeInTheDocument();
+  });
+
+  it('moves a dragged shift to another day and persists the new date without changing times', async () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+    saveDraftConfirmationMock.mockClear();
+
+    const sourceLabel = `${new Intl.DateTimeFormat(undefined, { weekday: 'short' }).format(new Date('2026-09-05T00:00:00'))} ${new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date('2026-09-05T00:00:00'))}`;
+    const targetLabel = `${new Intl.DateTimeFormat(undefined, { weekday: 'short' }).format(new Date('2026-09-04T00:00:00'))} ${new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date('2026-09-04T00:00:00'))}`;
+
+    const sourceCell = screen.getByLabelText(sourceLabel);
+    const targetCell = screen.getByLabelText(targetLabel);
+    const shiftCard = within(sourceCell).getByText('Barista').closest('.confirm-card__event');
+
+    expect(shiftCard).not.toBeNull();
+
+    fireEvent.dragStart(shiftCard!);
+    fireEvent.dragOver(targetCell);
+    fireEvent.drop(targetCell);
+
+    await waitFor(() => {
+      expect(within(targetCell).getByText('Barista')).toBeInTheDocument();
+    });
+
+    expect(within(sourceCell).queryByText('Barista')).not.toBeInTheDocument();
+    expect(within(sourceCell).getByText(/day off/i)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+        shifts: expect.arrayContaining([
+          expect.objectContaining({
+            role: 'Barista',
+            startTime: '09:00',
+            endTime: '17:00',
+            date: '2026-09-04',
+          }),
+        ]),
+      }));
+    });
+
+    expect(saveDraftConfirmationMock).toHaveBeenCalledWith(fakeUid, expect.objectContaining({
+      shifts: expect.not.arrayContaining([
+        expect.objectContaining({
+          role: 'Barista',
+          startTime: '09:00',
+          endTime: '17:00',
+          date: '2026-09-05',
+        }),
+      ]),
+    }));
+  });
+
+  it('keeps nudging the day scroller while a dragged shift is held near the screen edge', () => {
+    vi.useFakeTimers();
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    const grid = document.getElementById('confirm-card__grid') as HTMLDivElement;
+    const nextButton = screen.getByRole('button', { name: /scroll to next day/i });
+    const shiftCard = screen.getByText('Barista').closest('.confirm-card__event');
+    const scrollByMock = vi.fn();
+
+    expect(shiftCard).not.toBeNull();
+
+    Object.defineProperty(grid, 'clientWidth', {
+      value: 300,
+      configurable: true,
+    });
+    grid.getBoundingClientRect = vi.fn(() => ({
+      left: 0,
+      right: 300,
+      top: 0,
+      bottom: 200,
+      width: 300,
+      height: 200,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    })) as typeof grid.getBoundingClientRect;
+    (grid.scrollBy as unknown as ReturnType<typeof vi.fn>) = scrollByMock;
+
+    fireEvent.dragStart(shiftCard!);
+    fireEvent.dragEnter(nextButton, { clientX: 295 });
+    fireEvent.dragOver(nextButton, { clientX: 295 });
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(scrollByMock).toHaveBeenCalledTimes(2);
+    expect(scrollByMock).toHaveBeenNthCalledWith(1, expect.objectContaining({ left: expect.any(Number) }));
+    expect((scrollByMock.mock.calls[0]?.[0] as ScrollToOptions | undefined)?.left).toBeGreaterThan(0);
   });
 
   it('chevron buttons scroll the grid by one cell width when clicked', () => {

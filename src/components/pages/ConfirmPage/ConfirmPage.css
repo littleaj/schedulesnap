@@ -200,6 +200,7 @@
   justify-content: center;
   border-radius: 9px;
   border: 2px solid hsl(from var(--md-primary) h s l / 0.4);
+  cursor: grab;
 }
 
 .confirm-card__event-actions {
@@ -297,6 +298,7 @@
   border: none;
   text-align: center;
   font-style: italic;
+  cursor: default;
 }
 
 .confirm-card__event-header {
