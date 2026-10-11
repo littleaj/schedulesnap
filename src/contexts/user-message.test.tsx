@@ -208,4 +208,36 @@ describe('UserMessageProvider', () => {
     fireEvent.click(screen.getByRole('button', { name: /sign in again/i }));
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
   });
+
+  it('calls onShow when the modal is displayed', async () => {
+    const onShow = vi.fn();
+
+    const AutoModalTrigger = () => {
+      const { showModal } = useUserMessage();
+
+      useEffect(() => {
+        void showModal({
+          title: 'Session expired',
+          heading: 'Token expired while saving events.',
+          content: 'Sign in again and retry saving.',
+          variant: 'error',
+          actionLabels: ['Sign in again'],
+          onShow,
+        });
+      }, [showModal]);
+
+      return null;
+    };
+
+    render(
+      <UserMessageProvider>
+        <AutoModalTrigger />
+      </UserMessageProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole('alertdialog')).toHaveTextContent('Session expired');
+      expect(onShow).toHaveBeenCalledTimes(1);
+    });
+  });
 });
