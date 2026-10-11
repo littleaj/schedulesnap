@@ -11,7 +11,7 @@ interface ShiftEditDialogContentProps {
   initialDraft: ShiftEditDraft;
   onDraftChange: (draft: ShiftEditDraft) => void;
   shiftId: string;
-  nameInputRef?: React.RefObject<HTMLInputElement>;
+  nameInputRef?: React.Ref<HTMLInputElement>;
 }
 
 const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId, nameInputRef }: ShiftEditDialogContentProps) => {
