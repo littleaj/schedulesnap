@@ -188,18 +188,21 @@
 }
 
 .confirm-card__event {
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto 1fr;
   width: 100%;
   gap: 0.125rem;
   padding-block: 0.5rem;
-  padding-inline: 1rem;
+  padding-inline: 0.25rem;
   background-color: var(--md-primary-container);
   color: var(--md-on-primary-container);
   justify-content: center;
   border-radius: 9px;
   border: 2px solid hsl(from var(--md-primary) h s l / 0.4);
+
+  &.confirm-card__event--off {
+    grid-template-columns: 1fr;
+  }
 }
 
 .confirm-card__event-actions {
@@ -259,7 +262,6 @@
 .confirm-card__event-summary {
   display: grid;
   gap: 0.3rem;
-  cursor: default;
 }
 
 .confirm-card__edit-dialog {
@@ -307,6 +309,8 @@
   font-style: italic;
   cursor: default;
 }
+
+
 
 .confirm-card__event-header {
   display: flex;
