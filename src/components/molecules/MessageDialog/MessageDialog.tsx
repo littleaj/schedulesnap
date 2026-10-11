@@ -72,7 +72,7 @@ const MessageDialog = ({
       dialog.removeEventListener('cancel', handleCancel);
       dialog.removeAttribute('open');
     };
-  }, [closeable, onAcknowledge]);
+  }, [closeable, onAcknowledge, onShow]);
 
   return (
     <dialog
