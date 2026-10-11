@@ -15,6 +15,7 @@ interface MessageDialogProps {
   title: string;
   closeable?: boolean;
   onAcknowledge: (label: string | null) => void;
+  onShow?: () => void;
 }
 
 const MessageDialog = ({
@@ -25,6 +26,7 @@ const MessageDialog = ({
   title,
   closeable = true,
   onAcknowledge,
+  onShow,
 }: MessageDialogProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -48,6 +50,9 @@ const MessageDialog = ({
     if (typeof dialog.showModal === 'function') {
       if (!dialog.open) {
         dialog.showModal();
+        if (onShow) {
+          onShow();
+        }
       }
 
       return () => {
@@ -59,6 +64,9 @@ const MessageDialog = ({
     }
 
     dialog.setAttribute('open', '');
+    if (onShow) {
+      onShow();
+    }
 
     return () => {
       dialog.removeEventListener('cancel', handleCancel);
