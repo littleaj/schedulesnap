@@ -879,9 +879,13 @@ describe('ConfirmPage', () => {
 
     const sourceCell = screen.getByLabelText(sourceLabel);
     const targetCell = screen.getByLabelText(targetLabel);
-    const dragHandle = screen.getByRole('button', { name: /drag shift barista on .* from 09:00 to 17:00/i });
+    const dragHandle = screen.getByRole('button', { name: /drag shift barista.*09:00 to 17:00/i });
 
-    fireEvent.dragStart(dragHandle);
+    expect(dragHandle).toBeInTheDocument();
+
+    fireEvent.dragStart(dragHandle, {
+      dataTransfer: { setDragImage: vi.fn() },
+    });
     fireEvent.dragOver(targetCell);
     fireEvent.drop(targetCell);
 
@@ -957,9 +961,15 @@ describe('ConfirmPage', () => {
       y: 0,
       toJSON: () => ({}),
     })) as typeof grid.getBoundingClientRect;
-    (grid.scrollBy as unknown as ReturnType<typeof vi.fn>) = scrollByMock;
+    Object.defineProperty(grid, 'scrollBy', {
+      value: scrollByMock,
+      writable: true,
+      configurable: true,
+    });
 
-    fireEvent.dragStart(dragHandle);
+    fireEvent.dragStart(dragHandle, {
+      dataTransfer: { setDragImage: vi.fn() },
+    });
     fireEvent.dragEnter(nextButton, { clientX: 295 });
     fireEvent.dragOver(nextButton, { clientX: 295 });
 
