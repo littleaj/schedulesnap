@@ -60,50 +60,54 @@ const CalendarDayCard = ({
               className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}
             >
               {!shift.isPlaceholder ? (
-                <div className="confirm-card__event-header">
-                  <p className="confirm-card__event-title">{shift.eventName || shift.role || 'Unnamed Shift'}</p>
-                  <div className="confirm-card__event-actions">
-                    <button
-                      type="button"
-                      className="material-symbols-outlined confirm-card__drag-handle"
-                      aria-label={getShiftActionLabel('Drag shift', day, shift)}
-                      draggable
-                      onDragStart={() => onDragShiftStart(day.isoDate, shift.id)}
-                      onDragEnd={onDragShiftEnd}
-                    >
-                      drag_indicator
-                    </button>
-                    <button
-                      type="button"
-                      className="material-symbols-outlined confirm-card__edit-shift"
-                      aria-label={getShiftActionLabel('Edit shift', day, shift)}
-                      onClick={() => onEditShift(day, shift)}
-                    >
-                      {'\ue3c9'}
-                    </button>
-                    <button
-                      type="button"
-                      className="material-symbols-outlined confirm-card__remove-shift"
-                      aria-label={getShiftActionLabel('Remove shift', day, shift)}
-                      onClick={() => onRemoveShift(day.isoDate, shift.id)}
-                      disabled={!canRemoveShift}
-                    >
-                      {'\ue872'}
-                    </button>
-                  </div>
-                </div>
-              ) : null}
-              {!shift.isPlaceholder ? (
-                <div
-                  className="confirm-card__event-summary"
-                  onDoubleClick={() => onEditShift(day, shift)}
+                <button
+                  type="button"
+                  className="material-symbols-outlined confirm-card__drag-handle"
+                  aria-label={getShiftActionLabel('Drag shift', day, shift)}
+                  draggable
+                  onDragStart={() => onDragShiftStart(day.isoDate, shift.id)}
+                  onDragEnd={onDragShiftEnd}
                 >
-                  <p className="confirm-card__cell-time">{formatTimeToLocale(shift.startTime)} &ndash; {formatTimeToLocale(shift.endTime)}</p>
-                  {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
-                </div>
-              ) : (
-                <p className="confirm-card__cell-role">Day off</p>
-              )}
+                  {'\ue945'}
+                </button>
+              ) : null}
+              <div className="confirm-card__event-content">
+                {!shift.isPlaceholder ? (
+                  <div className="confirm-card__event-header">
+                    <p className="confirm-card__event-title">{shift.eventName || shift.role || 'Unnamed Shift'}</p>
+                    <div className="confirm-card__event-actions">
+                      <button
+                        type="button"
+                        className="material-symbols-outlined confirm-card__edit-shift"
+                        aria-label={getShiftActionLabel('Edit shift', day, shift)}
+                        onClick={() => onEditShift(day, shift)}
+                      >
+                        {'\ue3c9'}
+                      </button>
+                      <button
+                        type="button"
+                        className="material-symbols-outlined confirm-card__remove-shift"
+                        aria-label={getShiftActionLabel('Remove shift', day, shift)}
+                        onClick={() => onRemoveShift(day.isoDate, shift.id)}
+                        disabled={!canRemoveShift}
+                      >
+                        {'\ue872'}
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+                {!shift.isPlaceholder ? (
+                  <div
+                    className="confirm-card__event-summary"
+                    onDoubleClick={() => onEditShift(day, shift)}
+                  >
+                    <p className="confirm-card__cell-time">{formatTimeToLocale(shift.startTime)} &ndash; {formatTimeToLocale(shift.endTime)}</p>
+                    {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
+                  </div>
+                ) : (
+                  <p className="confirm-card__cell-role">Day off</p>
+                )}
+              </div>
             </div>
           ))}
         </div>
