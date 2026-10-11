@@ -121,6 +121,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     onChange(nextWeekDays);
   }, [onChange]);
 
+  const editShiftInputRef = useRef<HTMLInputElement>(null);
   const openShiftEditor = useCallback(async (day: WeekDay, shift: EditableShift) => {
     if (shift.isPlaceholder) {
       return;
@@ -142,10 +143,14 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
           onDraftChange={(draft) => {
             latestDraft = draft;
           }}
+          nameInputRef={editShiftInputRef}
         />
       ),
       variant: 'information',
       actionLabels: ['OK', 'Cancel'],
+      onShow: () => {
+        editShiftInputRef.current?.select();
+      },
     });
 
     if (editResult !== 'OK') {
@@ -170,6 +175,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     });
   }, [showModal, showToast, updateShift]);
 
+  const addShiftInputRef = useRef<HTMLInputElement>(null);
   const addNewShift = useCallback(async (isoDate: string) => {
     const day = weekDaysRef.current.find((d) => d.isoDate === isoDate);
     if (!day) {
@@ -193,10 +199,14 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
           onDraftChange={(draft) => {
             latestDraft = draft;
           }}
+          nameInputRef={addShiftInputRef}
         />
       ),
       variant: 'information',
       actionLabels: ['OK', 'Cancel'],
+      onShow: () => {
+        addShiftInputRef.current?.focus();
+      },
     });
 
     if (editResult !== 'OK') {
