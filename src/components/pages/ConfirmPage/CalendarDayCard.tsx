@@ -1,3 +1,4 @@
+import type { DragEvent } from "react";
 import type { EditableShift, WeekDay } from "@/types/shift-display";
 import { formatTimeToLocale } from "@/utils/formatTime";
 
@@ -7,6 +8,10 @@ export interface CalendarDayCardProps {
   onRemoveShift: (isoDate: string, shiftId: string) => void;
   canRemoveShift: boolean;
   onAddShift: (isoDate: string) => void;
+  onDragShiftStart: (dayIso: string, shiftId: string) => void;
+  onDragShiftEnd: () => void;
+  onDragShiftOverDay: (event: DragEvent<HTMLElement>) => void;
+  onDropShift: (targetDayIso: string) => void;
 }
 
 const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift) => [
@@ -16,11 +21,26 @@ const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift)
   shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
 ].filter(Boolean).join(' ');
 
-const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift, onAddShift }: CalendarDayCardProps) => {
+const CalendarDayCard = ({
+  day,
+  onEditShift,
+  onRemoveShift,
+  canRemoveShift,
+  onAddShift,
+  onDragShiftStart,
+  onDragShiftEnd,
+  onDragShiftOverDay,
+  onDropShift,
+}: CalendarDayCardProps) => {
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
-      <article className="confirm-card__cell" aria-label={`${day.weekday} ${day.monthDay}`}>
+      <article
+        className="confirm-card__cell"
+        aria-label={`${day.weekday} ${day.monthDay}`}
+        onDragOver={onDragShiftOverDay}
+        onDrop={() => onDropShift(day.isoDate)}
+      >
         <div className="confirm-card__cell-header">
           <p className="confirm-card__cell-date">{day.monthDay}</p>
           <button
@@ -35,7 +55,13 @@ const CalendarDayCard = ({ day, onEditShift, onRemoveShift, canRemoveShift, onAd
 
         <div className="confirm-card__events">
           {day.shifts.map((shift) => (
-            <div key={shift.id} className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}>
+            <div
+              key={shift.id}
+              className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}
+              draggable={!shift.isPlaceholder}
+              onDragStart={() => onDragShiftStart(day.isoDate, shift.id)}
+              onDragEnd={onDragShiftEnd}
+            >
               {!shift.isPlaceholder ? (
                 <div className="confirm-card__event-header">
                   <p className="confirm-card__event-title">{shift.eventName || shift.role || 'Unnamed Shift'}</p>
