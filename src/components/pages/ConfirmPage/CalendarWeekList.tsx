@@ -345,10 +345,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     nextIndicator.current.disabled = atEnd;
   }, []);
 
-  const handleChevronClick = useCallback((direction: 'left' | 'right') => {
+  const scrollOneDay = useCallback((direction: 'left' | 'right') => {
     if (!scroller.current) return;
 
-    // Calculate the scroll amount as the viewport width (one day cell)
     const scrollAmount = scroller.current.clientWidth + DAY_SCROLL_OVERLAP_PX;
     const scrollDistance = direction === 'right' ? scrollAmount : -scrollAmount;
 
@@ -409,16 +408,6 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     setWeekDays(nextWeekDays);
     onChange(nextWeekDays);
   }, [onChange]);
-
-  const scrollOneDay = useCallback((direction: 'left' | 'right') => {
-    if (!scroller.current) {
-      return;
-    }
-
-    const scrollAmount = scroller.current.clientWidth + DAY_SCROLL_OVERLAP_PX;
-    const left = direction === 'right' ? scrollAmount : -scrollAmount;
-    scroller.current.scrollBy({ left });
-  }, []);
 
   const startEdgeScroll = useCallback((direction: 'left' | 'right') => {
     if (edgeScrollDirectionRef.current === direction) {
@@ -552,7 +541,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         className="chevron prev"
         id="prevBtn"
         aria-label="Scroll to previous day"
-        onClick={() => handleChevronClick('left')}
+        onClick={() => scrollOneDay('left')}
         onDragEnter={(event) => handleEdgeDragOver('left', event)}
         onDragOver={(event) => handleEdgeDragOver('left', event)}
       >
@@ -564,7 +553,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         className="chevron next"
         id="nextBtn"
         aria-label="Scroll to next day"
-        onClick={() => handleChevronClick('right')}
+        onClick={() => scrollOneDay('right')}
         onDragEnter={(event) => handleEdgeDragOver('right', event)}
         onDragOver={(event) => handleEdgeDragOver('right', event)}
       >
