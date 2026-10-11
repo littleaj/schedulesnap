@@ -11,19 +11,20 @@ interface ShiftEditDialogContentProps {
   initialDraft: ShiftEditDraft;
   onDraftChange: (draft: ShiftEditDraft) => void;
   shiftId: string;
+  nameInputRef?: React.RefObject<HTMLInputElement>;
 }
 
-const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId }: ShiftEditDialogContentProps) => {
+const ShiftEditDialogContent = ({ initialDraft, onDraftChange, shiftId, nameInputRef }: ShiftEditDialogContentProps) => {
   const [draft, setDraft] = useState<ShiftEditDraft>(initialDraft);
 
-const updateDraft = <TField extends keyof ShiftEditDraft>(
-  field: TField,
-  value: ShiftEditDraft[TField]
-) => {
-  const nextDraft = { ...draft, [field]: value };
-  setDraft(nextDraft);
-  onDraftChange(nextDraft);
-};
+  const updateDraft = <TField extends keyof ShiftEditDraft>(
+    field: TField,
+    value: ShiftEditDraft[TField]
+  ) => {
+    const nextDraft = { ...draft, [field]: value };
+    setDraft(nextDraft);
+    onDraftChange(nextDraft);
+  };
 
   return (
     <div className="confirm-card__edit-dialog">
@@ -33,6 +34,7 @@ const updateDraft = <TField extends keyof ShiftEditDraft>(
         onChange={(event) => updateDraft('eventName', event.target.value)}
         value={draft.eventName}
         aria-label="Event Name"
+        inputRef={nameInputRef}
       />
       <LabeledInput
         id={`edit-start-time-${shiftId}`}
