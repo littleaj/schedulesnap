@@ -47,6 +47,7 @@ const CalendarDayCard = ({
         </div>
 
         <div className="confirm-card__events">
+          {day.shifts.toSorted((a, b) => a.startTime.localeCompare(b.startTime)).map((shift) => (
             <ShiftBlock
               key={shift.id}
               shift={shift}
