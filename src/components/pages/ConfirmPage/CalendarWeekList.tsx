@@ -13,6 +13,7 @@ interface CalendarWeekListProps {
 const REMOVE_SHIFT_TIMEOUT_MS = 5000;
 const EDGE_SCROLL_THRESHOLD_PX = 48;
 const EDGE_SCROLL_INTERVAL_MS = 400;
+const DAY_SCROLL_OVERLAP_PX = 1;
 const toPendingRemovalKey = (isoDate: string, shiftId: string) => `${isoDate}::${shiftId}`;
 
 const createPlaceholderShift = (isoDate: string): EditableShift => ({
@@ -354,7 +355,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
     if (!scroller.current) return;
 
     // Calculate the scroll amount as the viewport width (one day cell)
-    const scrollAmount = scroller.current.clientWidth + 1;
+    const scrollAmount = scroller.current.clientWidth + DAY_SCROLL_OVERLAP_PX;
     const scrollDistance = direction === 'right' ? scrollAmount : -scrollAmount;
 
     scroller.current.scrollBy({ left: scrollDistance });
@@ -386,7 +387,9 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       };
     });
 
-    if (!draggedShift) {
+    const movedShift = draggedShift;
+
+    if (!movedShift) {
       return;
     }
 
@@ -400,7 +403,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         shifts: [
           ...day.shifts.filter((shift) => !shift.isPlaceholder),
           {
-            ...draggedShift,
+            ...movedShift,
             date: targetIsoDate,
             isPlaceholder: false,
           },
@@ -418,7 +421,7 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
       return;
     }
 
-    const scrollAmount = scroller.current.clientWidth + 1;
+    const scrollAmount = scroller.current.clientWidth + DAY_SCROLL_OVERLAP_PX;
     const left = direction === 'right' ? scrollAmount : -scrollAmount;
     scroller.current.scrollBy({ left });
   }, []);
@@ -578,7 +581,6 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
         id="confirm-card__grid"
         className="confirm-card__grid"
         aria-label="Scanned weekly schedule"
-        onDragEnter={handleGridDragOver}
         onDragOver={handleGridDragOver}
       >
         {displayWeekDays.map((day) =>
