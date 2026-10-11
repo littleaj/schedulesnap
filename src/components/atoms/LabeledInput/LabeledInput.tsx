@@ -6,9 +6,10 @@ interface LabeledInputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   label: string;
   hint?: string;
   error?: string;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
 
-const LabeledInput = ({ id, label, hint, error, ...props }: LabeledInputProps) => {
+const LabeledInput = ({ id, label, hint, error, inputRef, ...props }: LabeledInputProps) => {
   const messageId = `${id}-message`;
   let message: React.ReactNode = null;
 
@@ -24,6 +25,7 @@ const LabeledInput = ({ id, label, hint, error, ...props }: LabeledInputProps) =
       <input
         className="labeled-input__control"
         id={id}
+        ref={inputRef}
         aria-invalid={Boolean(error)}
         aria-describedby={hint || error ? messageId : undefined}
         {...props}
