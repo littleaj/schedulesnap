@@ -1,6 +1,6 @@
-import type { DragEvent } from "react";
-import type { EditableShift, WeekDay } from "@/types/shift-display";
-import { formatTimeToLocale } from "@/utils/formatTime";
+import type { DragEvent } from 'react';
+import type { EditableShift, WeekDay } from '@/types/shift-display';
+import { formatTimeToLocale } from '@/utils/formatTime';
 
 export interface CalendarDayCardProps {
   day: WeekDay;
