@@ -22,6 +22,7 @@ export interface ModalMessage {
   actionLabels?: string[];
   closeable?: boolean;
   onAcknowledge?: (label: string | null) => void;
+  onShow?: () => void;
 }
 
 interface QueuedMessageBase {
@@ -146,6 +147,7 @@ export const UserMessageProvider = ({ children }: { children: React.ReactNode })
           actionLabels={activeModal.actionLabels}
           closeable={activeModal.closeable}
           onAcknowledge={handleModalAcknowledge}
+          onShow={activeModal.onShow}
         />
       ) : null}
     </UserMessageContext.Provider>
