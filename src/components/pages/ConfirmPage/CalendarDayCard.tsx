@@ -58,14 +58,21 @@ const CalendarDayCard = ({
             <div
               key={shift.id}
               className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}
-              draggable={!shift.isPlaceholder}
-              onDragStart={() => onDragShiftStart(day.isoDate, shift.id)}
-              onDragEnd={onDragShiftEnd}
             >
               {!shift.isPlaceholder ? (
                 <div className="confirm-card__event-header">
                   <p className="confirm-card__event-title">{shift.eventName || shift.role || 'Unnamed Shift'}</p>
                   <div className="confirm-card__event-actions">
+                    <button
+                      type="button"
+                      className="material-symbols-outlined confirm-card__drag-handle"
+                      aria-label={getShiftActionLabel('Drag shift', day, shift)}
+                      draggable
+                      onDragStart={() => onDragShiftStart(day.isoDate, shift.id)}
+                      onDragEnd={onDragShiftEnd}
+                    >
+                      drag_indicator
+                    </button>
                     <button
                       type="button"
                       className="material-symbols-outlined confirm-card__edit-shift"

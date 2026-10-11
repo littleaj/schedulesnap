@@ -146,6 +146,28 @@ describe('ConfirmPage', () => {
     });
   });
 
+  it('renders a drag handle for each editable shift', () => {
+    loadDraftConfirmationMock.mockReturnValue({
+      shifts: [
+        {
+          date: '2026-09-05',
+          startTime: '09:00',
+          endTime: '17:00',
+          role: 'Barista',
+          location: 'Downtown',
+          confidence: 0.9,
+          rawText: 'Sep 5 9:00 AM - 5:00 PM',
+        },
+      ],
+      selectedCalendarId: 'primary',
+    });
+    loadAnalysisResponseMock.mockReturnValue(null);
+
+    renderConfirmPage();
+
+    expect(screen.getByRole('button', { name: /drag shift barista on .* from 09:00 to 17:00/i })).toBeInTheDocument();
+  });
+
   it('discards edit dialog changes when Cancel is clicked', async () => {
     loadDraftConfirmationMock.mockReturnValue(null);
     loadAnalysisResponseMock.mockReturnValue({
@@ -845,11 +867,9 @@ describe('ConfirmPage', () => {
 
     const sourceCell = screen.getByLabelText(sourceLabel);
     const targetCell = screen.getByLabelText(targetLabel);
-    const shiftCard = within(sourceCell).getByText('Barista').closest('.confirm-card__event');
+    const dragHandle = screen.getByRole('button', { name: /drag shift barista on .* from 09:00 to 17:00/i });
 
-    expect(shiftCard).not.toBeNull();
-
-    fireEvent.dragStart(shiftCard!);
+    fireEvent.dragStart(dragHandle);
     fireEvent.dragOver(targetCell);
     fireEvent.drop(targetCell);
 
@@ -907,10 +927,8 @@ describe('ConfirmPage', () => {
 
     const grid = document.getElementById('confirm-card__grid') as HTMLDivElement;
     const nextButton = screen.getByRole('button', { name: /scroll to next day/i });
-    const shiftCard = screen.getByText('Barista').closest('.confirm-card__event');
+    const dragHandle = screen.getByRole('button', { name: /drag shift barista on .* from 09:00 to 17:00/i });
     const scrollByMock = vi.fn();
-
-    expect(shiftCard).not.toBeNull();
 
     Object.defineProperty(grid, 'clientWidth', {
       value: 300,
@@ -929,7 +947,7 @@ describe('ConfirmPage', () => {
     })) as typeof grid.getBoundingClientRect;
     (grid.scrollBy as unknown as ReturnType<typeof vi.fn>) = scrollByMock;
 
-    fireEvent.dragStart(shiftCard!);
+    fireEvent.dragStart(dragHandle);
     fireEvent.dragEnter(nextButton, { clientX: 295 });
     fireEvent.dragOver(nextButton, { clientX: 295 });
 
