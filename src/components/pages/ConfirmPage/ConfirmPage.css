@@ -200,7 +200,6 @@
   justify-content: center;
   border-radius: 9px;
   border: 2px solid hsl(from var(--md-primary) h s l / 0.4);
-  cursor: grab;
 }
 
 .confirm-card__event-actions {
@@ -212,6 +211,7 @@
 
 .confirm-card__edit-shift,
 .confirm-card__remove-shift,
+.confirm-card__drag-handle,
 .confirm-card__add-shift {
   appearance: none;
   border: none;
@@ -224,14 +224,21 @@
 }
 
 .confirm-card__edit-shift,
-.confirm-card__remove-shift {
+.confirm-card__remove-shift,
+.confirm-card__drag-handle {
   opacity: 0.9;
+}
+
+.confirm-card__drag-handle {
+  cursor: grab;
 }
 
 .confirm-card__edit-shift:hover:not(:disabled),
 .confirm-card__edit-shift:focus-visible:not(:disabled),
 .confirm-card__remove-shift:hover:not(:disabled),
 .confirm-card__remove-shift:focus-visible:not(:disabled),
+.confirm-card__drag-handle:hover:not(:disabled),
+.confirm-card__drag-handle:focus-visible:not(:disabled),
 .confirm-card__add-shift:hover:not(:disabled),
 .confirm-card__add-shift:focus-visible:not(:disabled) {
   opacity: 1;
