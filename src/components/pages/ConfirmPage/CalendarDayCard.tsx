@@ -1,6 +1,6 @@
-import { useRef, type DragEvent } from 'react';
+import React, { type DragEvent } from 'react';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
-import { formatTimeToLocale } from '@/utils/formatTime';
+import ShiftBlock from './ShiftBlock';
 
 export interface CalendarDayCardProps {
   day: WeekDay;
@@ -14,13 +14,6 @@ export interface CalendarDayCardProps {
   onDropShift: (targetDayIso: string) => void;
 }
 
-const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift) => [
-  prefix,
-  shift.eventName || shift.role || 'shift',
-  `on ${day.weekday} ${day.monthDay}`,
-  shift.startTime && shift.endTime ? `from ${shift.startTime} to ${shift.endTime}` : '',
-].filter(Boolean).join(' ');
-
 const CalendarDayCard = ({
   day,
   onEditShift,
@@ -32,8 +25,6 @@ const CalendarDayCard = ({
   onDragShiftOverDay,
   onDropShift,
 }: CalendarDayCardProps) => {
-  // FIXME this gets set to the last rendered shift, which may not be the one being dragged
-  const draggableItemRef = useRef<HTMLDivElement>(null);
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
@@ -56,67 +47,16 @@ const CalendarDayCard = ({
         </div>
 
         <div className="confirm-card__events">
-          {day.shifts.map((shift) => (
-            <div
-              ref={draggableItemRef}
+            <ShiftBlock
               key={shift.id}
-              className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}
-            >
-              {!shift.isPlaceholder ? (
-                <button
-                  type="button"
-                  className="material-symbols-outlined confirm-card__drag-handle"
-                  aria-label={getShiftActionLabel('Drag shift', day, shift)}
-                  draggable
-                  onDragStart={(event) => {
-                    if (draggableItemRef.current) {
-                      event.dataTransfer.setDragImage(draggableItemRef.current, 10, 30);
-                    }
-                    onDragShiftStart(day.isoDate, shift.id)
-                  }}
-                  onDragEnd={onDragShiftEnd}
-                >
-                  {'\ue945'}
-                </button>
-              ) : null}
-              <div className="confirm-card__event-content">
-                {!shift.isPlaceholder ? (
-                  <div className="confirm-card__event-header">
-                    <p className="confirm-card__event-title">{shift.eventName || shift.role || 'Unnamed Shift'}</p>
-                    <div className="confirm-card__event-actions">
-                      <button
-                        type="button"
-                        className="material-symbols-outlined confirm-card__edit-shift"
-                        aria-label={getShiftActionLabel('Edit shift', day, shift)}
-                        onClick={() => onEditShift(day, shift)}
-                      >
-                        {'\ue3c9'}
-                      </button>
-                      <button
-                        type="button"
-                        className="material-symbols-outlined confirm-card__remove-shift"
-                        aria-label={getShiftActionLabel('Remove shift', day, shift)}
-                        onClick={() => onRemoveShift(day.isoDate, shift.id)}
-                        disabled={!canRemoveShift}
-                      >
-                        {'\ue872'}
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-                {!shift.isPlaceholder ? (
-                  <div
-                    className="confirm-card__event-summary"
-                    onDoubleClick={() => onEditShift(day, shift)}
-                  >
-                    <p className="confirm-card__cell-time">{formatTimeToLocale(shift.startTime)} &ndash; {formatTimeToLocale(shift.endTime)}</p>
-                    {shift.location ? <p className="confirm-card__cell-location">{shift.location}</p> : null}
-                  </div>
-                ) : (
-                  <p className="confirm-card__cell-role">Day off</p>
-                )}
-              </div>
-            </div>
+              shift={shift}
+              day={day}
+              onDragShiftStart={onDragShiftStart}
+              onDragShiftEnd={onDragShiftEnd}
+              onEditShift={onEditShift}
+              onRemoveShift={onRemoveShift}
+              canRemoveShift={canRemoveShift}
+            />
           ))}
         </div>
       </article>
