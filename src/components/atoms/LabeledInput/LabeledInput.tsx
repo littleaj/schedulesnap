@@ -6,7 +6,7 @@ interface LabeledInputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   label: string;
   hint?: string;
   error?: string;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.Ref<HTMLInputElement>;
 }
 
 const LabeledInput = ({ id, label, hint, error, inputRef, ...props }: LabeledInputProps) => {
