@@ -1,4 +1,4 @@
-import type { DragEvent } from 'react';
+import { useRef, type DragEvent } from 'react';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
 import { formatTimeToLocale } from '@/utils/formatTime';
 
@@ -32,6 +32,8 @@ const CalendarDayCard = ({
   onDragShiftOverDay,
   onDropShift,
 }: CalendarDayCardProps) => {
+  // FIXME this gets set to the last rendered shift, which may not be the one being dragged
+  const draggableItemRef = useRef<HTMLDivElement>(null);
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
@@ -56,6 +58,7 @@ const CalendarDayCard = ({
         <div className="confirm-card__events">
           {day.shifts.map((shift) => (
             <div
+              ref={draggableItemRef}
               key={shift.id}
               className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}
             >
@@ -65,7 +68,12 @@ const CalendarDayCard = ({
                   className="material-symbols-outlined confirm-card__drag-handle"
                   aria-label={getShiftActionLabel('Drag shift', day, shift)}
                   draggable
-                  onDragStart={() => onDragShiftStart(day.isoDate, shift.id)}
+                  onDragStart={(event) => {
+                    if (draggableItemRef.current) {
+                      event.dataTransfer.setDragImage(draggableItemRef.current, 10, 30);
+                    }
+                    onDragShiftStart(day.isoDate, shift.id)
+                  }}
                   onDragEnd={onDragShiftEnd}
                 >
                   {'\ue945'}
