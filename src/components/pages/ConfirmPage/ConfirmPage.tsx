@@ -14,7 +14,7 @@ import { buildWeekDays } from './utils/weekdays';
 import useCurrentUser from '@/hooks/current-user';
 import { useUserProfile } from '@/hooks/user-profile';
 import { Card } from '@/components/atoms/Card';
-import WeekGrid from './CalendarWeekList';
+import WeekGrid from './WeekGrid';
 import type { ScheduleAnalysisShift } from '@/types/schedule-analysis';
 import PageContent from '@/components/templates/PageContent';
 import NoteBlock from '@/components/atoms/NoteBlock';
