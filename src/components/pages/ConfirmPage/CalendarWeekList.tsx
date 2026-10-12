@@ -5,7 +5,7 @@ import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
 import type { ToastMessage } from "@/contexts/user-message";
 
-interface CalendarWeekListProps {
+interface WeekGridProps {
   shifts: WeekDay[];
   onChange: (weekDays: WeekDay[]) => void;
 }
@@ -96,7 +96,7 @@ const clearPendingRemoval = (
   }
 };
 
-const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
+const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
   const { showModal, showToast, dismissToast } = useUserMessage();
   const [weekDays, setWeekDays] = useState<WeekDay[]>(shifts);
   const weekDaysRef = useRef<WeekDay[]>(shifts);
@@ -591,4 +591,4 @@ const CalendarWeekList = ({ shifts, onChange }: CalendarWeekListProps) => {
   );
 };
 
-export default CalendarWeekList;
+export default WeekGrid;
