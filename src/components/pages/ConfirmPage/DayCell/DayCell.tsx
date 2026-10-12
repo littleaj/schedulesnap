@@ -1,6 +1,6 @@
 import React, { type DragEvent } from 'react';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
-import ShiftBlock from './ShiftBlock';
+import ShiftBlock from '../ShiftBlock';
 
 export interface DayCellProps {
   day: WeekDay;
