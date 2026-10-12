@@ -66,3 +66,21 @@
 .chevron.next {
   right: 0;
 }
+
+.confirm-card__undo {
+  border: 1px solid currentColor;
+  border-radius: 999rem;
+  padding-block: 0.25rem;
+  padding-inline: 0.75rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 150ms ease, opacity 150ms ease;
+}
+
+.confirm-card__undo:hover,
+.confirm-card__undo:focus-visible {
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+  opacity: 0.96;
+}

@@ -1,0 +1,77 @@
+.confirm-card__event {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  width: 100%;
+  gap: 0.125rem;
+  padding-block: 0.5rem;
+  padding-inline: 0.25rem;
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  justify-content: center;
+  border-radius: 9px;
+  border: 2px solid hsl(from var(--md-primary) h s l / 0.4);
+
+  &.confirm-card__event--off {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+}
+
+.confirm-card__event--off {
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  border: none;
+  text-align: center;
+  font-style: italic;
+  cursor: default;
+}
+
+.confirm-card__event-actions {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: end;
+  place-self: flex-end;
+}
+
+.confirm-card__edit-shift,
+.confirm-card__remove-shift,
+.confirm-card__drag-handle {
+  opacity: 0.9;
+  transition: opacity 150ms ease, filter 150ms ease, transform 150ms ease;
+}
+
+.confirm-card__drag-handle {
+  cursor: grab;
+}
+
+.confirm-card__edit-shift:hover:not(:disabled),
+.confirm-card__edit-shift:focus-visible:not(:disabled),
+.confirm-card__remove-shift:hover:not(:disabled),
+.confirm-card__remove-shift:focus-visible:not(:disabled),
+.confirm-card__drag-handle:hover:not(:disabled),
+.confirm-card__drag-handle:focus-visible:not(:disabled) {
+  opacity: 1;
+  filter: drop-shadow(0 0 2px color-mix(in oklab, var(--md-accent) 50%, currentColor));
+  transform: translateY(-1px);
+}
+
+.confirm-card__event-summary {
+  display: grid;
+  gap: 0.3rem;
+}
+
+
+.confirm-card__event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.confirm-card__event-title {
+  margin: 0;
+  color: var(--md-on-surface-variant);
+  place-self: start;
+  font-weight: 700;
+}

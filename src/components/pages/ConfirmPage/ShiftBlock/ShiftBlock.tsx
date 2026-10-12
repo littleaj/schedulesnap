@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { formatTimeToLocale } from '@/utils/formatTime';
+import "./ShiftBlock.css";
 
-import type { DragEvent } from 'react';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
 
 interface ShiftBlockProps {
