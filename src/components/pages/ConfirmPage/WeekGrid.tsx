@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import DayCell from "./CalendarDayCard";
+import DayCell from "./DayCell";
 import ShiftEditDialogContent, { type ShiftEditDraft } from "./ShiftEditDialogContent";
 import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
