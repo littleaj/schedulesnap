@@ -27,6 +27,10 @@
   border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.8);
 }
 
+.confirm-card__cell:hover .confirm-card__add-shift {
+  opacity: 0.9;
+}
+
 .confirm-card__cell-header {
   width: 100%;
   position: relative;
@@ -58,4 +62,28 @@
   width: 100%;
   height: 100%;
   align-items: center;
+}
+
+.confirm-card__add-shift:hover:not(:disabled),
+.confirm-card__add-shift:focus-visible:not(:disabled) {
+  opacity: 1;
+  filter: drop-shadow(0 0 2px color-mix(in oklab, var(--md-accent) 50%, currentColor));
+  transform: translateY(-1px);
+}
+
+.confirm-card__add-shift {
+  opacity: 0.5;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 0.5rem;
+  color: var(--md-on-primary);
+  background-color: transparent;
+  transition: opacity 150ms ease, filter 150ms ease, transform 150ms ease;
+}
+
+@media (max-width: 768px) {
+  .confirm-card__add-shift {
+    opacity: 1;
+  }
 }
