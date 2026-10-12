@@ -1,0 +1,68 @@
+.confirm-card__grid {
+  margin-top: 0.5rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, min(23ch, 100%));
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* scroll-behavior: smooth; */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+}
+
+
+.chevron {
+  position: absolute;
+  bottom: 1rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  font-size: 2.5rem;
+  margin-inline: 0.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--md-outline-variant);
+  box-shadow: 0px 1px 3px var(--md-shadow);
+  background-color: transparent;
+  color: var(--md-on-tertiary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+  cursor: pointer;
+}
+
+.chevron:not(:disabled):hover,
+.chevron:not(:disabled):focus-visible {
+  opacity: 1.0;
+  box-shadow: 0px 2px 5px var(--md-shadow);
+}
+
+.chevron:not(:disabled):focus-visible {
+  outline: 2px solid var(--md-on-tertiary-container);
+  outline-offset: 2px;
+}
+
+.chevron:disabled {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.chevron.visible {
+  opacity: 0.7;
+}
+
+.chevron.prev {
+  left: 0;
+}
+
+.chevron.next {
+  right: 0;
+}

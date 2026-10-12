@@ -4,6 +4,7 @@ import ShiftEditDialogContent, { type ShiftEditDraft } from "../ShiftEditDialogC
 import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
 import type { ToastMessage } from "@/contexts/user-message";
+import "./WeekGrid.css";
 
 interface WeekGridProps {
   shifts: WeekDay[];
