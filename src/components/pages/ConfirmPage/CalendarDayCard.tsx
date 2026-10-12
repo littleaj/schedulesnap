@@ -2,7 +2,7 @@ import React, { type DragEvent } from 'react';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
 import ShiftBlock from './ShiftBlock';
 
-export interface CalendarDayCardProps {
+export interface DayCellProps {
   day: WeekDay;
   onEditShift: (day: WeekDay, shift: EditableShift) => void;
   onRemoveShift: (isoDate: string, shiftId: string) => void;
@@ -14,7 +14,7 @@ export interface CalendarDayCardProps {
   onDropShift: (targetDayIso: string) => void;
 }
 
-const CalendarDayCard = ({
+const DayCell = ({
   day,
   onEditShift,
   onRemoveShift,
@@ -24,7 +24,7 @@ const CalendarDayCard = ({
   onDragShiftEnd,
   onDragShiftOverDay,
   onDropShift,
-}: CalendarDayCardProps) => {
+}: DayCellProps) => {
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
@@ -65,4 +65,4 @@ const CalendarDayCard = ({
   );
 };
 
-export default CalendarDayCard;
+export default DayCell;

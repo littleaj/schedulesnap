@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import CalendarDayCard from "./CalendarDayCard";
+import DayCell from "./CalendarDayCard";
 import ShiftEditDialogContent, { type ShiftEditDraft } from "./ShiftEditDialogContent";
 import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
@@ -573,7 +573,7 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
         onDragOver={handleGridDragOver}
       >
         {displayWeekDays.map((day) =>
-          <CalendarDayCard
+          <DayCell
             key={day.isoDate}
             day={day}
             onEditShift={openShiftEditor}
