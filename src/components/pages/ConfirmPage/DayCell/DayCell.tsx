@@ -1,6 +1,7 @@
 import React, { type DragEvent } from 'react';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
 import ShiftBlock from '../ShiftBlock';
+import { useDroppable } from '@dnd-kit/react';
 import "./DayCell.css";
 
 export interface DayCellProps {
@@ -26,14 +27,16 @@ const DayCell = ({
   onDragShiftOverDay,
   onDropShift,
 }: DayCellProps) => {
+  const { ref: droppableRef, isDropTarget } = useDroppable({
+    id: day.isoDate,
+  });
   return (
     <div className="confirm-card__day">
       <p className="confirm-card__day-label">{day.weekday}</p>
       <article
-        className="confirm-card__cell"
+        ref={droppableRef}
+        className={"confirm-card__cell " + (isDropTarget ? 'drop-target' : '')}
         aria-label={`${day.weekday} ${day.monthDay}`}
-        onDragOver={onDragShiftOverDay}
-        onDrop={() => onDropShift(day.isoDate)}
       >
         <div className="confirm-card__cell-header">
           <p className="confirm-card__cell-date">{day.monthDay}</p>
@@ -41,6 +44,7 @@ const DayCell = ({
             type="button"
             className="material-symbols-outlined confirm-card__add-shift"
             aria-label={`Add shift to ${day.weekday} ${day.monthDay}`}
+            title={`Add shift to ${day.weekday} ${day.monthDay}`}
             onClick={() => onAddShift(day.isoDate)}
           >
             {'\ue146'}
