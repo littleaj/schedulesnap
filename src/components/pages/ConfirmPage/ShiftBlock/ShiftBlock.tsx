@@ -3,6 +3,7 @@ import { formatTimeToLocale } from '@/utils/formatTime';
 import "./ShiftBlock.css";
 
 import type { EditableShift, WeekDay } from '@/types/shift-display';
+import { useDraggable } from '@dnd-kit/react';
 
 interface ShiftBlockProps {
   shift: EditableShift;
@@ -23,7 +24,9 @@ const ShiftBlock = ({
   onRemoveShift,
   canRemoveShift,
 }: ShiftBlockProps) => {
-  const draggableItemRef = useRef<HTMLDivElement>(null);
+  const {ref: draggableItemRef, isDragging } = useDraggable({
+    id: shift.id,
+  });
 
   const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift) => [
     prefix,
@@ -36,24 +39,16 @@ const ShiftBlock = ({
     <div
       ref={draggableItemRef}
       key={shift.id}
-      className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off' : ''}`}
+      className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off ' : ''} ${isDragging ? 'dragging' : ''}`}
     >
       {!shift.isPlaceholder ? (
-        <button
-          type="button"
+        <span
           className="material-symbols-outlined confirm-card__drag-handle"
           aria-label={getShiftActionLabel('Drag shift', day, shift)}
-          draggable
-          onDragStart={(event) => {
-            if (draggableItemRef.current) {
-              event.dataTransfer.setDragImage(draggableItemRef.current, 10, 30);
-            }
-            onDragShiftStart(day.isoDate, shift.id)
-          }}
-          onDragEnd={onDragShiftEnd}
+          title="Drag shift"
         >
           {'\ue945'}
-        </button>
+        </span>
       ) : null}
       <div className="confirm-card__event-content">
         {!shift.isPlaceholder ? (
@@ -64,6 +59,7 @@ const ShiftBlock = ({
                 type="button"
                 className="material-symbols-outlined confirm-card__edit-shift"
                 aria-label={getShiftActionLabel('Edit shift', day, shift)}
+                title="Edit shift"
                 onClick={() => onEditShift(day, shift)}
               >
                 {'\ue3c9'}
@@ -72,6 +68,7 @@ const ShiftBlock = ({
                 type="button"
                 className="material-symbols-outlined confirm-card__remove-shift"
                 aria-label={getShiftActionLabel('Remove shift', day, shift)}
+                title="Remove shift"
                 onClick={() => onRemoveShift(day.isoDate, shift.id)}
                 disabled={!canRemoveShift}
               >
