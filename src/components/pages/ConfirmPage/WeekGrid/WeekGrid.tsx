@@ -4,6 +4,8 @@ import ShiftEditDialogContent, { type ShiftEditDraft } from "../ShiftEditDialogC
 import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
 import type { ToastMessage } from "@/contexts/user-message";
+import { DragDropProvider } from "@dnd-kit/react";
+import { PointerSensor, PointerActivationConstraints, KeyboardSensor } from "@dnd-kit/dom";
 import "./WeekGrid.css";
 
 interface WeekGridProps {
@@ -535,7 +537,26 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
   }, [updateChevrons]);
 
   return (
-    <>
+    <DragDropProvider
+      sensors={(defaults) => ([
+        ...defaults.filter(sensor =>  sensor !== PointerSensor && sensor !== KeyboardSensor),
+        KeyboardSensor.configure(KeyboardSensor.defaults),
+        PointerSensor.configure({
+          activationConstraints(event, source) {
+            if (event.pointerType === "touch") {
+              return [
+                new PointerActivationConstraints.Delay({ value: 250, tolerance: { x: 8, y: 8 }})
+              ];
+            }
+            return [new PointerActivationConstraints.Distance({ value: 8 })];
+          }
+        }),
+      ])}
+      onDragEnd={(event) => {
+        if (event.canceled) return;
+        handleShiftDragEnd();
+      }}
+    >
       <button
         ref={prevIndicator}
         type="button"
@@ -543,8 +564,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
         id="prevBtn"
         aria-label="Scroll to previous day"
         onClick={() => scrollOneDay('left')}
-        onDragEnter={(event) => handleEdgeDragOver('left', event)}
-        onDragOver={(event) => handleEdgeDragOver('left', event)}
       >
         <span className="material-symbols-outlined">&#xe5cb;</span>
       </button>
@@ -555,8 +574,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
         id="nextBtn"
         aria-label="Scroll to next day"
         onClick={() => scrollOneDay('right')}
-        onDragEnter={(event) => handleEdgeDragOver('right', event)}
-        onDragOver={(event) => handleEdgeDragOver('right', event)}
       >
         <span className="material-symbols-outlined">&#xe5cc;</span>
       </button>
@@ -565,7 +582,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
         id="confirm-card__grid"
         className="confirm-card__grid"
         aria-label="Scanned weekly schedule"
-        onDragOver={handleGridDragOver}
       >
         {displayWeekDays.map((day) =>
           <DayCell
@@ -582,7 +598,7 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
           />)
         }
       </div>
-    </>
+    </DragDropProvider>
   );
 };
 
