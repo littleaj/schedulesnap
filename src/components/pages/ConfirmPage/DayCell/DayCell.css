@@ -1,0 +1,61 @@
+.confirm-card__day {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  gap: 0.45rem;
+  min-width: 100%;
+}
+
+.confirm-card__day-label {
+  margin: 0;
+  color: var(--md-on-surface-variant);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.confirm-card__cell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-content: start;
+  padding: 0.5rem;
+  gap: 0.25rem;
+  border-radius: 16px;
+  background: rgba(from var(--md-surface) r g b / 0.72);
+  border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.8);
+}
+
+.confirm-card__cell-header {
+  width: 100%;
+  position: relative;
+}
+
+.confirm-card__cell-date {
+  margin: 0;
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+  padding: 0.5rem;
+  border-radius: 9px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.confirm-card__cell-time {
+  margin: 0;
+  color: var(--md-on-surface);
+  font-size: 1.05rem;
+}
+
+.confirm-card__events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
