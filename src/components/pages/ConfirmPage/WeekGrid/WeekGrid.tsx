@@ -433,10 +433,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
     clearEdgeScroll();
   }, [clearEdgeScroll]);
 
-  const handleDayDragOver = useCallback((event: React.DragEvent<HTMLElement>) => {
-    event.preventDefault();
-  }, []);
-
   const handleDayDrop = useCallback((targetDayIso: string) => {
     const draggedShift = draggedShiftRef.current;
     clearEdgeScroll();
@@ -552,9 +548,25 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
           }
         }),
       ])}
+      onDragStart={(event) => {
+        const { operation } = event;
+        handleShiftDragStart(operation.source?.data.dayIso, operation.source?.data.shiftId);
+      }}
       onDragEnd={(event) => {
-        if (event.canceled) return;
+        const { operation, canceled } = event;
+        const { source, target } = operation;
+        if (canceled) return;
+        if (target) {
+          handleDayDrop(target.data.dayIso);
+        }
         handleShiftDragEnd();
+      }}
+      onDragOver={(event) => {
+        const { operation } = event;
+        const { target } = operation;
+        if (target) {
+          event.preventDefault();
+        }
       }}
     >
       <button
@@ -591,10 +603,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
             onRemoveShift={removeShift}
             canRemoveShift={!hasPendingRemovals}
             onAddShift={addNewShift}
-            onDragShiftStart={handleShiftDragStart}
-            onDragShiftEnd={handleShiftDragEnd}
-            onDragShiftOverDay={handleDayDragOver}
-            onDropShift={handleDayDrop}
           />)
         }
       </div>
