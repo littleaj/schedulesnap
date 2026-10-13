@@ -8,8 +8,6 @@ import { useDraggable } from '@dnd-kit/react';
 interface ShiftBlockProps {
   shift: EditableShift;
   day: WeekDay;
-  onDragShiftStart: (dayIso: string, shiftId: string) => void;
-  onDragShiftEnd: () => void;
   onEditShift: (day: WeekDay, shift: EditableShift) => void;
   onRemoveShift: (isoDate: string, shiftId: string) => void;
   canRemoveShift: boolean;
@@ -18,14 +16,16 @@ interface ShiftBlockProps {
 const ShiftBlock = ({
   shift,
   day,
-  onDragShiftStart,
-  onDragShiftEnd,
   onEditShift,
   onRemoveShift,
   canRemoveShift,
 }: ShiftBlockProps) => {
   const {ref: draggableItemRef, isDragging } = useDraggable({
     id: shift.id,
+    data: {
+      dayIso: day.isoDate,
+      shiftId: shift.id,
+    }
   });
 
   const getShiftActionLabel = (prefix: string, day: WeekDay, shift: EditableShift) => [

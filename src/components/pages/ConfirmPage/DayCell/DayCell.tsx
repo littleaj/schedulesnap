@@ -10,10 +10,6 @@ export interface DayCellProps {
   onRemoveShift: (isoDate: string, shiftId: string) => void;
   canRemoveShift: boolean;
   onAddShift: (isoDate: string) => void;
-  onDragShiftStart: (dayIso: string, shiftId: string) => void;
-  onDragShiftEnd: () => void;
-  onDragShiftOverDay: (event: DragEvent<HTMLElement>) => void;
-  onDropShift: (targetDayIso: string) => void;
 }
 
 const DayCell = ({
@@ -22,13 +18,12 @@ const DayCell = ({
   onRemoveShift,
   canRemoveShift,
   onAddShift,
-  onDragShiftStart,
-  onDragShiftEnd,
-  onDragShiftOverDay,
-  onDropShift,
 }: DayCellProps) => {
   const { ref: droppableRef, isDropTarget } = useDroppable({
     id: day.isoDate,
+    data: {
+      dayIso: day.isoDate,
+    }
   });
   return (
     <div className="confirm-card__day">
@@ -57,8 +52,6 @@ const DayCell = ({
               key={shift.id}
               shift={shift}
               day={day}
-              onDragShiftStart={onDragShiftStart}
-              onDragShiftEnd={onDragShiftEnd}
               onEditShift={onEditShift}
               onRemoveShift={onRemoveShift}
               canRemoveShift={canRemoveShift}
