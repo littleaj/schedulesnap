@@ -15,9 +15,14 @@
 
 }
 
+.chevron-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
 
 .chevron {
-  position: absolute;
   bottom: 1rem;
   z-index: 2;
   width: 2rem;

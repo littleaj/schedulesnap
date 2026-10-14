@@ -513,26 +513,28 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
         RestrictToElement.configure({ element: scroller.current }),
       ])}
     >
-      <button
-        ref={prevIndicator}
-        type="button"
-        className="chevron prev"
-        id="prevBtn"
-        aria-label="Scroll to previous day"
-        onClick={() => scrollOneDay('left')}
-      >
-        <span className="material-symbols-outlined">&#xe5cb;</span>
-      </button>
-      <button
-        ref={nextIndicator}
-        type="button"
-        className="chevron next"
-        id="nextBtn"
-        aria-label="Scroll to next day"
-        onClick={() => scrollOneDay('right')}
-      >
-        <span className="material-symbols-outlined">&#xe5cc;</span>
-      </button>
+      <div className="chevron-container">
+        <button
+          ref={prevIndicator}
+          type="button"
+          className="chevron prev"
+          id="prevBtn"
+          aria-label="Scroll to previous day"
+          onClick={() => scrollOneDay('left')}
+        >
+          <span className="material-symbols-outlined">&#xe5cb;</span>
+        </button>
+        <button
+          ref={nextIndicator}
+          type="button"
+          className="chevron next"
+          id="nextBtn"
+          aria-label="Scroll to next day"
+          onClick={() => scrollOneDay('right')}
+        >
+          <span className="material-symbols-outlined">&#xe5cc;</span>
+        </button>
+      </div>
       <div
         ref={scroller}
         id="confirm-card__grid"
