@@ -1,4 +1,4 @@
-import React, { type DragEvent } from 'react';
+import React from 'react';
 import type { EditableShift, WeekDay } from '@/types/shift-display';
 import ShiftBlock from '../ShiftBlock';
 import { useDroppable } from '@dnd-kit/react';
