@@ -73,7 +73,7 @@
 }
 
 .confirm-card__actions {
-  margin-block: 1.75rem;
+  margin-block: clamp(0.5rem, 2vh, 1.5rem);
   display: flex;
   gap: 0.8rem;
 }
