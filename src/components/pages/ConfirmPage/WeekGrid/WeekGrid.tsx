@@ -412,18 +412,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
     onChange(nextWeekDays);
   }, [onChange]);
 
-  const startEdgeScroll = useCallback((direction: 'left' | 'right') => {
-    if (edgeScrollDirectionRef.current === direction) {
-      return;
-    }
-
-    clearEdgeScroll();
-    edgeScrollDirectionRef.current = direction;
-    edgeScrollIntervalRef.current = window.setInterval(() => {
-      scrollOneDay(direction);
-    }, EDGE_SCROLL_INTERVAL_MS);
-  }, [clearEdgeScroll, scrollOneDay]);
-
   const handleShiftDragStart = useCallback((dayIso: string, shiftId: string) => {
     draggedShiftRef.current = { dayIso, shiftId };
   }, []);
@@ -444,40 +432,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
     moveShift(draggedShift.dayIso, targetDayIso, draggedShift.shiftId);
     draggedShiftRef.current = null;
   }, [clearEdgeScroll, moveShift]);
-
-  const handleGridDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-
-    if (!draggedShiftRef.current || !scroller.current) {
-      clearEdgeScroll();
-      return;
-    }
-
-    const bounds = scroller.current.getBoundingClientRect();
-
-    if (event.clientX <= bounds.left + EDGE_SCROLL_THRESHOLD_PX) {
-      startEdgeScroll('left');
-      return;
-    }
-
-    if (event.clientX >= bounds.right - EDGE_SCROLL_THRESHOLD_PX) {
-      startEdgeScroll('right');
-      return;
-    }
-
-    clearEdgeScroll();
-  }, [clearEdgeScroll, startEdgeScroll]);
-
-  const handleEdgeDragOver = useCallback((direction: 'left' | 'right', event: React.DragEvent<HTMLElement>) => {
-    event.preventDefault();
-
-    if (!draggedShiftRef.current) {
-      clearEdgeScroll();
-      return;
-    }
-
-    startEdgeScroll(direction);
-  }, [clearEdgeScroll, startEdgeScroll]);
 
   const tickingRef = useRef(false);
 
