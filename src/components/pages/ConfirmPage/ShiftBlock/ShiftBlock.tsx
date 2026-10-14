@@ -42,14 +42,14 @@ const ShiftBlock = ({
       className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off ' : ''} ${isDragging ? 'dragging' : ''}`}
     >
       {!shift.isPlaceholder ? (
-        <div
+        <button
           className="material-symbols-outlined confirm-card__drag-handle"
           ref={handleRef}
           aria-label={getShiftActionLabel('Drag shift', day, shift)}
           title="Drag shift"
         >
           {'\ue945'}
-        </div>
+        </button>
       ) : null}
       <div className="confirm-card__event-content">
         {!shift.isPlaceholder ? (
