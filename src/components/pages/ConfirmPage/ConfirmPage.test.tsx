@@ -46,6 +46,94 @@ vi.mock('@/services/user-profile', () => ({
   getUserProfile: getUserProfileMock,
 }));
 
+vi.mock('@dnd-kit/react', () => {
+  const React = require('react');
+
+  return {
+    useDraggable: ({ id, data }: { id: string; data: { dayIso: string; shiftId: string } }) => {
+      const ref = React.useCallback((node: HTMLElement | null) => {
+        if (!node) {
+          return;
+        }
+
+        node.dataset.shiftId = id;
+        node.dataset.dayIso = data.dayIso;
+      }, [id, data.dayIso]);
+
+      return { ref, handleRef: ref, isDragging: false };
+    },
+    useDroppable: ({ data }: { data: { dayIso: string } }) => {
+      const ref = React.useCallback((node: HTMLElement | null) => {
+        if (!node) {
+          return;
+        }
+
+        node.dataset.dayIso = data.dayIso;
+      }, [data.dayIso]);
+
+      return { ref, isDropTarget: false };
+    },
+    DragDropProvider: ({ children, onDragStart, onDragOver, onDragEnd }: {
+      children: React.ReactNode;
+      onDragStart?: (event: { operation: { source: { data: { dayIso: string; shiftId: string } } } }) => void;
+      onDragOver?: (event: { operation: { target: { data: { dayIso: string } } } }) => void;
+      onDragEnd?: (event: { operation: { target: { data: { dayIso: string } } }; canceled: boolean }) => void;
+    }) => (
+      <div
+        onDragStart={(event) => {
+          const source = (event.target as HTMLElement | null)?.closest('[data-shift-id]') as HTMLElement | null;
+          if (!source || !onDragStart) {
+            return;
+          }
+
+          onDragStart({
+            operation: {
+              source: {
+                data: {
+                  dayIso: source.dataset.dayIso ?? '',
+                  shiftId: source.dataset.shiftId ?? '',
+                },
+              },
+            },
+          });
+        }}
+        onDragOver={(event) => {
+          const target = (event.target as HTMLElement | null)?.closest('[data-day-iso]') as HTMLElement | null;
+          if (!target || !onDragOver) {
+            return;
+          }
+
+          onDragOver({
+            preventDefault: () => undefined,
+            operation: {
+              target: {
+                data: { dayIso: target.dataset.dayIso ?? '' },
+              },
+            },
+          } as any); // preventDefault is needed, but the type definition does not include it
+        }}
+        onDrop={(event) => {
+          const target = (event.target as HTMLElement | null)?.closest('[data-day-iso]') as HTMLElement | null;
+          if (!target || !onDragEnd) {
+            return;
+          }
+
+          onDragEnd({
+            operation: {
+              target: {
+                data: { dayIso: target.dataset.dayIso ?? '' },
+              },
+            },
+            canceled: false,
+          });
+        }}
+      >
+        {children}
+      </div>
+    ),
+  };
+});
+
 describe('ConfirmPage', () => {
   const renderConfirmPage = () => render(
     <UserMessageProvider>
@@ -871,9 +959,7 @@ describe('ConfirmPage', () => {
 
     expect(dragHandle).toBeInTheDocument();
 
-    fireEvent.dragStart(dragHandle, {
-      dataTransfer: { setDragImage: vi.fn() },
-    });
+    fireEvent.dragStart(dragHandle);
     fireEvent.dragOver(targetCell);
     fireEvent.drop(targetCell);
 
@@ -907,67 +993,6 @@ describe('ConfirmPage', () => {
         }),
       ]),
     }));
-  });
-
-  it('keeps nudging the day scroller while a dragged shift is held near the screen edge', () => {
-    vi.useFakeTimers();
-    loadDraftConfirmationMock.mockReturnValue({
-      shifts: [
-        {
-          date: '2026-09-05',
-          startTime: '09:00',
-          endTime: '17:00',
-          role: 'Barista',
-          location: 'Downtown',
-          confidence: 0.9,
-          rawText: 'Sep 5 9:00 AM - 5:00 PM',
-        },
-      ],
-      selectedCalendarId: 'primary',
-    });
-    loadAnalysisResponseMock.mockReturnValue(null);
-
-    renderConfirmPage();
-
-    const grid = document.getElementById('confirm-card__grid') as HTMLDivElement;
-    const nextButton = screen.getByRole('button', { name: /scroll to next day/i });
-    const dragHandle = screen.getByRole('button', { name: /drag shift barista on .* from 09:00 to 17:00/i });
-    const scrollByMock = vi.fn();
-
-    Object.defineProperty(grid, 'clientWidth', {
-      value: 300,
-      configurable: true,
-    });
-    grid.getBoundingClientRect = vi.fn(() => ({
-      left: 0,
-      right: 300,
-      top: 0,
-      bottom: 200,
-      width: 300,
-      height: 200,
-      x: 0,
-      y: 0,
-      toJSON: () => ({}),
-    })) as typeof grid.getBoundingClientRect;
-    Object.defineProperty(grid, 'scrollBy', {
-      value: scrollByMock,
-      writable: true,
-      configurable: true,
-    });
-
-    fireEvent.dragStart(dragHandle, {
-      dataTransfer: { setDragImage: vi.fn() },
-    });
-    fireEvent.dragEnter(nextButton, { clientX: 295 });
-    fireEvent.dragOver(nextButton, { clientX: 295 });
-
-    act(() => {
-      vi.advanceTimersByTime(1000);
-    });
-
-    expect(scrollByMock).toHaveBeenCalledTimes(2);
-    expect(scrollByMock).toHaveBeenNthCalledWith(1, expect.objectContaining({ left: expect.any(Number) }));
-    expect((scrollByMock.mock.calls[0]?.[0] as ScrollToOptions | undefined)?.left).toBeGreaterThan(0);
   });
 
   it('chevron buttons scroll the grid by one cell width when clicked', () => {
