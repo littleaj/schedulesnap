@@ -42,7 +42,6 @@
   color: var(--md-on-primary);
   padding: 0.5rem;
   border-radius: 9px;
-  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -52,7 +51,6 @@
 .confirm-card__cell-time {
   margin: 0;
   color: var(--md-on-surface);
-  font-size: 1.05rem;
 }
 
 .confirm-card__events {
