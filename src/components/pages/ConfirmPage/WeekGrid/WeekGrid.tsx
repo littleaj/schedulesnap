@@ -519,22 +519,22 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
         <button
           ref={prevIndicator}
           type="button"
-          className="chevron prev"
+          className="chevron prev material-symbols-outlined"
           id="prevBtn"
           aria-label="Scroll to previous day"
           onClick={() => scrollOneDay('left')}
         >
-          <span className="material-symbols-outlined">&#xe5cb;</span>
+          &#xe5cb;
         </button>
         <button
           ref={nextIndicator}
           type="button"
-          className="chevron next"
+          className="chevron next material-symbols-outlined"
           id="nextBtn"
           aria-label="Scroll to next day"
           onClick={() => scrollOneDay('right')}
         >
-          <span className="material-symbols-outlined">&#xe5cc;</span>
+          &#xe5cc;
         </button>
       </div>
       <div
