@@ -4,7 +4,7 @@
   width: 100%;
   gap: 0.125rem;
   padding-block: 0.5rem;
-  padding-inline: 0.25rem;
+  padding-inline: 0 0.25rem;
   background-color: var(--md-primary-container);
   color: var(--md-on-primary-container);
   justify-content: center;
@@ -44,6 +44,7 @@
 
 .confirm-card__drag-handle {
   cursor: grab;
+  text-box: trim-both cap;
 }
 
 .confirm-card__edit-shift:hover:not(:disabled),
@@ -60,6 +61,10 @@
 .confirm-card__event-summary {
   display: grid;
   gap: 0.3rem;
+}
+
+.confirm-card__event-content {
+  text-box: trim-both cap;
 }
 
 
