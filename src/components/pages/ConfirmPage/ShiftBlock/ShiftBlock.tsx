@@ -20,7 +20,7 @@ const ShiftBlock = ({
   onRemoveShift,
   canRemoveShift,
 }: ShiftBlockProps) => {
-  const {ref: draggableItemRef, isDragging } = useDraggable({
+  const {ref: draggableItemRef, isDragging, handleRef } = useDraggable({
     id: shift.id,
     data: {
       dayIso: day.isoDate,
@@ -42,13 +42,14 @@ const ShiftBlock = ({
       className={`confirm-card__event ${shift.isPlaceholder ? 'confirm-card__event--off ' : ''} ${isDragging ? 'dragging' : ''}`}
     >
       {!shift.isPlaceholder ? (
-        <span
+        <div
           className="material-symbols-outlined confirm-card__drag-handle"
+          ref={handleRef}
           aria-label={getShiftActionLabel('Drag shift', day, shift)}
           title="Drag shift"
         >
           {'\ue945'}
-        </span>
+        </div>
       ) : null}
       <div className="confirm-card__event-content">
         {!shift.isPlaceholder ? (
