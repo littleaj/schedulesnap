@@ -6,7 +6,6 @@ import useUserMessage from "@/hooks/user-message";
 import type { ToastMessage } from "@/contexts/user-message";
 import { DragDropProvider } from "@dnd-kit/react";
 import "./WeekGrid.css";
-import { AutoScroller } from "@dnd-kit/dom";
 
 interface WeekGridProps {
   shifts: WeekDay[];
