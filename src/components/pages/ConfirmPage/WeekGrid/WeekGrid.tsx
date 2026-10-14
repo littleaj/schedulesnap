@@ -5,7 +5,7 @@ import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
 import type { ToastMessage } from "@/contexts/user-message";
 import { DragDropProvider } from "@dnd-kit/react";
-import { PointerSensor, PointerActivationConstraints, KeyboardSensor } from "@dnd-kit/dom";
+import { RestrictToElement } from "@dnd-kit/dom/modifiers";
 import "./WeekGrid.css";
 
 interface WeekGridProps {
@@ -494,7 +494,7 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
       }}
       onDragEnd={(event) => {
         const { operation, canceled } = event;
-        const { source, target } = operation;
+        const { target } = operation;
         if (canceled) return;
         if (target) {
           handleDayDrop(target.data.dayIso);
@@ -508,6 +508,10 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
           event.preventDefault();
         }
       }}
+      modifiers={(defaults) => ([
+        ...defaults,
+        RestrictToElement.configure({ element: scroller.current }),
+      ])}
     >
       <button
         ref={prevIndicator}
