@@ -508,12 +508,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
           event.preventDefault();
         }
       }}
-      plugins={(defaults) => ([
-        ...defaults.filter(p => p !== AutoScroller),
-        AutoScroller.configure({
-          acceleration: 5,
-        }),
-      ])}
     >
       <div className="chevron-container">
         <button
