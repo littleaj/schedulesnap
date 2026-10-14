@@ -4,7 +4,8 @@
   --_bg-color: var(--md-surface);
   background-color: var(--_bg-color);
   border-radius: 22px;
-  padding: 0.75rem 1.25rem;
+  padding-block: clamp(0.75rem, 1vh, 2rem);
+  padding-inline: clamp(0.5rem, 3vw, 4rem);
   box-shadow:
   calc(var(--_elevation) * 0.5px)
   calc(var(--_elevation) * 1px)
