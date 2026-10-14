@@ -98,7 +98,7 @@
   color: var(--md-on-warning-container);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 500px) {
   .confirm-card__actions {
     flex-direction: column;
   }
