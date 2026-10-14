@@ -494,20 +494,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
 
   return (
     <DragDropProvider
-      sensors={(defaults) => ([
-        ...defaults.filter(sensor =>  sensor !== PointerSensor && sensor !== KeyboardSensor),
-        KeyboardSensor.configure(KeyboardSensor.defaults),
-        PointerSensor.configure({
-          activationConstraints(event, source) {
-            if (event.pointerType === "touch") {
-              return [
-                new PointerActivationConstraints.Delay({ value: 250, tolerance: { x: 8, y: 8 }})
-              ];
-            }
-            return [new PointerActivationConstraints.Distance({ value: 8 })];
-          }
-        }),
-      ])}
       onDragStart={(event) => {
         const { operation } = event;
         handleShiftDragStart(operation.source?.data.dayIso, operation.source?.data.shiftId);
