@@ -5,8 +5,8 @@ import type { EditableShift, WeekDay } from "@/types/shift-display";
 import useUserMessage from "@/hooks/user-message";
 import type { ToastMessage } from "@/contexts/user-message";
 import { DragDropProvider } from "@dnd-kit/react";
-import { RestrictToElement } from "@dnd-kit/dom/modifiers";
 import "./WeekGrid.css";
+import { AutoScroller } from "@dnd-kit/dom";
 
 interface WeekGridProps {
   shifts: WeekDay[];
@@ -514,9 +514,11 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
           event.preventDefault();
         }
       }}
-      modifiers={(defaults) => ([
-        ...defaults,
-        RestrictToElement.configure({ element: scroller.current }),
+      plugins={(defaults) => ([
+        ...defaults.filter(p => p !== AutoScroller),
+        AutoScroller.configure({
+          acceleration: 5,
+        }),
       ])}
     >
       <div className="chevron-container">
