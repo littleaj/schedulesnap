@@ -4,4 +4,4 @@ ScheduleSnap is a web application for creating events on a Google Calendar from 
 
 ## License
 
-TBD
+This project is licensed under the ScheduleSnap Source-Available License. See the [LICENSE](LICENSE.md) file for more details.
