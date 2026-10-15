@@ -1,11 +1,8 @@
 import LabeledInput from '@/components/atoms/LabeledInput';
+import type { EditableShift } from '@/types/shift-display';
 import { useState } from 'react';
 
-export interface ShiftEditDraft {
-  eventName: string;
-  startTime: string;
-  endTime: string;
-}
+export type ShiftEditDraft = Pick<EditableShift, 'eventName' | 'startTime' | 'endTime'>;
 
 interface ShiftEditDialogContentProps {
   initialDraft: ShiftEditDraft;

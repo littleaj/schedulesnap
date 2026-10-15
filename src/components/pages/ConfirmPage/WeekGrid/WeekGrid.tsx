@@ -100,7 +100,7 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
   const pendingRemovalsRef = useRef<Record<string, number>>({});
   const pendingRemovalToastIdsRef = useRef<Record<string, number>>({});
 
-  const updateShift = useCallback((dayIso: string, shiftId: string, updates: Pick<EditableShift, 'startTime' | 'endTime' | 'eventName'>) => {
+  const updateShift = useCallback((dayIso: string, shiftId: string, updates: ShiftEditDraft) => {
     const nextWeekDays = weekDaysRef.current.map((day) => {
       if (day.isoDate !== dayIso) {
         return day;
@@ -163,7 +163,7 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
     }
 
     const trimmedDraft = {
-      eventName: latestDraft.eventName.trim(),
+      eventName: latestDraft.eventName?.trim(),
       startTime: latestDraft.startTime.trim(),
       endTime: latestDraft.endTime.trim(),
     };
@@ -173,11 +173,7 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
       return;
     }
 
-    updateShift(day.isoDate, shift.id, {
-      eventName: trimmedDraft.eventName,
-      startTime: trimmedDraft.startTime,
-      endTime: trimmedDraft.endTime,
-    });
+    updateShift(day.isoDate, shift.id, trimmedDraft);
   }, [showModal, showToast, updateShift]);
 
   const addShiftInputRef = useRef<HTMLInputElement>(null);
@@ -218,11 +214,9 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
       return;
     }
 
-    const trimmedDraft = {
-      eventName: latestDraft.eventName.trim(),
-      startTime: latestDraft.startTime.trim(),
-      endTime: latestDraft.endTime.trim(),
-    };
+    const trimmedDraft = Object.fromEntries(
+      Object.entries(latestDraft).map(([key, value]) => [key, value?.trim()])
+    ) as ShiftEditDraft;
 
     if (!validateShiftDraft(trimmedDraft)) {
       showInvalidShiftToast(showToast);
@@ -243,7 +237,6 @@ const WeekGrid = ({ shifts, onChange }: WeekGridProps) => {
           {
             ...newShift,
             eventName: trimmedDraft.eventName,
-            role: trimmedDraft.eventName,
             startTime: trimmedDraft.startTime,
             endTime: trimmedDraft.endTime,
             isPlaceholder: false,
