@@ -17,10 +17,14 @@
     align-items: center;
     height: 100%;
   }
+
+  &.dragging {
+    opacity: 0.7;
+  }
 }
 
 .confirm-card__event--off {
-  background-color: var(--md-surface);
+  background-color: transparent;
   color: var(--md-on-surface);
   border: none;
   text-align: center;
