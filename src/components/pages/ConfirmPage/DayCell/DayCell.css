@@ -25,6 +25,15 @@
   border-radius: 16px;
   background: rgba(from var(--md-surface) r g b / 0.72);
   border: 1px solid rgba(from var(--md-outline-variant) r g b / 0.8);
+  &.drop-target {
+    border-color: var(--md-secondary);
+    background-color: rgba(from var(--md-secondary-container) r g b / 0.72);
+
+    .confirm-card__cell-date {
+      background-color: var(--md-secondary);
+      color: var(--md-on-secondary);
+    }
+  }
 }
 
 .confirm-card__cell:hover .confirm-card__add-shift {
