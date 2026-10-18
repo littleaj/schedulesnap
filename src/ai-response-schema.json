@@ -40,7 +40,7 @@
           },
           "boundingBox": {
             "type": "object",
-            "$comment": "Normalized 0-1000 coordinates relative to the resized image sent to /analyze.",
+            "$comment": "Normalized 0-1000 coordinates relative to the image dimensions.",
             "properties": {
               "x": {
                 "type": "number"
