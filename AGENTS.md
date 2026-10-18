@@ -24,7 +24,7 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 ## Validation
 
 - Install dependencies with `npm install` when needed.
-- Before claiming success, report the actual command and outcome, as well as running the entire test suite.
+- Before claiming success, report the actual command and outcome, and run the entire test suite.
 - For production readiness, run `npm run build`.
 
 ## TDD and BDD requirements
