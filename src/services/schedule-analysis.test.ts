@@ -75,7 +75,6 @@ describe('schedule-analysis services', () => {
 
     expect(prompt).toMatch(/bounding box/i);
     expect(prompt).toMatch(/0-1000/i);
-    expect(prompt).toMatch(/resized/i);
   });
 
   it('saves and loads cached capture and analysis payloads', () => {

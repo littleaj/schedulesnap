@@ -222,7 +222,7 @@ Rules:
 - If the schedule shows multiple employees' names, extract only shifts belonging to: "${targetName}". If you can't confidently identify which rows belong to this person, extract all shifts and set scheduleOwnerGuess to your best guess, and add a warning.
 - Times are often ambiguous (e.g. "9-5" with no am/pm). Infer using context (typical work hours), but if genuinely ambiguous, lower confidence and note it in a warning.
 - Convert all times to 24-hour HH:mm format.
-- Include a bounding box for every extracted shift in the boundingBox field using normalized 0-1000 coordinates relative to the resized image dimensions (x, y, width, height).
+- Include a bounding box for every extracted shift in the boundingBox field using normalized 0-1000 coordinates relative to the image dimensions (x, y, width, height).
 - If the year isn't shown, assume the current year unless the month/day would already be in the past relative to today — then assume next year. Note this assumption in warnings.
 - Never invent shifts that aren't visible in the image. If the image is blurry or a section is unreadable, omit that shift and add a warning describing what was skipped.`;
 
