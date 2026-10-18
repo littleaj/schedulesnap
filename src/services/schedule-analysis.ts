@@ -6,6 +6,7 @@ import type {
   DraftConfirmation,
   ScheduleAnalysisResponse,
   ScheduleAnalysisShift,
+  ShiftBoundingBox,
 } from '@/types/schedule-analysis';
 
 const getCapturedPhotoStorageKey = (uid: string) => `schedulesnap:${uid}:captured-photo`;
@@ -21,7 +22,7 @@ const DEFAULT_JPEG_QUALITY = 0.8;
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
 const isString = (value: unknown): value is string => typeof value === 'string';
 const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
-const isBoundingBox = (value: unknown) => {
+const isBoundingBox = (value: unknown): value is ShiftBoundingBox => {
   if (!isRecord(value)) {
     return false;
   }
