@@ -16,6 +16,7 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 - When adding UI behavior, keep the UX simple and testable.
 - Work in small increments: one component or at most two related components per step. Keep scope narrow, avoid unrelated refactors, and stop for review before continuing.
 - Follow Atomic Design principles, keeping components under `/components/atoms`, `/components/molecules`, `/components/organisms`, `/components/templates`, `/components/pages`.
+- When summarizing changes, provide clear and concise explanations. Sacrifice grammar for the sake of concision.
 
 ### CSS
 - For most things, use relative units. Use absolute units for borders.
