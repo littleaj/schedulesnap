@@ -38,6 +38,30 @@
             "type": "string",
             "$comment": "Optional, e.g. 'Main Street Cafe'"
           },
+          "boundingBox": {
+            "type": "object",
+            "$comment": "Normalized 0-1000 coordinates relative to the resized image sent to /analyze.",
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "height": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "width",
+              "height"
+            ]
+          },
           "confidence": {
             "type": "number",
             "$comment": "0.0-1.0"
@@ -51,6 +75,7 @@
           "date",
           "startTime",
           "endTime",
+          "boundingBox",
           "confidence",
           "rawText"
         ]
