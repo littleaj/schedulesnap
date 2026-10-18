@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  buildAnalysisPrompt,
   clearAnalysisFlowCache,
   calculateResizedDimensions,
   loadDraftConfirmation,
@@ -35,6 +36,12 @@ describe('schedule-analysis services', () => {
           date: '2026-09-05',
           startTime: '09:00',
           endTime: '17:00',
+          boundingBox: {
+            x: 100,
+            y: 200,
+            width: 300,
+            height: 120,
+          },
           confidence: 0.9,
           rawText: 'Sep 5 9:00 AM - 5:00 PM',
         },
@@ -43,6 +50,12 @@ describe('schedule-analysis services', () => {
 
     expect(parsedResponse.scheduleOwnerGuess).toBe('Alex');
     expect(parsedResponse.shifts).toHaveLength(1);
+    expect(parsedResponse.shifts[0]?.boundingBox).toEqual({
+      x: 100,
+      y: 200,
+      width: 300,
+      height: 120,
+    });
 
     expect(() => parseAnalysisResponse(JSON.stringify({
       warnings: [],
@@ -55,6 +68,13 @@ describe('schedule-analysis services', () => {
         },
       ],
     }))).toThrow(/expected schema/i);
+  });
+
+  it('includes bounding box extraction instructions in the analysis prompt', () => {
+    const prompt = buildAnalysisPrompt('Alex', '2026-09-01');
+
+    expect(prompt).toMatch(/bounding box/i);
+    expect(prompt).toMatch(/0-1000/i);
   });
 
   it('saves and loads cached capture and analysis payloads', () => {
