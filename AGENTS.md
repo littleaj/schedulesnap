@@ -5,31 +5,27 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 ## Project context
 
 - App entry: `src/main.tsx` and `src/App.tsx`
-- Styling lives in `src/App.css` and `src/index.css`
 - Documentation: [README.md](README.md)
-- Local scripts: `npm run dev`, `npm run build`
-- Design spec: `./spec.md`
 
 ## Working conventions
 
-- Prefer small, clear React components over large, deeply nested UI trees. One component per file.
+- Prefer small, clear React components. One component per file. For more complex components, consider breaking them down into smaller, reusable pieces.
+- Favor composition over inheritance when structuring components.
 - Keep logic close to the component or feature that owns it.
 - Preserve TypeScript correctness and avoid unnecessary dependencies.
 - When adding UI behavior, keep the UX simple and testable.
 - Work in small increments: one component or at most two related components per step. Keep scope narrow, avoid unrelated refactors, and stop for review before continuing.
 - Follow Atomic Design principles, keeping components under `/components/atoms`, `/components/molecules`, `/components/organisms`, `/components/templates`, `/components/pages`.
-- Reference design spec (`./spec.md`) for all feature implementations.
 
 ### CSS
 - For most things, use relative units. Use absolute units for borders.
+- Use BEM (Block Element Modifier) methodology for naming CSS classes to maintain consistency and readability.
 
-## Validation workflow
+## Validation
 
 - Install dependencies with `npm install` when needed.
-- Run the smallest relevant command to verify the change.
-- Before claiming success, report the actual command and outcome.
-- For regression, run the entire test suite before declaring success.
-- For production readiness, run `npm run build` when the change affects the app as a whole.
+- Before claiming success, report the actual command and outcome, as well as running the entire test suite.
+- For production readiness, run `npm run build`.
 
 ## TDD and BDD requirements
 
@@ -42,14 +38,19 @@ This repository is a small Vite + React + TypeScript application for ScheduleSna
 - If the project does not yet have a test harness, add the minimum setup needed to support TDD for the feature being changed.
 - Do not skip the red-to-green cycle: implement the failing test, then fix the code, then re-run the relevant test.
 
-## Practical workflow
+## Primary workflow
 
 1. Identify the user-visible behavior.
 2. Write the failing test or BDD scenario.
 3. Run the targeted test or validation command.
 4. Implement the minimal fix.
-5. Re-run the focused validation.
-6. Only then widen validation if the change affects broader behavior.
+5. Re-run the focused validation, iterating until it passes.
+6. Then, run the entire test suite, iterating until it passes.
+7. Make a commit with a clear message summarizing the change.
+8. Review and analyze the changes and consider refactoring opportunities.
+9. Refactor the code as needed, ensuring that all tests continue to pass.
+10. Make a commit after each refactoring step.
+11. Repeat the cycle for the next change, maintaining small, focused increments.
 
 ## Avoid
 
