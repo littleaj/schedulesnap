@@ -254,6 +254,12 @@ const CreatingPage = () => {
     failed: '\ue000',
   };
 
+  const calendarWeekUrl = useMemo(() => {
+    const calendarIdValue = calendarId || 'primary';
+    const encodedCalendarId = encodeURIComponent(calendarIdValue);
+    return `https://calendar.google.com/calendar/u/0/r/week?cid=${encodedCalendarId}`;
+  }, [calendarId]);
+
   return (
     <PageContent className="creating-page">
       <Card className="creating-card" aria-live="polite">
@@ -289,6 +295,20 @@ const CreatingPage = () => {
 
             {authError ? (
               <p className="creating-card__error" role="alert">{authError}</p>
+            ) : null}
+
+            {isFinished ? (
+              <div className="creating-card__actions creating-card__actions--final">
+                <a
+                  className="creating-card__calendar-link"
+                  href={calendarWeekUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open calendar"
+                >
+                  Open calendar
+                </a>
+              </div>
             ) : null}
 
             <div className="creating-card__actions">

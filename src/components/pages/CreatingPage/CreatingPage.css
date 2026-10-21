@@ -73,7 +73,29 @@
 	gap: 0.8rem;
 }
 
+.creating-card__actions--final {
+	margin-top: 1rem;
+}
+
+.creating-card__calendar-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 2.8rem;
+	padding: 0.45rem 0.9rem;
+	border-radius: 999px;
+	background: var(--md-surface-container-high);
+	color: var(--md-primary);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.creating-card__calendar-link:hover,
+.creating-card__calendar-link:focus-visible {
+	text-decoration: underline;
+}
+
 .creating-card__empty {
-  display: grid;
+	display: grid;
 	margin-top: 1.5rem;
 }
