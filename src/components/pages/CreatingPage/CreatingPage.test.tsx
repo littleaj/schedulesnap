@@ -154,6 +154,8 @@ describe('CreatingPage', () => {
       expect(replaceStateSpy).toHaveBeenCalled();
     });
 
+    const calendarLink = screen.getByRole('link', { name: /open calendar/i });
+    expect(calendarLink).toHaveAttribute('href', 'https://calendar.google.com/calendar/u/0/r/week?cid=primary');
     expect(clearAnalysisFlowCacheMock).toHaveBeenCalledWith(fakeUid);
   });
 
