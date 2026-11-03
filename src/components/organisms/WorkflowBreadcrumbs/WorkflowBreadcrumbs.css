@@ -1,0 +1,48 @@
+.workflow-breadcrumbs {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--md-outline);
+  background: var(--md-surface);
+}
+
+.workflow-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.workflow-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.workflow-breadcrumbs__item:not(:last-child)::after {
+  content: '\203A';
+  color: var(--md-on-surface-variant);
+}
+
+.workflow-breadcrumbs__label {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.625rem;
+}
+
+.workflow-breadcrumbs__label--completed {
+  color: var(--md-secondary);
+  background: var(--md-secondary-container);
+}
+
+.workflow-breadcrumbs__label--active {
+  color: var(--md-on-primary-container);
+  background: var(--md-primary-container);
+}
+
+.workflow-breadcrumbs__label--upcoming {
+  color: var(--md-on-surface-variant);
+  background: var(--md-surface-variant);
+}
