@@ -19,6 +19,7 @@ const CalendarSelect = ({ id, defaultValue, onChange, error }: CalendarSelectPro
   const [isLoading, setIsLoading] = useState(false);
   const { authenticate } = useGoogleLogin();
   const isFetching = useRef(false);
+  // TODO(refactor): split fetch/auth retry into useCalendarListFetch hook + shared google-calendar service call.
   const fetchCalendarOptions = useCallback(async () => {
 
     console.log('fetching calendarList...');

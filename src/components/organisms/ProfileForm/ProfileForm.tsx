@@ -39,6 +39,7 @@ const ProfileForm = ({ heading, subheading, submitLabel, onSubmit }: ProfileForm
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // TODO(refactor): move profile validation + submit state/persistence into a dedicated useProfileFormState hook.
   const validateProfile = (profile: UserProfile): UserProfileValidationErrors => {
     const errs: UserProfileValidationErrors = {};
 
